@@ -29,7 +29,7 @@
       <item row="1" column="0">
        <layout class="QGridLayout" name="opponentInfoGrid">
         <item row="0" column="1">
-         <widget class="QLabel" name="label_5">
+         <widget class="QLabel" name="opponentLevel">
           <property name="text">
            <string>Pokemon Level goes here</string>
           </property>
@@ -39,7 +39,7 @@
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="QLabel" name="label_4">
+         <widget class="QLabel" name="opponentName">
           <property name="text">
            <string>Pokemon name goes here</string>
           </property>
@@ -49,14 +49,14 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QProgressBar" name="progressBar_2">
+         <widget class="QProgressBar" name="opponentHpBar">
           <property name="value">
            <number>24</number>
           </property>
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="label_6">
+         <widget class="QLabel" name="opponentHp">
           <property name="text">
            <string>HP</string>
           </property>
@@ -73,7 +73,7 @@
          <number>0</number>
         </property>
         <item row="0" column="0">
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="allyName">
           <property name="text">
            <string>Pokemon name goes here</string>
           </property>
@@ -83,14 +83,14 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QProgressBar" name="progressBar">
+         <widget class="QProgressBar" name="allyHpBar">
           <property name="value">
            <number>24</number>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLabel" name="label_3">
+         <widget class="QLabel" name="allyLevel">
           <property name="text">
            <string>Pokemon Level goes here</string>
           </property>
@@ -100,7 +100,7 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="allyHp">
           <property name="text">
            <string>HP</string>
           </property>
