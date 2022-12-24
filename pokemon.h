@@ -13,7 +13,7 @@ class Pokemon : public QObject
 {
     Q_OBJECT
 public:
-    Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseStat_, int spDefenseStat_, int healthStat_, int speedStat_, int maxHealthStat_, int level_, Type type1_, Type type2_ = Type::NONE);
+    Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseStat_, int spDefenseStat_, int healthStat_, int speedStat_, int maxHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_ = Type::NONE);
     ~Pokemon() = default;
 
     void attack(QSharedPointer<Pokemon> opponent, AttackMove attackMove);
@@ -36,7 +36,7 @@ public:
     void setMaxHealthStat(int newMaxHealthStat);
     int getLevel() const;
     void setLevel(int newLevel);
-
+    QVector<QSharedPointer<AttackMove> > getAttackList() const;
     Type getType1() const;
     Type getType2() const;
 
@@ -50,6 +50,7 @@ private:
     int speedStat;
     int maxHealthStat;
     int level;
+    QVector<QSharedPointer<AttackMove>> attackList;
     Type type1;
     Type type2;
 

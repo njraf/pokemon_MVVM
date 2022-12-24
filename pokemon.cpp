@@ -2,7 +2,7 @@
 
 #include <QRandomGenerator>
 
-Pokemon::Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseStat_, int spDefenseStat_, int healthStat_, int speedStat_, int maxHealthStat_, int level_, Type type1_, Type type2_)
+Pokemon::Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseStat_, int spDefenseStat_, int healthStat_, int speedStat_, int maxHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_)
     : name(name_)
     , attackStat(attackStat_)
     , spAttackStat(spAttackStat_)
@@ -12,6 +12,7 @@ Pokemon::Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseS
     , speedStat(speedStat_)
     , maxHealthStat(maxHealthStat_)
     , level(level_)
+    , attackList(attackList_)
     , type1(type1_)
     , type2(type2_)
 {
@@ -112,6 +113,10 @@ Type Pokemon::getType1() const {
 
 Type Pokemon::getType2() const {
     return type2;
+}
+
+QVector<QSharedPointer<AttackMove> > Pokemon::getAttackList() const {
+    return attackList;
 }
 
 

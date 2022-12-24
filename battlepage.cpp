@@ -35,12 +35,27 @@ void BattlePage::displayStats(QSharedPointer<Pokemon> playerPokemon, QSharedPoin
     ui->allyHpBar->setMaximum(playerPokemon->getMaxHealthStat());
     ui->allyHpBar->setValue(playerPokemon->getHealthStat());
     ui->allyLevel->setText(QString("L: %1").arg(playerPokemon->getLevel()));
+    for (int attackIndex = 0; attackIndex < playerPokemon->getAttackList().size(); attackIndex++) {
+        int row = ((attackIndex % 2) == 0) ? 0 : 1;
+        int col = (attackIndex >= 2) ? 2 : 1;
+        auto layoutItem = qobject_cast<QGridLayout*>(ui->attackPage->layout())->itemAtPosition(row, col);
+        if (!layoutItem || !layoutItem->widget()) {
+            continue;
+        }
+        auto button = qobject_cast<QPushButton*>(layoutItem->widget());
+        auto attack = playerPokemon->getAttackList().at(attackIndex);
+        QString attackName = attack->getName();
+        QString ppLine = QString("%1/%2").arg(attack->getPp()).arg(attack->getMaxPP());
+        button->setText(attackName + "\n" + ppLine);
+    }
 
     ui->opponentName->setText(opponentPokemon->getName());
     ui->opponentHp->setText(QString("%1/%2").arg(opponentPokemon->getHealthStat()).arg(opponentPokemon->getMaxHealthStat()));
     ui->opponentHpBar->setMaximum(opponentPokemon->getMaxHealthStat());
     ui->opponentHpBar->setValue(opponentPokemon->getHealthStat());
     ui->opponentLevel->setText(QString("L: %1").arg(opponentPokemon->getLevel()));
+
+    ui->actionArea->setCurrentIndex(0);
 }
 
 
