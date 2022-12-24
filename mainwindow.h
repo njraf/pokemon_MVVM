@@ -5,6 +5,7 @@
 
 #include "battlepage.h"
 #include "mainmenupage.h"
+#include "teampage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,6 +19,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     QSharedPointer<BattlePage> constructBattlePage();
+    QSharedPointer<TeamPage> constructTeamPage();
 
 private:
     Ui::MainWindow *ui;

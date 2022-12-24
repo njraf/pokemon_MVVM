@@ -1,5 +1,7 @@
 #include "trainer.h"
 
+#include <QDebug>
+
 Trainer::Trainer(QVector<QSharedPointer<Pokemon>> team_)
     : team(team_)
 {

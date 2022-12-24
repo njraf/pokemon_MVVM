@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // create player
     QSharedPointer<Pokemon> charmander = QSharedPointer<Pokemon>::create("Charmander", 1, 1, 1, 1, 1, 1);
+    QSharedPointer<Pokemon> bulbasaur = QSharedPointer<Pokemon>::create("Bulbasaur", 1, 1, 1, 1, 1, 1);
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
     player = QSharedPointer<Trainer>::create(playerTeam);
 
@@ -24,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(currentPage.data(), &IPage::changedPage, this, [=](PageName pageName) {
         if (pageName == PageName::BATTLE) {
             currentPage = constructBattlePage();
+        } else if (pageName == PageName::TEAM) {
+            currentPage = constructTeamPage();
         } else {
             return;
         }
@@ -59,4 +62,7 @@ QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
     return battlePage;
 }
 
-
+QSharedPointer<TeamPage> MainWindow::constructTeamPage() {
+    QSharedPointer<TeamPage> teamPage = QSharedPointer<TeamPage>::create(player->getTeam());
+    return teamPage;
+}

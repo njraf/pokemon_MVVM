@@ -17,6 +17,8 @@ SOURCES += \
     mainwindow.cpp \
     pagenavigator.cpp \
     pokemon.cpp \
+    teammembercard.cpp \
+    teampage.cpp \
     trainer.cpp
 
 HEADERS += \
@@ -27,12 +29,16 @@ HEADERS += \
     mainwindow.h \
     pagenavigator.h \
     pokemon.h \
+    teammembercard.h \
+    teampage.h \
     trainer.h
 
 FORMS += \
     battlepage.ui \
     mainmenupage.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    teammembercard.ui \
+    teampage.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
