@@ -10,28 +10,14 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
 
     setObjectName("BattlePage");
 
+    connect(ui->fightButton, &QPushButton::clicked, this, [=] { ui->actionArea->setCurrentIndex(1); });
+    connect(ui->backButton, &QPushButton::clicked, this, [=] { ui->actionArea->setCurrentIndex(0); });
     connect(ui->fightButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::BAG); });
+    connect(ui->pokemonButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::TEAM); });
     connect(ui->runButton, &QPushButton::clicked, this, [=] { emit returnedPage(); });
+    connect(viewmodel.data(), &BattleViewmodel::summonedPokemon, this, &BattlePage::displayStats);
 
-    auto playerTeam = viewmodel->getPlayerTrainer()->getTeam();
-    auto pokeIt = std::find_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
-    if (pokeIt != playerTeam.end()) {
-        ui->allyName->setText((*pokeIt)->getName());
-        ui->allyHp->setText(QString("%1/%2").arg((*pokeIt)->getHealthStat()).arg((*pokeIt)->getMaxHealthStat()));
-        ui->allyHpBar->setMaximum((*pokeIt)->getMaxHealthStat());
-        ui->allyHpBar->setValue((*pokeIt)->getHealthStat());
-        ui->allyLevel->setText(QString("L: %1").arg((*pokeIt)->getLevel()));
-    }
-
-    auto opponentTeam = viewmodel->getOpponentTrainer()->getTeam();
-    pokeIt = std::find_if(opponentTeam.begin(), opponentTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
-    if (pokeIt != opponentTeam.end()) {
-        ui->opponentName->setText((*pokeIt)->getName());
-        ui->opponentHp->setText(QString("%1/%2").arg((*pokeIt)->getHealthStat()).arg((*pokeIt)->getMaxHealthStat()));
-        ui->opponentHpBar->setMaximum((*pokeIt)->getMaxHealthStat());
-        ui->opponentHpBar->setValue((*pokeIt)->getHealthStat());
-        ui->opponentLevel->setText(QString("L: %1").arg((*pokeIt)->getLevel()));
-    }
+    viewmodel->summonFirstPokemon();
 }
 
 BattlePage::~BattlePage()
@@ -42,3 +28,20 @@ BattlePage::~BattlePage()
 PageName BattlePage::getPageName() {
     return PageName::BATTLE;
 }
+
+void BattlePage::displayStats(QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon) {
+    ui->allyName->setText(playerPokemon->getName());
+    ui->allyHp->setText(QString("%1/%2").arg(playerPokemon->getHealthStat()).arg(playerPokemon->getMaxHealthStat()));
+    ui->allyHpBar->setMaximum(playerPokemon->getMaxHealthStat());
+    ui->allyHpBar->setValue(playerPokemon->getHealthStat());
+    ui->allyLevel->setText(QString("L: %1").arg(playerPokemon->getLevel()));
+
+    ui->opponentName->setText(opponentPokemon->getName());
+    ui->opponentHp->setText(QString("%1/%2").arg(opponentPokemon->getHealthStat()).arg(opponentPokemon->getMaxHealthStat()));
+    ui->opponentHpBar->setMaximum(opponentPokemon->getMaxHealthStat());
+    ui->opponentHpBar->setValue(opponentPokemon->getHealthStat());
+    ui->opponentLevel->setText(QString("L: %1").arg(opponentPokemon->getLevel()));
+}
+
+
+

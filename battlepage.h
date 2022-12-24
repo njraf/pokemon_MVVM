@@ -23,6 +23,9 @@ public:
 private:
     Ui::BattlePage *ui;
     QSharedPointer<BattleViewmodel> viewmodel;
+
+public slots:
+    void displayStats(QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon);
 };
 
 #endif // BATTLEPAGE_H

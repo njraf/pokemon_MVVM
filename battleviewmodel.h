@@ -16,11 +16,17 @@ public:
     ~BattleViewmodel() = default;
     QSharedPointer<Trainer> getPlayerTrainer();
     QSharedPointer<Trainer> getOpponentTrainer();
+    void summonFirstPokemon();
 
 private:
     QSharedPointer<Pokemon> currentPokemon;
     QSharedPointer<Trainer> player;
     QSharedPointer<Trainer> opponent;
+    QSharedPointer<Pokemon> currentPlayerPokemon;
+    QSharedPointer<Pokemon> currentOpponentPokemon;
+
+signals:
+    void summonedPokemon(QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon);
 };
 
 #endif // BATTLEVIEWMODEL_H
