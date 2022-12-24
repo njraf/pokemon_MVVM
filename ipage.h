@@ -2,9 +2,10 @@
 #define IPAGE_H
 
 #include <QWidget>
+#include <QDebug>
 
 enum class PageName : int {
-    BATTLE, BAG
+    BATTLE, BAG, MAIN_MENU, TEAM
 };
 
 class IPage : public QWidget
@@ -21,7 +22,8 @@ public:
     }
 
 signals:
-    void changePage(PageName pageNumber);
+    void changedPage(PageName pageName); // to a new page. add to backstack.
+    void returnedPage(); // to previous page in backstack
 
 signals:
 

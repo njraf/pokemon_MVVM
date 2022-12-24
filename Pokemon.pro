@@ -13,6 +13,7 @@ SOURCES += \
     battleviewmodel.cpp \
     ipage.cpp \
     main.cpp \
+    mainmenupage.cpp \
     mainwindow.cpp \
     pagenavigator.cpp \
     pokemon.cpp \
@@ -22,6 +23,7 @@ HEADERS += \
     battlepage.h \
     battleviewmodel.h \
     ipage.h \
+    mainmenupage.h \
     mainwindow.h \
     pagenavigator.h \
     pokemon.h \
@@ -29,6 +31,7 @@ HEADERS += \
 
 FORMS += \
     battlepage.ui \
+    mainmenupage.ui \
     mainwindow.ui
 
 # Default rules for deployment.

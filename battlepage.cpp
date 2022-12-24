@@ -10,7 +10,8 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
 
     setObjectName("BattlePage");
 
-    connect(ui->pushButton, &QPushButton::clicked, this, [&] { emit changePage(PageName::BAG); }); // sample
+    connect(ui->fightButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::BAG); });
+    connect(ui->runButton, &QPushButton::clicked, this, [=] { emit returnedPage(); });
 
     auto playerTeam = viewmodel->getPlayerTrainer()->getTeam();
     if (!playerTeam.isEmpty()) {

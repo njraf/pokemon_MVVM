@@ -15,11 +15,11 @@ PageNavigator *PageNavigator::getInstance() {
 }
 
 void PageNavigator::addToBackstack(QSharedPointer<IPage> page) {
-    backstack.push_back(page);
+    backstack.append(page);
 }
 
-void PageNavigator::popFromBackstack() {
-    backstack.pop_back();
+QSharedPointer<IPage> PageNavigator::popFromBackstack() {
+    return backstack.takeLast();
 }
 
 
