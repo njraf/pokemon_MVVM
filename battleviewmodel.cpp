@@ -1,8 +1,8 @@
 #include "battleviewmodel.h"
 
-BattleViewmodel::BattleViewmodel(QSharedPointer<Trainer> player_, QSharedPointer<Trainer> opponent_) :
-    player(player_)
-  , opponent(opponent_)
+BattleViewmodel::BattleViewmodel(QSharedPointer<Trainer> player_, QSharedPointer<Trainer> opponent_)
+    : player(player_)
+    , opponent(opponent_)
 {
 
 }

@@ -2,9 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QSharedPointer>
 
-#include "battleviewmodel.h"
+#include "battlepage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,11 +14,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QSharedPointer<BattleViewmodel> vm_, QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QSharedPointer<BattlePage> constructBattlePage();
 
 private:
     Ui::MainWindow *ui;
-    QSharedPointer<BattleViewmodel> viewmodel;
+
 };
 #endif // MAINWINDOW_H
