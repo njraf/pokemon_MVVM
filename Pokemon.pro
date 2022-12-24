@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    attackmove.cpp \
     battlepage.cpp \
     battleviewmodel.cpp \
     ipage.cpp \
@@ -17,9 +18,11 @@ SOURCES += \
     mainwindow.cpp \
     pagenavigator.cpp \
     pokemon.cpp \
-    trainer.cpp
+    trainer.cpp \
+    typeutilities.cpp
 
 HEADERS += \
+    attackmove.h \
     battlepage.h \
     battleviewmodel.h \
     ipage.h \
@@ -27,7 +30,8 @@ HEADERS += \
     mainwindow.h \
     pagenavigator.h \
     pokemon.h \
-    trainer.h
+    trainer.h \
+    typeutilities.h
 
 FORMS += \
     battlepage.ui \
