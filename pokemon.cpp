@@ -1,5 +1,7 @@
 #include "pokemon.h"
 
+#include <QRandomGenerator>
+
 Pokemon::Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseStat_, int spDefenseStat_, int healthStat_, int speedStat_, int maxHealthStat_, int level_, Type type1_, Type type2_)
     : name(name_)
     , attackStat(attackStat_)
@@ -16,16 +18,20 @@ Pokemon::Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseS
 
 }
 
-void Pokemon::attack(QSharedPointer<Pokemon> opponent) {
-    //TODO: get attack power of the selected move
-    int attackPower = 0; //TODO: get attack power from the selected move
-    double stab = 1.0; //TODO: calculate STAB
-    double weakResist = 1.0; //TODO: calculate based on selected move type and opponent's type(s)
-    int randomNumber = 1; //TODO: get a random number (85 - 100)
+void Pokemon::attack(QSharedPointer<Pokemon> opponent, AttackMove attackMove) {
+    double attackPower = (double)attackMove.getPower();
+    double stab = ((attackMove.getType() == type1) || (attackMove.getType() == type2)) ? 1.5 : 1.0;
+    double weakResist = TypeUtilities::calcEffectiveness(attackMove.getType(), opponent->getType1());
+    weakResist *= TypeUtilities::calcEffectiveness(attackMove.getType(), opponent->getType2());
+    double randomNumber = (double)((QRandomGenerator::global()->generate() % 16) + 85); // get a random number (85 - 100)
 
     //TODO: include stat change stages from Swords Dance and others
 
-    int damage = ((((2 * level / 5 + 2) * attackStat * attackPower / defenseStat) / 50) + 2) * stab * weakResist * randomNumber / 100;
+    double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * attackStat * attackPower / defenseStat) / 50.0) + 2.0) * stab * weakResist * randomNumber / 100.0;
+    int dmg = ((damage - qFloor(damage)) < 0.5) ? qFloor(damage) : qCeil(damage); // round damage to the nearest whole number
+
+    opponent->setHealthStat(opponent->getHealthStat() - dmg);
+    emit attacked();
 }
 
 QString Pokemon::getName() const {
@@ -73,7 +79,7 @@ int Pokemon::getHealthStat() const {
 }
 
 void Pokemon::setHealthStat(int newHealthStat) {
-    healthStat = newHealthStat;
+    healthStat = (newHealthStat < 0 ? 0 : newHealthStat);
 }
 
 int Pokemon::getSpeedStat() const {

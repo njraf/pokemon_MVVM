@@ -14,13 +14,23 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
     connect(ui->runButton, &QPushButton::clicked, this, [=] { emit returnedPage(); });
 
     auto playerTeam = viewmodel->getPlayerTrainer()->getTeam();
-    if (!playerTeam.isEmpty()) {
-        ui->allyName->setText(playerTeam[0]->getName());
+    auto pokeIt = std::find_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
+    if (pokeIt != playerTeam.end()) {
+        ui->allyName->setText((*pokeIt)->getName());
+        ui->allyHp->setText(QString("%1/%2").arg((*pokeIt)->getHealthStat()).arg((*pokeIt)->getMaxHealthStat()));
+        ui->allyHpBar->setMaximum((*pokeIt)->getMaxHealthStat());
+        ui->allyHpBar->setValue((*pokeIt)->getHealthStat());
+        ui->allyLevel->setText(QString("L: %1").arg((*pokeIt)->getLevel()));
     }
 
     auto opponentTeam = viewmodel->getOpponentTrainer()->getTeam();
-    if (!opponentTeam.isEmpty()) {
-        ui->opponentName->setText(opponentTeam[0]->getName());
+    pokeIt = std::find_if(opponentTeam.begin(), opponentTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
+    if (pokeIt != opponentTeam.end()) {
+        ui->opponentName->setText((*pokeIt)->getName());
+        ui->opponentHp->setText(QString("%1/%2").arg((*pokeIt)->getHealthStat()).arg((*pokeIt)->getMaxHealthStat()));
+        ui->opponentHpBar->setMaximum((*pokeIt)->getMaxHealthStat());
+        ui->opponentHpBar->setValue((*pokeIt)->getHealthStat());
+        ui->opponentLevel->setText(QString("L: %1").arg((*pokeIt)->getLevel()));
     }
 }
 

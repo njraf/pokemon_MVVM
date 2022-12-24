@@ -4,8 +4,10 @@
 #include <QString>
 #include <QObject>
 #include <QSharedPointer>
+#include <QtMath>
 
 #include "typeutilities.h"
+#include "attackmove.h"
 
 class Pokemon : public QObject
 {
@@ -14,7 +16,7 @@ public:
     Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseStat_, int spDefenseStat_, int healthStat_, int speedStat_, int maxHealthStat_, int level_, Type type1_, Type type2_ = Type::NONE);
     ~Pokemon() = default;
 
-    void attack(QSharedPointer<Pokemon> opponent);
+    void attack(QSharedPointer<Pokemon> opponent, AttackMove attackMove);
 
     QString getName() const;
     void setName(const QString &newName);
@@ -50,6 +52,9 @@ private:
     int level;
     Type type1;
     Type type2;
+
+signals:
+    void attacked();
 };
 
 #endif // POKEMON_H

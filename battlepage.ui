@@ -21,6 +21,11 @@
     <layout class="QGridLayout" name="opponentInfoGrid">
      <item row="0" column="1">
       <widget class="QLabel" name="opponentLevel">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Pokemon Level goes here</string>
        </property>
@@ -34,10 +39,18 @@
        <property name="value">
         <number>24</number>
        </property>
+       <property name="textVisible">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="opponentHp">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>HP</string>
        </property>
@@ -48,6 +61,11 @@
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="opponentName">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Pokemon name goes here</string>
        </property>
@@ -65,6 +83,11 @@
      </property>
      <item row="0" column="0">
       <widget class="QLabel" name="allyName">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Pokemon name goes here</string>
        </property>
@@ -78,10 +101,18 @@
        <property name="value">
         <number>24</number>
        </property>
+       <property name="textVisible">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="allyLevel">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Pokemon Level goes here</string>
        </property>
@@ -92,6 +123,11 @@
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="allyHp">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>HP</string>
        </property>
