@@ -1,5 +1,7 @@
 #include "battleviewmodel.h"
 
+#include <QRandomGenerator>
+
 BattleViewmodel::BattleViewmodel(QSharedPointer<Trainer> player_, QSharedPointer<Trainer> opponent_)
     : player(player_)
     , opponent(opponent_)
@@ -8,6 +10,9 @@ BattleViewmodel::BattleViewmodel(QSharedPointer<Trainer> player_, QSharedPointer
         connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::stateUpdated);
     }
 
+    for (auto member : opponent->getTeam()) {
+        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::stateUpdated);
+    }
 }
 
 QSharedPointer<Trainer> BattleViewmodel::getPlayerTrainer() {
@@ -46,5 +51,29 @@ void BattleViewmodel::attack(int attackIndex) {
     if (currentPlayerPokemon->getAttackList().size() <= attackIndex) {
         return;
     }
-    currentPlayerPokemon->attack(currentOpponentPokemon, currentPlayerPokemon->getAttackList().at(attackIndex));
+
+    int opponentAttackIndex = (QRandomGenerator::global()->generate() % currentOpponentPokemon->getAttackList().size());
+    if (currentPlayerPokemon->getSpeedStat() > currentOpponentPokemon->getSpeedStat()) {
+        currentPlayerPokemon->attack(currentOpponentPokemon, currentPlayerPokemon->getAttackList().at(attackIndex));
+        if (currentOpponentPokemon->getHealthStat() > 0) {
+            currentOpponentPokemon->attack(currentPlayerPokemon, currentOpponentPokemon->getAttackList().at(opponentAttackIndex));
+        }
+    } else if (currentPlayerPokemon->getSpeedStat() < currentOpponentPokemon->getSpeedStat()) {
+        currentOpponentPokemon->attack(currentPlayerPokemon, currentOpponentPokemon->getAttackList().at(opponentAttackIndex));
+        if (currentPlayerPokemon->getHealthStat() > 0) {
+            currentPlayerPokemon->attack(currentOpponentPokemon, currentPlayerPokemon->getAttackList().at(attackIndex));
+        }
+    } else { // speed tie
+        if ((QRandomGenerator::global()->generate() % 2) == 0) {
+            currentPlayerPokemon->attack(currentOpponentPokemon, currentPlayerPokemon->getAttackList().at(attackIndex));
+            if (currentOpponentPokemon->getHealthStat() > 0) {
+                currentOpponentPokemon->attack(currentPlayerPokemon, currentOpponentPokemon->getAttackList().at(opponentAttackIndex));
+            }
+        } else {
+            currentOpponentPokemon->attack(currentPlayerPokemon, currentOpponentPokemon->getAttackList().at(opponentAttackIndex));
+            if (currentPlayerPokemon->getHealthStat() > 0) {
+                currentPlayerPokemon->attack(currentOpponentPokemon, currentPlayerPokemon->getAttackList().at(attackIndex));
+            }
+        }
+    }
 }

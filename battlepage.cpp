@@ -1,6 +1,8 @@
 #include "battlepage.h"
 #include "ui_battlepage.h"
 
+#include <QMessageBox>
+
 BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
     : IPage(parent)
     , ui(new Ui::BattlePage)
@@ -9,6 +11,16 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
     ui->setupUi(this);
 
     setObjectName("BattlePage");
+
+    auto playerTeam = viewmodel->getPlayerTrainer()->getTeam();
+    auto opponentTeam = viewmodel->getOpponentTrainer()->getTeam();
+    bool playerKOed = (0 == std::count_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+    bool opponentKOed = (0 == std::count_if(opponentTeam.begin(), opponentTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+    if (playerKOed) {
+        qDebug() << "ERROR: You have no usable pokemon";
+    } else if (opponentKOed) {
+        qDebug() << "ERROR: The opponent has no usable pokemon";
+    }
 
     // action buttons
     connect(ui->fightButton, &QPushButton::clicked, this, [=] { ui->actionArea->setCurrentIndex(1); });
@@ -29,11 +41,34 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
         connect(button, &QPushButton::clicked, this, [=] { viewmodel->attack(attackIndex); });
     }
 
-    // other
+    // viewmodel signals
     connect(viewmodel.data(), &BattleViewmodel::summonedPokemon, this, &BattlePage::displayStats);
     connect(viewmodel.data(), &BattleViewmodel::stateUpdated, this, [=] { displayStats(viewmodel->getCurrentPlayerPokemon(), viewmodel->getCurrentOpponentPokemon()); });
+    connect(viewmodel.data(), &BattleViewmodel::stateUpdated, this, [=] {
+        // determine win/lose
+        auto playerTeam = viewmodel->getPlayerTrainer()->getTeam();
+        auto opponentTeam = viewmodel->getOpponentTrainer()->getTeam();
+        bool playerKOed = (0 == std::count_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+        bool opponentKOed = (0 == std::count_if(opponentTeam.begin(), opponentTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
 
-    viewmodel->summonFirstPokemon();
+        QString winLoseMessage = "";
+        if (playerKOed) {
+            winLoseMessage = "You lost";
+        } else if (opponentKOed) {
+            winLoseMessage = "You won";
+        } else { // no KOs
+            return;
+        }
+
+        QMessageBox winLoseDialog;
+        winLoseDialog.setText(winLoseMessage);
+        winLoseDialog.exec();
+        emit returnedPage();
+    });
+
+    if (!playerKOed && !opponentKOed) {
+        viewmodel->summonFirstPokemon();
+    }
 }
 
 BattlePage::~BattlePage()
