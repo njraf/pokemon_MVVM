@@ -9,11 +9,20 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // create repository
+    QSharedPointer<PokemonDao> pokemonDao = QSharedPointer<PokemonDao>::create();
+    QSharedPointer<Repository> repository = QSharedPointer<Repository>::create(pokemonDao);
+    if (!repository->hasConnection()) {
+        //TODO: make an error dialog
+        return;
+    }
+
     // create player
     QVector<QSharedPointer<AttackMove>> attackList = {
         QSharedPointer<AttackMove>::create("Ember", 40, 100, 25, 25, Type::FIRE, Category::SPECIAL)
     };
-    QSharedPointer<Pokemon> charmander = QSharedPointer<Pokemon>::create("Charmander", "", NatureUtilities::randomNature(), 39, 52, 43, 60, 50, 65, 39, 5, attackList, Type::FIRE);
+    //QSharedPointer<Pokemon> charmander = QSharedPointer<Pokemon>::create("Charmander", "", NatureUtilities::randomNature(), 39, 52, 43, 60, 50, 65, 39, 5, attackList, Type::FIRE);
+    QSharedPointer<Pokemon> charmander = repository->getPokemon(4);
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
     player = QSharedPointer<Trainer>::create(playerTeam);
 
@@ -59,7 +68,7 @@ QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
     QSharedPointer<Pokemon> squirtle = QSharedPointer<Pokemon>::create("Squirtle", "", NatureUtilities::randomNature(), 44, 48, 65, 50, 64, 43, 44, 5, attackList, Type::WATER);
     QVector<QSharedPointer<Pokemon>> opponentTeam = {squirtle};
     QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam);
-    QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(player, opponent);
+    QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(repository, player, opponent);
 
     QSharedPointer<BattlePage> battlePage = QSharedPointer<BattlePage>::create(battleViewmodel);
     return battlePage;

@@ -63,9 +63,9 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
     } else if (combinedStages < -6) {
         combinedStages = -6;
     }
+
     qreal dAccuracy = (double)attackMove->getAccuracy() * getAccuracyStageMultiplier(combinedStages);
     quint32 iAccuracy = ((dAccuracy - qFloor(dAccuracy)) < 0.5) ? qFloor(dAccuracy) : qCeil(dAccuracy);
-    qDebug() << "Accuracy" << iAccuracy;
     if ((QRandomGenerator::global()->generate() % 101) > iAccuracy) {
         qDebug() << "The attack missed";
         return;

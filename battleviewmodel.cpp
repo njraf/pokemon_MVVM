@@ -2,8 +2,9 @@
 
 #include <QRandomGenerator>
 
-BattleViewmodel::BattleViewmodel(QSharedPointer<Trainer> player_, QSharedPointer<Trainer> opponent_)
-    : player(player_)
+BattleViewmodel::BattleViewmodel(QSharedPointer<Repository> repository_, QSharedPointer<Trainer> player_, QSharedPointer<Trainer> opponent_)
+    : repository(repository_)
+    , player(player_)
     , opponent(opponent_)
 {
     for (auto member : player->getTeam()) {

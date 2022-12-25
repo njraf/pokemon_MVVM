@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,6 +12,7 @@ SOURCES += \
     attackmove.cpp \
     battlepage.cpp \
     battleviewmodel.cpp \
+    idao.cpp \
     ipage.cpp \
     main.cpp \
     mainmenupage.cpp \
@@ -19,6 +20,8 @@ SOURCES += \
     natureutilities.cpp \
     pagenavigator.cpp \
     pokemon.cpp \
+    pokemondao.cpp \
+    repository.cpp \
     trainer.cpp \
     typeutilities.cpp
 
@@ -26,12 +29,15 @@ HEADERS += \
     attackmove.h \
     battlepage.h \
     battleviewmodel.h \
+    idao.h \
     ipage.h \
     mainmenupage.h \
     mainwindow.h \
     natureutilities.h \
     pagenavigator.h \
     pokemon.h \
+    pokemondao.h \
+    repository.h \
     trainer.h \
     typeutilities.h
 

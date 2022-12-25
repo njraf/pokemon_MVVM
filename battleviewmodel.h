@@ -7,12 +7,13 @@
 
 #include "pokemon.h"
 #include "trainer.h"
+#include "repository.h"
 
 class BattleViewmodel : public QObject
 {
     Q_OBJECT
 public:
-    BattleViewmodel(QSharedPointer<Trainer> player_, QSharedPointer<Trainer> opponent_);
+    BattleViewmodel(QSharedPointer<Repository> repository_, QSharedPointer<Trainer> player_, QSharedPointer<Trainer> opponent_);
     ~BattleViewmodel() = default;
     QSharedPointer<Trainer> getPlayerTrainer();
     QSharedPointer<Trainer> getOpponentTrainer();
@@ -23,6 +24,7 @@ public:
     void attack(int attackIndex);
 
 private:
+    QSharedPointer<Repository> repository;
     QSharedPointer<Trainer> player;
     QSharedPointer<Trainer> opponent;
     QSharedPointer<Pokemon> currentPlayerPokemon;

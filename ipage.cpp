@@ -5,6 +5,3 @@ IPage::IPage(QWidget *parent) : QWidget(parent)
 
 }
 
-IPage::~IPage() {
-
-}

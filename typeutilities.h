@@ -19,6 +19,11 @@ public:
         return static_cast<typename std::underlying_type<E>::type>(e);
     }
 
+    template <typename E>
+    static constexpr typename std::underlying_type<E>::type to_overlying(int e) noexcept {
+        return static_cast<typename std::underlying_type<E>::type>(e);
+    }
+
 private:
     explicit TypeUtilities(QObject *parent = nullptr);
     static double table[19][19];

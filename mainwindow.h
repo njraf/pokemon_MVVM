@@ -5,6 +5,7 @@
 
 #include "battlepage.h"
 #include "mainmenupage.h"
+#include "repository.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,6 +24,7 @@ private:
     Ui::MainWindow *ui;
     QSharedPointer<IPage> currentPage;
     QSharedPointer<Trainer> player;
+    QSharedPointer<Repository> repository;
 
 };
 #endif // MAINWINDOW_H
