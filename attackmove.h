@@ -5,11 +5,15 @@
 
 #include "typeutilities.h"
 
+enum class Category : int {
+    PHYSICAL, SPECIAL, OTHER
+};
+
 class AttackMove : public QObject
 {
     Q_OBJECT
 public:
-    explicit AttackMove(QString name, int power, int pp, int maxPP, Type type_, QObject *parent = nullptr);
+    explicit AttackMove(QString name, int power, int pp, int maxPP, Type type_, Category category_, QObject *parent = nullptr);
     ~AttackMove() = default;
 
 
@@ -19,6 +23,7 @@ public:
     void setPp(int newPp);
     int getMaxPP() const;
     Type getType() const;
+    Category getCategory() const;
 
 private:
     QString name;
@@ -26,6 +31,7 @@ private:
     int pp;
     int maxPP;
     Type type;
+    Category category;
 
 signals:
 

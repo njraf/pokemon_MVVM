@@ -55,7 +55,17 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
 
     //TODO: include stat change stages from Swords Dance and others
 
-    double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * getAttackStat() * attackPower / opponent->getDefenseStat()) / 50.0) + 2.0) * stab * weakResist * randomNumber / 100.0;
+    double attack = 0.0;
+    double defense = 0.0;
+    if (attackMove->getCategory() == Category::PHYSICAL) {
+        attack = getAttackStat();
+        defense = opponent->getDefenseStat();
+    } else if (attackMove->getCategory() == Category::SPECIAL) {
+        attack = getSpAttackStat();
+        defense = opponent->getSpDefenseStat();
+    }
+
+    double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * attack * attackPower / defense) / 50.0) + 2.0) * stab * weakResist * randomNumber / 100.0;
     int dmg = ((damage - qFloor(damage)) < 0.5) ? qFloor(damage) : qCeil(damage); // round damage to the nearest whole number
 
     opponent->setHealthStat(opponent->getHealthStat() - dmg);

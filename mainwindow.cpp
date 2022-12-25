@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // create player
     QVector<QSharedPointer<AttackMove>> attackList = {
-        QSharedPointer<AttackMove>::create("Flamethrower", 20, 30, 30, Type::FIRE)
+        QSharedPointer<AttackMove>::create("Ember", 40, 25, 25, Type::FIRE, Category::SPECIAL)
     };
     QSharedPointer<Pokemon> charmander = QSharedPointer<Pokemon>::create("Charmander", "", NatureUtilities::randomNature(), 39, 52, 43, 60, 50, 65, 39, 5, attackList, Type::FIRE);
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
@@ -54,7 +54,7 @@ QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
 
     // currently a static opponent. can change to be dynamic.
     QVector<QSharedPointer<AttackMove>> attackList = {
-        QSharedPointer<AttackMove>::create("Water gun", 20, 30, 30, Type::WATER)
+        QSharedPointer<AttackMove>::create("Water Gun", 40, 25, 25, Type::WATER, Category::SPECIAL)
     };
     QSharedPointer<Pokemon> squirtle = QSharedPointer<Pokemon>::create("Squirtle", "", NatureUtilities::randomNature(), 44, 48, 65, 50, 64, 43, 44, 5, attackList, Type::WATER);
     QVector<QSharedPointer<Pokemon>> opponentTeam = {squirtle};

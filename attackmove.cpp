@@ -1,12 +1,13 @@
 #include "attackmove.h"
 
-AttackMove::AttackMove(QString name_, int power_, int pp_, int maxPP_, Type type_, QObject *parent)
+AttackMove::AttackMove(QString name_, int power_, int pp_, int maxPP_, Type type_, Category category_, QObject *parent)
     : QObject(parent)
     , name(name_)
     , power(power_)
     , pp(pp_)
     , maxPP(maxPP_)
     , type(type_)
+    , category(category_)
 {
 
 }
@@ -39,4 +40,9 @@ int AttackMove::getMaxPP() const
 Type AttackMove::getType() const
 {
     return type;
+}
+
+Category AttackMove::getCategory() const
+{
+    return category;
 }
