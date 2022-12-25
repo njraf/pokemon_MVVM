@@ -19,11 +19,11 @@ Pokemon::Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseS
 
 }
 
-void Pokemon::attack(QSharedPointer<Pokemon> opponent, AttackMove attackMove) {
-    double attackPower = (double)attackMove.getPower();
-    double stab = ((attackMove.getType() == type1) || (attackMove.getType() == type2)) ? 1.5 : 1.0;
-    double weakResist = TypeUtilities::calcEffectiveness(attackMove.getType(), opponent->getType1());
-    weakResist *= TypeUtilities::calcEffectiveness(attackMove.getType(), opponent->getType2());
+void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove) {
+    double attackPower = (double)attackMove->getPower();
+    double stab = ((attackMove->getType() == type1) || (attackMove->getType() == type2)) ? 1.5 : 1.0;
+    double weakResist = TypeUtilities::calcEffectiveness(attackMove->getType(), opponent->getType1());
+    weakResist *= TypeUtilities::calcEffectiveness(attackMove->getType(), opponent->getType2());
     double randomNumber = (double)((QRandomGenerator::global()->generate() % 16) + 85); // get a random number (85 - 100)
 
     //TODO: include stat change stages from Swords Dance and others

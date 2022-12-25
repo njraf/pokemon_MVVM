@@ -16,7 +16,7 @@ public:
     Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseStat_, int spDefenseStat_, int healthStat_, int speedStat_, int maxHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_ = Type::NONE);
     ~Pokemon() = default;
 
-    void attack(QSharedPointer<Pokemon> opponent, AttackMove attackMove);
+    void attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove);
 
     QString getName() const;
     void setName(const QString &newName);

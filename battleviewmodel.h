@@ -16,10 +16,13 @@ public:
     ~BattleViewmodel() = default;
     QSharedPointer<Trainer> getPlayerTrainer();
     QSharedPointer<Trainer> getOpponentTrainer();
+    QSharedPointer<Pokemon> getCurrentPlayerPokemon();
+    QSharedPointer<Pokemon> getCurrentOpponentPokemon();
+
     void summonFirstPokemon();
+    void attack(int attackIndex);
 
 private:
-    QSharedPointer<Pokemon> currentPokemon;
     QSharedPointer<Trainer> player;
     QSharedPointer<Trainer> opponent;
     QSharedPointer<Pokemon> currentPlayerPokemon;
@@ -27,6 +30,7 @@ private:
 
 signals:
     void summonedPokemon(QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon);
+    void stateUpdated();
 };
 
 #endif // BATTLEVIEWMODEL_H

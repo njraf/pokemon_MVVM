@@ -4,6 +4,9 @@ BattleViewmodel::BattleViewmodel(QSharedPointer<Trainer> player_, QSharedPointer
     : player(player_)
     , opponent(opponent_)
 {
+    for (auto member : player->getTeam()) {
+        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::stateUpdated);
+    }
 
 }
 
@@ -13,6 +16,14 @@ QSharedPointer<Trainer> BattleViewmodel::getPlayerTrainer() {
 
 QSharedPointer<Trainer> BattleViewmodel::getOpponentTrainer() {
     return opponent;
+}
+
+QSharedPointer<Pokemon> BattleViewmodel::getCurrentPlayerPokemon() {
+    return currentPlayerPokemon;
+}
+
+QSharedPointer<Pokemon> BattleViewmodel::getCurrentOpponentPokemon() {
+    return currentOpponentPokemon;
 }
 
 void BattleViewmodel::summonFirstPokemon() {
@@ -29,4 +40,11 @@ void BattleViewmodel::summonFirstPokemon() {
     }
 
     emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
+}
+
+void BattleViewmodel::attack(int attackIndex) {
+    if (currentPlayerPokemon->getAttackList().size() <= attackIndex) {
+        return;
+    }
+    currentPlayerPokemon->attack(currentOpponentPokemon, currentPlayerPokemon->getAttackList().at(attackIndex));
 }

@@ -10,12 +10,28 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
 
     setObjectName("BattlePage");
 
+    // action buttons
     connect(ui->fightButton, &QPushButton::clicked, this, [=] { ui->actionArea->setCurrentIndex(1); });
-    connect(ui->backButton, &QPushButton::clicked, this, [=] { ui->actionArea->setCurrentIndex(0); });
-    connect(ui->fightButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::BAG); });
+    connect(ui->bagButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::BAG); });
     connect(ui->pokemonButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::TEAM); });
     connect(ui->runButton, &QPushButton::clicked, this, [=] { emit returnedPage(); });
+
+    // attack buttons
+    connect(ui->backButton, &QPushButton::clicked, this, [=] { ui->actionArea->setCurrentIndex(0); });
+    for (int attackIndex = 0; attackIndex < 4; attackIndex++) {
+        int row = ((attackIndex % 2) == 0) ? 0 : 1;
+        int col = (attackIndex >= 2) ? 2 : 1;
+        auto layoutItem = qobject_cast<QGridLayout*>(ui->attackPage->layout())->itemAtPosition(row, col);
+        if (!layoutItem || !layoutItem->widget()) {
+            continue;
+        }
+        auto button = qobject_cast<QPushButton*>(layoutItem->widget());
+        connect(button, &QPushButton::clicked, this, [=] { viewmodel->attack(attackIndex); });
+    }
+
+    // other
     connect(viewmodel.data(), &BattleViewmodel::summonedPokemon, this, &BattlePage::displayStats);
+    connect(viewmodel.data(), &BattleViewmodel::stateUpdated, this, [=] { displayStats(viewmodel->getCurrentPlayerPokemon(), viewmodel->getCurrentOpponentPokemon()); });
 
     viewmodel->summonFirstPokemon();
 }
