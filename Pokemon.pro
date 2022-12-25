@@ -16,6 +16,7 @@ SOURCES += \
     main.cpp \
     mainmenupage.cpp \
     mainwindow.cpp \
+    natureutilities.cpp \
     pagenavigator.cpp \
     pokemon.cpp \
     trainer.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     ipage.h \
     mainmenupage.h \
     mainwindow.h \
+    natureutilities.h \
     pagenavigator.h \
     pokemon.h \
     trainer.h \

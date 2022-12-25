@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QRandomGenerator>
 
-Pokemon::Pokemon(QString name_, QString owner_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_, int baseSpAttackStat_, int baseSpDefenseStat_, int baseSpeedStat_, int currentHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_)
+Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_, int baseSpAttackStat_, int baseSpDefenseStat_, int baseSpeedStat_, int currentHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_)
     : baseAttackStat(baseAttackStat_)
     , baseSpAttackStat(baseSpAttackStat_)
     , baseDefenseStat(baseDefenseStat_)
@@ -24,6 +24,7 @@ Pokemon::Pokemon(QString name_, QString owner_, int baseMaxHealthStat_, int base
     , maxHealthStatEV(0)
     , name(name_)
     , owner(owner_)
+    , nature(nature_)
     , currentHealthStat(currentHealthStat_)
     , level(level_)
     , attackList(attackList_)
@@ -54,7 +55,7 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
 
     //TODO: include stat change stages from Swords Dance and others
 
-    double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * getAttackStat() * attackPower / getDefenseStat()) / 50.0) + 2.0) * stab * weakResist * randomNumber / 100.0;
+    double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * getAttackStat() * attackPower / opponent->getDefenseStat()) / 50.0) + 2.0) * stab * weakResist * randomNumber / 100.0;
     int dmg = ((damage - qFloor(damage)) < 0.5) ? qFloor(damage) : qCeil(damage); // round damage to the nearest whole number
 
     opponent->setHealthStat(opponent->getHealthStat() - dmg);
@@ -71,19 +72,19 @@ void Pokemon::setName(const QString &newName) {
 }
 
 int Pokemon::getAttackStat() const {
-    return (((attackStatIV + 2 * baseAttackStat + (attackStatEV / 4)) * level / 100) + 5) /* * nature value */;
+    return (((attackStatIV + 2 * baseAttackStat + (attackStatEV / 4)) * level / 100) + 5) * NatureUtilities::calcMultiplier(nature, NatureUtilities::Stat::ATTACK);
 }
 
 int Pokemon::getSpAttackStat() const {
-    return (((spAttackStatIV + 2 * baseSpAttackStat + (spAttackStatEV / 4)) * level / 100) + 5) /* * nature value */;
+    return (((spAttackStatIV + 2 * baseSpAttackStat + (spAttackStatEV / 4)) * level / 100) + 5) * NatureUtilities::calcMultiplier(nature, NatureUtilities::Stat::SP_ATTACK);
 }
 
 int Pokemon::getDefenseStat() const {
-    return (((defenseStatIV + 2 * baseDefenseStat + (defenseStatEV / 4)) * level / 100) + 5) /* * nature value */;
+    return (((defenseStatIV + 2 * baseDefenseStat + (defenseStatEV / 4)) * level / 100) + 5) * NatureUtilities::calcMultiplier(nature, NatureUtilities::Stat::DEFENSE);
 }
 
 int Pokemon::getSpDefenseStat() const {
-    return (((spDefenseStatIV + 2 * baseSpDefenseStat + (spDefenseStatEV / 4)) * level / 100) + 5) /* * nature value */;
+    return (((spDefenseStatIV + 2 * baseSpDefenseStat + (spDefenseStatEV / 4)) * level / 100) + 5) * NatureUtilities::calcMultiplier(nature, NatureUtilities::Stat::SP_DEFENSE);;
 }
 
 int Pokemon::getHealthStat() const {
@@ -95,7 +96,7 @@ void Pokemon::setHealthStat(int newHealthStat) {
 }
 
 int Pokemon::getSpeedStat() const {
-    return (((speedStatIV + 2 * baseSpeedStat + (speedStatEV / 4)) * level / 100) + 5) /* * nature value */;
+    return (((speedStatIV + 2 * baseSpeedStat + (speedStatEV / 4)) * level / 100) + 5) * NatureUtilities::calcMultiplier(nature, NatureUtilities::Stat::SPEED);
 }
 
 int Pokemon::getMaxHealthStat() const {

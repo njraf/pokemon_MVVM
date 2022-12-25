@@ -8,12 +8,13 @@
 
 #include "typeutilities.h"
 #include "attackmove.h"
+#include "natureutilities.h"
 
 class Pokemon : public QObject
 {
     Q_OBJECT
 public:
-    Pokemon(QString name_, QString owner_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_, int baseSpAttackStat_, int baseSpDefenseStat_, int baseSpeedStat_, int currentHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_ = Type::NONE);
+    Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_, int baseSpAttackStat_, int baseSpDefenseStat_, int baseSpeedStat_, int currentHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_ = Type::NONE);
     ~Pokemon() = default;
 
     void attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove);
@@ -58,6 +59,7 @@ private:
 
     QString name;
     QString owner;
+    Nature nature;
     int currentHealthStat;
     int level;
     QVector<QSharedPointer<AttackMove>> attackList;
