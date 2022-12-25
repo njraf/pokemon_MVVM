@@ -44,6 +44,9 @@ void BattleViewmodel::summonFirstPokemon() {
         currentOpponentPokemon = *pokeIt;
     }
 
+    currentPlayerPokemon->resetAllStages();
+    currentOpponentPokemon->resetAllStages();
+
     emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
 }
 

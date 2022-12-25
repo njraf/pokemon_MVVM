@@ -14,7 +14,9 @@ class Pokemon : public QObject
 {
     Q_OBJECT
 public:
-    Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_, int baseSpAttackStat_, int baseSpDefenseStat_, int baseSpeedStat_, int currentHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_ = Type::NONE);
+    Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_,
+            int baseSpAttackStat_, int baseSpDefenseStat_, int baseSpeedStat_, int currentHealthStat_, int level_,
+            QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_ = Type::NONE);
     ~Pokemon() = default;
 
     void attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove);
@@ -29,6 +31,23 @@ public:
     void setHealthStat(int newHealthStat);
     int getSpeedStat() const;
     int getMaxHealthStat() const;
+
+    int getAttackStatStage() const;
+    void setAttackStatStage(int stage);
+    int getSpAttackStatStage() const;
+    void setSpAttackStatStage(int stage);
+    int getDefenseStatStage() const;
+    void setDefenseStatStage(int stage);
+    int getSpDefenseStatStage() const;
+    void setSpDefenseStatStage(int stage);
+    int getSpeedStatStage() const;
+    void setSpeedStatStage(int stage);
+    int getAccuracyStatStage() const;
+    void setAccuracyStatStage(int stage);
+    int getEvasionStatStage() const;
+    void setEvasionStatStage(int stage);
+    void resetAllStages();
+
     int getLevel() const;
     void setLevel(int newLevel);
     QVector<QSharedPointer<AttackMove> > getAttackList() const;
@@ -57,6 +76,14 @@ private:
     int speedStatEV;
     int maxHealthStatEV;
 
+    int attackStatStage;
+    int spAttackStatStage;
+    int defenseStatStage;
+    int spDefenseStatStage;
+    int speedStatStage;
+    int accuracyStatStage;
+    int evasionStatStage;
+
     QString name;
     QString owner;
     Nature nature;
@@ -65,6 +92,11 @@ private:
     QVector<QSharedPointer<AttackMove>> attackList;
     Type type1;
     Type type2;
+
+    double getStatStageMultiplier(int stage) const;
+    double getAccuracyStageMultiplier(int stage) const;
+    double getEvasionStageMultiplier(int stage) const;
+
 
 signals:
     void attacked();

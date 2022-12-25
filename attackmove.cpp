@@ -1,9 +1,10 @@
 #include "attackmove.h"
 
-AttackMove::AttackMove(QString name_, int power_, int pp_, int maxPP_, Type type_, Category category_, QObject *parent)
+AttackMove::AttackMove(QString name_, int power_, int accuracy_, int pp_, int maxPP_, Type type_, Category category_, QObject *parent)
     : QObject(parent)
     , name(name_)
     , power(power_)
+    , accuracy(accuracy_)
     , pp(pp_)
     , maxPP(maxPP_)
     , type(type_)
@@ -20,6 +21,11 @@ QString AttackMove::getName() const
 int AttackMove::getPower() const
 {
     return power;
+}
+
+int AttackMove::getAccuracy() const
+{
+    return accuracy;
 }
 
 int AttackMove::getPp() const
