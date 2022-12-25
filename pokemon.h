@@ -13,7 +13,7 @@ class Pokemon : public QObject
 {
     Q_OBJECT
 public:
-    Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseStat_, int spDefenseStat_, int healthStat_, int speedStat_, int maxHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_ = Type::NONE);
+    Pokemon(QString name_, QString owner_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_, int baseSpAttackStat_, int baseSpDefenseStat_, int baseSpeedStat_, int currentHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_ = Type::NONE);
     ~Pokemon() = default;
 
     void attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove);
@@ -21,19 +21,13 @@ public:
     QString getName() const;
     void setName(const QString &newName);
     int getAttackStat() const;
-    void setAttackStat(int newAttackStat);
     int getSpAttackStat() const;
-    void setSpAttackStat(int newSpAttackStat);
     int getDefenseStat() const;
-    void setDefenseStat(int newDefenseStat);
     int getSpDefenseStat() const;
-    void setSpDefenseStat(int newSpDefenseStat);
     int getHealthStat() const;
     void setHealthStat(int newHealthStat);
     int getSpeedStat() const;
-    void setSpeedStat(int newSpeedStat);
     int getMaxHealthStat() const;
-    void setMaxHealthStat(int newMaxHealthStat);
     int getLevel() const;
     void setLevel(int newLevel);
     QVector<QSharedPointer<AttackMove> > getAttackList() const;
@@ -41,14 +35,30 @@ public:
     Type getType2() const;
 
 private:
+    int baseAttackStat;
+    int baseSpAttackStat;
+    int baseDefenseStat;
+    int baseSpDefenseStat;
+    int baseSpeedStat;
+    int baseMaxHealthStat;
+
+    int attackStatIV;
+    int spAttackStatIV;
+    int defenseStatIV;
+    int spDefenseStatIV;
+    int speedStatIV;
+    int maxHealthStatIV;
+
+    int attackStatEV;
+    int spAttackStatEV;
+    int defenseStatEV;
+    int spDefenseStatEV;
+    int speedStatEV;
+    int maxHealthStatEV;
+
     QString name;
-    int attackStat;
-    int spAttackStat;
-    int defenseStat;
-    int spDefenseStat;
-    int healthStat;
-    int speedStat;
-    int maxHealthStat;
+    QString owner;
+    int currentHealthStat;
     int level;
     QVector<QSharedPointer<AttackMove>> attackList;
     Type type1;

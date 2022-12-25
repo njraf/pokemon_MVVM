@@ -3,21 +3,46 @@
 #include <QDebug>
 #include <QRandomGenerator>
 
-Pokemon::Pokemon(QString name_, int attackStat_, int spAttackStat_, int defenseStat_, int spDefenseStat_, int healthStat_, int speedStat_, int maxHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_)
-    : name(name_)
-    , attackStat(attackStat_)
-    , spAttackStat(spAttackStat_)
-    , defenseStat(defenseStat_)
-    , spDefenseStat(spDefenseStat_)
-    , healthStat(healthStat_)
-    , speedStat(speedStat_)
-    , maxHealthStat(maxHealthStat_)
+Pokemon::Pokemon(QString name_, QString owner_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_, int baseSpAttackStat_, int baseSpDefenseStat_, int baseSpeedStat_, int currentHealthStat_, int level_, QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_)
+    : baseAttackStat(baseAttackStat_)
+    , baseSpAttackStat(baseSpAttackStat_)
+    , baseDefenseStat(baseDefenseStat_)
+    , baseSpDefenseStat(baseSpDefenseStat_)
+    , baseSpeedStat(baseSpeedStat_)
+    , baseMaxHealthStat(baseMaxHealthStat_)
+    , attackStatIV(0)
+    , spAttackStatIV(0)
+    , defenseStatIV(0)
+    , spDefenseStatIV(0)
+    , speedStatIV(0)
+    , maxHealthStatIV(0)
+    , attackStatEV(0)
+    , spAttackStatEV(0)
+    , defenseStatEV(0)
+    , spDefenseStatEV(0)
+    , speedStatEV(0)
+    , maxHealthStatEV(0)
+    , name(name_)
+    , owner(owner_)
+    , currentHealthStat(currentHealthStat_)
     , level(level_)
     , attackList(attackList_)
     , type1(type1_)
     , type2(type2_)
 {
+    // calculate IVs
+    if (owner.isEmpty()) {
+        attackStatIV = QRandomGenerator::global()->generate() % 32;
+        spAttackStatIV = QRandomGenerator::global()->generate() % 32;
+        defenseStatIV = QRandomGenerator::global()->generate() % 32;
+        spDefenseStatIV = QRandomGenerator::global()->generate() % 32;
+        speedStatIV = QRandomGenerator::global()->generate() % 32;
+        maxHealthStatIV = QRandomGenerator::global()->generate() % 32;
+    }
 
+    if (currentHealthStat > getMaxHealthStat()) {
+        currentHealthStat = getMaxHealthStat();
+    }
 }
 
 void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove) {
@@ -29,7 +54,7 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
 
     //TODO: include stat change stages from Swords Dance and others
 
-    double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * attackStat * attackPower / defenseStat) / 50.0) + 2.0) * stab * weakResist * randomNumber / 100.0;
+    double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * getAttackStat() * attackPower / getDefenseStat()) / 50.0) + 2.0) * stab * weakResist * randomNumber / 100.0;
     int dmg = ((damage - qFloor(damage)) < 0.5) ? qFloor(damage) : qCeil(damage); // round damage to the nearest whole number
 
     opponent->setHealthStat(opponent->getHealthStat() - dmg);
@@ -46,59 +71,35 @@ void Pokemon::setName(const QString &newName) {
 }
 
 int Pokemon::getAttackStat() const {
-    return attackStat;
-}
-
-void Pokemon::setAttackStat(int newAttackStat) {
-    attackStat = newAttackStat;
+    return (((attackStatIV + 2 * baseAttackStat + (attackStatEV / 4)) * level / 100) + 5) /* * nature value */;
 }
 
 int Pokemon::getSpAttackStat() const {
-    return spAttackStat;
-}
-
-void Pokemon::setSpAttackStat(int newSpAttackStat) {
-    spAttackStat = newSpAttackStat;
+    return (((spAttackStatIV + 2 * baseSpAttackStat + (spAttackStatEV / 4)) * level / 100) + 5) /* * nature value */;
 }
 
 int Pokemon::getDefenseStat() const {
-    return defenseStat;
-}
-
-void Pokemon::setDefenseStat(int newDefenseStat) {
-    defenseStat = newDefenseStat;
+    return (((defenseStatIV + 2 * baseDefenseStat + (defenseStatEV / 4)) * level / 100) + 5) /* * nature value */;
 }
 
 int Pokemon::getSpDefenseStat() const {
-    return spDefenseStat;
-}
-
-void Pokemon::setSpDefenseStat(int newSpDefenseStat) {
-    spDefenseStat = newSpDefenseStat;
+    return (((spDefenseStatIV + 2 * baseSpDefenseStat + (spDefenseStatEV / 4)) * level / 100) + 5) /* * nature value */;
 }
 
 int Pokemon::getHealthStat() const {
-    return healthStat;
+    return currentHealthStat;
 }
 
 void Pokemon::setHealthStat(int newHealthStat) {
-    healthStat = (newHealthStat < 0 ? 0 : newHealthStat);
+    currentHealthStat = (newHealthStat < 0 ? 0 : newHealthStat);
 }
 
 int Pokemon::getSpeedStat() const {
-    return speedStat;
-}
-
-void Pokemon::setSpeedStat(int newSpeedStat) {
-    speedStat = newSpeedStat;
+    return (((speedStatIV + 2 * baseSpeedStat + (speedStatEV / 4)) * level / 100) + 5) /* * nature value */;
 }
 
 int Pokemon::getMaxHealthStat() const {
-    return maxHealthStat;
-}
-
-void Pokemon::setMaxHealthStat(int newMaxHealthStat) {
-    maxHealthStat = newMaxHealthStat;
+    return ((maxHealthStatIV + 2 * baseMaxHealthStat + (maxHealthStatEV / 4)) * level / 100) + 10 + level;
 }
 
 int Pokemon::getLevel() const {

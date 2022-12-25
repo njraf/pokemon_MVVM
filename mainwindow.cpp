@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     QVector<QSharedPointer<AttackMove>> attackList = {
         QSharedPointer<AttackMove>::create("Flamethrower", 20, 30, 30, Type::FIRE)
     };
-    QSharedPointer<Pokemon> charmander = QSharedPointer<Pokemon>::create("Charmander", 10, 5, 9, 4, 10, 10, 10, 5, attackList, Type::FIRE);
+    QSharedPointer<Pokemon> charmander = QSharedPointer<Pokemon>::create("Charmander", "", 39, 52, 43, 60, 50, 65, 39, 5, attackList, Type::FIRE);
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
     player = QSharedPointer<Trainer>::create(playerTeam);
 
@@ -56,7 +56,7 @@ QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
     QVector<QSharedPointer<AttackMove>> attackList = {
         QSharedPointer<AttackMove>::create("Water gun", 20, 30, 30, Type::WATER)
     };
-    QSharedPointer<Pokemon> squirtle = QSharedPointer<Pokemon>::create("Squirtle", 7, 9, 10, 4, 10, 7, 10, 5, attackList, Type::WATER);
+    QSharedPointer<Pokemon> squirtle = QSharedPointer<Pokemon>::create("Squirtle", "", 44, 48, 65, 50, 64, 43, 44, 5, attackList, Type::WATER);
     QVector<QSharedPointer<Pokemon>> opponentTeam = {squirtle};
     QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam);
     QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(player, opponent);
