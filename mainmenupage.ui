@@ -13,32 +13,25 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QPushButton" name="battleButton">
-     <property name="text">
-      <string>Battle</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QPushButton" name="pokemonButton">
      <property name="text">
       <string>Pokemon</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="bagButton">
+   <item>
+    <widget class="QPushButton" name="battleButton">
      <property name="text">
-      <string>Bag</string>
+      <string>Battle</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="exitButton">
+   <item>
+    <widget class="QPushButton" name="bagButton">
      <property name="text">
-      <string>Exit</string>
+      <string>Bag</string>
      </property>
     </widget>
    </item>
