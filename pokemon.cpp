@@ -102,7 +102,7 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
 
     opponent->setHealthStat(opponent->getHealthStat() - dmg);
     qDebug() << name << "attacked" << opponent->getName() << "with" << attackMove->getName() << "and dealt" << dmg << "damage.";
-    emit attacked();
+    //emit attacked();
 }
 
 QString Pokemon::getName() const {

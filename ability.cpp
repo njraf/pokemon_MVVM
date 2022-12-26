@@ -19,8 +19,8 @@ Ability& Ability::operator=(Ability o) {
     return *this;
 }
 
-void Ability::useAbility(QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon) {
-    ability(playerPokemon, opponentPokemon);
+void Ability::useAbility(QSharedPointer<Pokemon> attackingPokemon, QSharedPointer<Pokemon> opponentPokemon) {
+    ability(attackingPokemon, opponentPokemon);
 }
 
 BattleStage Ability::getBattleStage() {

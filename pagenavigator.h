@@ -16,6 +16,7 @@ public:
     ~PageNavigator() = default;
     void addToBackstack(QSharedPointer<IPage> page);
     QSharedPointer<IPage> popFromBackstack();
+    QSharedPointer<IPage> top();
 
 private:
     explicit PageNavigator(QObject *parent = nullptr);

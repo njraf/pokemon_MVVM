@@ -63,31 +63,47 @@ void BattleViewmodel::summonFirstPokemon() {
 
 void BattleViewmodel::attack(int attackIndex) {
     if (currentPlayerPokemon->getAttackList().size() <= attackIndex) {
-        return;
+        return; // UI button is not mapped to an attack
     }
 
-    int opponentAttackIndex = (QRandomGenerator::global()->generate() % currentOpponentPokemon->getAttackList().size());
+    int opponentAttackIndex = (QRandomGenerator::global()->generate() % currentOpponentPokemon->getAttackList().size()); // random opponent attack
+    auto playerAttackMove = currentPlayerPokemon->getAttackList().at(attackIndex);
+    auto opponentAttackMove = currentOpponentPokemon->getAttackList().at(opponentAttackIndex);
+
     if (currentPlayerPokemon->getSpeedStat() > currentOpponentPokemon->getSpeedStat()) {
-        currentPlayerPokemon->attack(currentOpponentPokemon, currentPlayerPokemon->getAttackList().at(attackIndex));
+        currentPlayerPokemon->attack(currentOpponentPokemon, playerAttackMove);
         if (currentOpponentPokemon->getHealthStat() > 0) {
-            currentOpponentPokemon->attack(currentPlayerPokemon, currentOpponentPokemon->getAttackList().at(opponentAttackIndex));
+            currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
+        } else if (currentOpponentPokemon->getAbility().getBattleStage() == BattleStage::FAINT) {
+            currentOpponentPokemon->getAbility().useAbility(currentOpponentPokemon, currentPlayerPokemon);
+            //emit stateUpdated();
         }
     } else if (currentPlayerPokemon->getSpeedStat() < currentOpponentPokemon->getSpeedStat()) {
-        currentOpponentPokemon->attack(currentPlayerPokemon, currentOpponentPokemon->getAttackList().at(opponentAttackIndex));
+        currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
         if (currentPlayerPokemon->getHealthStat() > 0) {
-            currentPlayerPokemon->attack(currentOpponentPokemon, currentPlayerPokemon->getAttackList().at(attackIndex));
+            currentPlayerPokemon->attack(currentOpponentPokemon, playerAttackMove);
+        } else if (currentPlayerPokemon->getAbility().getBattleStage() == BattleStage::FAINT) {
+            currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon);
+            //emit stateUpdated();
         }
     } else { // speed tie
         if ((QRandomGenerator::global()->generate() % 2) == 0) {
-            currentPlayerPokemon->attack(currentOpponentPokemon, currentPlayerPokemon->getAttackList().at(attackIndex));
+            currentPlayerPokemon->attack(currentOpponentPokemon, playerAttackMove);
             if (currentOpponentPokemon->getHealthStat() > 0) {
-                currentOpponentPokemon->attack(currentPlayerPokemon, currentOpponentPokemon->getAttackList().at(opponentAttackIndex));
+                currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
+            } else if (currentOpponentPokemon->getAbility().getBattleStage() == BattleStage::FAINT) {
+                currentOpponentPokemon->getAbility().useAbility(currentOpponentPokemon, currentPlayerPokemon);
+                //emit stateUpdated();
             }
         } else {
-            currentOpponentPokemon->attack(currentPlayerPokemon, currentOpponentPokemon->getAttackList().at(opponentAttackIndex));
+            currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
             if (currentPlayerPokemon->getHealthStat() > 0) {
-                currentPlayerPokemon->attack(currentOpponentPokemon, currentPlayerPokemon->getAttackList().at(attackIndex));
+                currentPlayerPokemon->attack(currentOpponentPokemon, playerAttackMove);
+            } else if (currentPlayerPokemon->getAbility().getBattleStage() == BattleStage::FAINT) {
+                currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon);
+                //emit stateUpdated();
             }
         }
     }
+    emit stateUpdated();
 }

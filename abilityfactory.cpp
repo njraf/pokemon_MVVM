@@ -11,12 +11,18 @@ std::function<void(QSharedPointer<Pokemon>, QSharedPointer<Pokemon>)> AbilityFac
     std::function<void(QSharedPointer<Pokemon>, QSharedPointer<Pokemon>)> ability;
     switch (id) {
     case 0: // intimidate
-        ability = [](QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon) {
+        ability = [](QSharedPointer<Pokemon> attackingPokemon, QSharedPointer<Pokemon> opponentPokemon) {
             opponentPokemon->setAttackStatStage(opponentPokemon->getAttackStatStage() - 1);
         };
         break;
+    case 1: // aftermath
+        ability = [](QSharedPointer<Pokemon> attackingPokemon, QSharedPointer<Pokemon> opponentPokemon) {
+            opponentPokemon->setHealthStat(opponentPokemon->getHealthStat() - (0.25 * opponentPokemon->getMaxHealthStat())); //TODO: only activate when defeated by a physical move
+            qDebug() << "Aftermath";
+        };
+        break;
     default:
-        ability = [](QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon) {};
+        ability = [](QSharedPointer<Pokemon> attackingPokemon, QSharedPointer<Pokemon> opponentPokemon) {};
         break;
     }
 

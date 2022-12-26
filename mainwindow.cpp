@@ -21,11 +21,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     // create player
     QVector<QSharedPointer<AttackMove>> attackList;
-    attackList.append(repository->getAttackByID(3));
+    attackList.append(repository->getAttackByID(1));
 
     QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
     charmander->setAttackList(attackList);
-    charmander->setAbility(Ability(BattleStage::SUMMON, AbilityFactory::getAbility(0)));
+    charmander->setAbility(Ability(BattleStage::FAINT, AbilityFactory::getAbility(1)));
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
     player = QSharedPointer<Trainer>::create(playerTeam);
 
@@ -49,8 +49,12 @@ MainWindow::MainWindow(QWidget *parent)
 
         // to previous page
         connect(currentPage.data(), &IPage::returnedPage, this, [=] {
-            currentPage = PageNavigator::getInstance()->popFromBackstack();
-            ui->pages->removeWidget(currentPage.data());
+            if (PageNavigator::getInstance()->top()->getPageName() != currentPage->getPageName()) {
+                return;
+            }
+            auto prevPage = PageNavigator::getInstance()->popFromBackstack();
+            ui->pages->removeWidget(prevPage.data());
+            currentPage = PageNavigator::getInstance()->top();
         });
     });
 
@@ -70,6 +74,7 @@ QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
 
     QSharedPointer<Pokemon> bulbasaur = repository->getPokemon(3);
     bulbasaur->setAttackList(attackList);
+    bulbasaur->setAbility(Ability(BattleStage::FAINT, AbilityFactory::getAbility(1)));
     QVector<QSharedPointer<Pokemon>> opponentTeam = {bulbasaur};
     QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam);
     QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(repository, player, opponent);

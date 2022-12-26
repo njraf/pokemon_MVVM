@@ -22,6 +22,8 @@ QSharedPointer<IPage> PageNavigator::popFromBackstack() {
     return backstack.takeLast();
 }
 
-
+QSharedPointer<IPage> PageNavigator::top() {
+    return backstack.top();
+}
 
 
