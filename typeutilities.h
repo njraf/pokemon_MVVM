@@ -2,6 +2,8 @@
 #define TYPEUTILITIES_H
 
 #include <QObject>
+#include <QString>
+#include <QMap>
 
 enum class Type : int {
     NONE, NORMAL, FIRE, WATER, ELECTRIC, GRASS, ICE, FIGHTING, POISON, GROUND, FLYING, PSYCHIC, BUG, ROCK, GHOST, DRAGON, DARK, STEEL, FAIRY
@@ -23,6 +25,8 @@ public:
     static constexpr typename std::underlying_type<E>::type to_overlying(int e) noexcept {
         return static_cast<typename std::underlying_type<E>::type>(e);
     }
+
+    static QMap<QString, int> strToUnderlying;
 
 private:
     explicit TypeUtilities(QObject *parent = nullptr);

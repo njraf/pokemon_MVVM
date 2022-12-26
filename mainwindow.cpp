@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
         QSharedPointer<AttackMove>::create("Ember", 40, 100, 25, 25, Type::FIRE, Category::SPECIAL)
     };
     //QSharedPointer<Pokemon> charmander = QSharedPointer<Pokemon>::create("Charmander", "", NatureUtilities::randomNature(), 39, 52, 43, 60, 50, 65, 39, 5, attackList, Type::FIRE);
-    QSharedPointer<Pokemon> charmander = repository->getPokemon(4);
+    QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
     player = QSharedPointer<Trainer>::create(playerTeam);
 
@@ -67,7 +67,7 @@ QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
         QSharedPointer<AttackMove>::create("Water Gun", 40, 100, 25, 25, Type::WATER, Category::SPECIAL)
     };
     //QSharedPointer<Pokemon> squirtle = QSharedPointer<Pokemon>::create("Squirtle", "", NatureUtilities::randomNature(), 44, 48, 65, 50, 64, 43, 44, 5, attackList, Type::WATER);
-    QSharedPointer<Pokemon> bulbasaur = repository->getPokemon(2);
+    QSharedPointer<Pokemon> bulbasaur = repository->getPokemon(3);
     bulbasaur->setAttackList(attackList);
     QVector<QSharedPointer<Pokemon>> opponentTeam = {bulbasaur};
     QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam);

@@ -1,5 +1,26 @@
 #include "typeutilities.h"
 
+QMap<QString, int> TypeUtilities::strToUnderlying = {
+    {"NONE", to_underlying(Type::NONE)},
+    {"NORMAL", to_underlying(Type::NORMAL)},
+    {"FIRE", to_underlying(Type::FIRE)},
+    {"WATER", to_underlying(Type::WATER)},
+    {"ELECTRIC", to_underlying(Type::ELECTRIC)},
+    {"GRASS", to_underlying(Type::GRASS)},
+    {"ICE", to_underlying(Type::ICE)},
+    {"FIGHTING", to_underlying(Type::FIGHTING)},
+    {"POISON", to_underlying(Type::POISON)},
+    {"GROUND", to_underlying(Type::GROUND)},
+    {"FLYING", to_underlying(Type::FLYING)},
+    {"PSYCHIC", to_underlying(Type::PSYCHIC)},
+    {"BUG", to_underlying(Type::BUG)},
+    {"ROCK", to_underlying(Type::ROCK)},
+    {"GHOST", to_underlying(Type::GHOST)},
+    {"DRAGON", to_underlying(Type::DRAGON)},
+    {"DARK", to_underlying(Type::DARK)},
+    {"STEEL", to_underlying(Type::STEEL)},
+    {"FAIRY", to_underlying(Type::FAIRY)}
+};
 double TypeUtilities::table[19][19] = {
 //                                        DEFENSE
 //       NONE NOR  FIR  WAT  ELE  GRA  ICE  FIG  POI  GRO  FLY  PSY  BUG  ROC  GHO  DRA  DAR  STE  FAI
@@ -18,7 +39,8 @@ double TypeUtilities::table[19][19] = {
         {1.0, 1.0, 0.5, 1.0, 1.0, 2.0, 1.0, 0.5, 0.5, 1.0, 0.5, 2.0, 1.0, 1.0, 0.5, 1.0, 2.0, 0.5, 0.5}, // BUG
         {1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 0.5, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0}, // ROC
         {1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 0.5, 1.0, 1.0}, // GHO
-        {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.5, 0.5}, // DRA
+        {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 0.5, 0.0}, // DRA
+        {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 0.5, 1.0, 0.5}, // DAR
         {1.0, 1.0, 0.5, 0.5, 0.5, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 0.5, 2.0}, // STE
         {1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 0.5, 1.0}, // FAI
     };

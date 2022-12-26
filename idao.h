@@ -15,6 +15,8 @@ protected:
     QSqlDatabase db;
     const QString SQLITE_CONN;
 
+    virtual bool populateDatabase() = 0;
+
 signals:
 
 };

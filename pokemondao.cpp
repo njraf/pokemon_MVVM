@@ -52,12 +52,11 @@ QSharedPointer<Pokemon> PokemonDao::getPokemon(int nationalDexNumber) {
 
 
 bool PokemonDao::populateDatabase() {
-    const int NUM_POKEMON_TO_INSERT = 6;
     QSqlQuery query(db);
     if (!query.exec("DROP TABLE Pokemon;")) {
         qDebug() << "Drop table failed" << db.lastError().text();
     }
-    if (!query.exec("CREATE TABLE Pokemon (NatDexNumber int, Name varchar(32), BaseHealth int, BaseAttack int, BaseDefense int, BaseSpAttack int, BaseSpDefense int, BaseSpeed int, Type1 int, Type2 int);")) {
+    if (!query.exec("CREATE TABLE Pokemon (NatDexNumber int PRIMARY_KEY, Name varchar(32), BaseHealth int, BaseAttack int, BaseDefense int, BaseSpAttack int, BaseSpDefense int, BaseSpeed int, Type1 int, Type2 int);")) {
         qDebug() << "Create table failed" << db.lastError().text();
     }
 
@@ -85,77 +84,44 @@ bool PokemonDao::populateDatabase() {
         return false;
     }
 
-    if (table.rowCount() < NUM_POKEMON_TO_INSERT) {
-        table.insertRows(0, NUM_POKEMON_TO_INSERT);
+    // read from a csv file to populate the database
+    QFile pokemonFile("pokemon.csv");
+    if (!pokemonFile.exists() || !pokemonFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "ERROR:" << pokemonFile.fileName() << "does not exist";
+    } else {
+        int row = table.rowCount();
+        while (!pokemonFile.atEnd()) {
+            table.insertRow(row);
+            QString line = pokemonFile.readLine();
+            QStringList parts = line.split(',');
+            if (line.isEmpty() || ((parts.count() + 1) != table.columnCount())) {
+                continue;
+            }
+
+            for (int col = 0; col < parts.size(); col++) {
+                QVariant data(parts[col].simplified());
+                if ((col == 0) || ((col > 1) && (col < 8))) { // int data
+                    if (!table.setData(table.index(row, col), data.toInt())) {
+                        qDebug() << "ERROR: Could not set int data" << db.lastError().text();
+                    }
+                } else { // string data
+                    QString strData = data.toString();
+                    if (TypeUtilities::strToUnderlying.contains(strData)) {
+                        int intData = TypeUtilities::strToUnderlying[strData];
+                        if (!table.setData(table.index(row, col), intData)) {
+                            qDebug() << "ERROR: Could not set type data" << db.lastError().text();
+                        }
+                    } else {
+                        if (!table.setData(table.index(row, col), strData)) {
+                            qDebug() << "ERROR: Could not set string data" << db.lastError().text();
+                        }
+                    }
+                }
+            }
+            row++;
+        }
     }
-
-
-    table.setData(table.index(0, 0), 1);
-    table.setData(table.index(0, 1), "Bulbasaur");
-    table.setData(table.index(0, 2), 45);
-    table.setData(table.index(0, 3), 49);
-    table.setData(table.index(0, 4), 49);
-    table.setData(table.index(0, 5), 65);
-    table.setData(table.index(0, 6), 65);
-    table.setData(table.index(0, 7), 45);
-    table.setData(table.index(0, 8), TypeUtilities::to_underlying(Type::GRASS));
-    table.setData(table.index(0, 9), TypeUtilities::to_underlying(Type::POISON));
-
-    table.setData(table.index(1, 0), 2);
-    table.setData(table.index(1, 1), "Ivysaur");
-    table.setData(table.index(1, 2), 60);
-    table.setData(table.index(1, 3), 62);
-    table.setData(table.index(1, 4), 63);
-    table.setData(table.index(1, 5), 80);
-    table.setData(table.index(1, 6), 80);
-    table.setData(table.index(1, 7), 60);
-    table.setData(table.index(1, 8), TypeUtilities::to_underlying(Type::GRASS));
-    table.setData(table.index(1, 9), TypeUtilities::to_underlying(Type::POISON));
-
-    table.setData(table.index(2, 0), 3);
-    table.setData(table.index(2, 1), "Venusaur");
-    table.setData(table.index(2, 2), 80);
-    table.setData(table.index(2, 3), 82);
-    table.setData(table.index(2, 4), 83);
-    table.setData(table.index(2, 5), 100);
-    table.setData(table.index(2, 6), 100);
-    table.setData(table.index(2, 7), 80);
-    table.setData(table.index(2, 8), TypeUtilities::to_underlying(Type::GRASS));
-    table.setData(table.index(2, 9), TypeUtilities::to_underlying(Type::POISON));
-
-    table.setData(table.index(3, 0), 4);
-    table.setData(table.index(3, 1), "Charmander");
-    table.setData(table.index(3, 2), 39);
-    table.setData(table.index(3, 3), 52);
-    table.setData(table.index(3, 4), 43);
-    table.setData(table.index(3, 5), 60);
-    table.setData(table.index(3, 6), 50);
-    table.setData(table.index(3, 7), 65);
-    table.setData(table.index(3, 8), TypeUtilities::to_underlying(Type::FIRE));
-    table.setData(table.index(3, 9), TypeUtilities::to_underlying(Type::NONE));
-
-    table.setData(table.index(4, 0), 5);
-    table.setData(table.index(4, 1), "Charmeleon");
-    table.setData(table.index(4, 2), 58);
-    table.setData(table.index(4, 3), 64);
-    table.setData(table.index(4, 4), 58);
-    table.setData(table.index(4, 5), 80);
-    table.setData(table.index(4, 6), 65);
-    table.setData(table.index(4, 7), 80);
-    table.setData(table.index(4, 8), TypeUtilities::to_underlying(Type::FIRE));
-    table.setData(table.index(4, 9), TypeUtilities::to_underlying(Type::NONE));
-
-    table.setData(table.index(5, 0), 6);
-    table.setData(table.index(5, 1), "Charizard");
-    table.setData(table.index(5, 2), 78);
-    table.setData(table.index(5, 3), 84);
-    table.setData(table.index(5, 4), 78);
-    table.setData(table.index(5, 5), 109);
-    table.setData(table.index(5, 6), 85);
-    table.setData(table.index(5, 7), 100);
-    table.setData(table.index(5, 8), TypeUtilities::to_underlying(Type::FIRE));
-    table.setData(table.index(5, 9), TypeUtilities::to_underlying(Type::FLYING));
-
+    pokemonFile.close();
 
     if (!table.submitAll()) {
         qDebug() << "ERROR: Last submitAll() error." << db.lastError().text();
