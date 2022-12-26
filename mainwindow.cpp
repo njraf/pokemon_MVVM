@@ -21,8 +21,18 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pages->addWidget(menuPage.data());
     PageNavigator::getInstance()->addToBackstack(menuPage);
 
-    // to new page
-    connect(currentPage.data(), &IPage::changedPage, this, [=](PageName pageName) {
+    connectPages(currentPage);
+}
+
+MainWindow::~MainWindow()
+{
+    delete PageNavigator::getInstance();
+    delete ui;
+}
+
+void MainWindow::connectPages(QSharedPointer<IPage> page) {
+    // connect page navigation
+    connect(page.data(), &IPage::changedPage, this, [=](PageName pageName) {
         if (pageName == PageName::BATTLE) {
             currentPage = constructBattlePage();
         } else if (pageName == PageName::TEAM) {
@@ -40,14 +50,9 @@ MainWindow::MainWindow(QWidget *parent)
             currentPage = PageNavigator::getInstance()->popFromBackstack();
             ui->pages->removeWidget(currentPage.data());
         });
+
+        connectPages(currentPage);
     });
-
-}
-
-MainWindow::~MainWindow()
-{
-    delete PageNavigator::getInstance();
-    delete ui;
 }
 
 QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
