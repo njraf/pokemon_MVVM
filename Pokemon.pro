@@ -9,6 +9,8 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ability.cpp \
+    abilityfactory.cpp \
     attackmove.cpp \
     attackmovedao.cpp \
     battlepage.cpp \
@@ -27,6 +29,8 @@ SOURCES += \
     typeutilities.cpp
 
 HEADERS += \
+    ability.h \
+    abilityfactory.h \
     attackmove.h \
     attackmovedao.h \
     battlepage.h \

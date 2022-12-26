@@ -9,6 +9,7 @@
 #include "typeutilities.h"
 #include "attackmove.h"
 #include "natureutilities.h"
+#include "ability.h"
 
 class Pokemon : public QObject
 {
@@ -54,6 +55,8 @@ public:
     void setAttackList(QVector<QSharedPointer<AttackMove> > newAttackList);
     Type getType1() const;
     Type getType2() const;
+    Ability getAbility();
+    void setAbility(Ability ability_);
 
 private:
     int baseAttackStat;
@@ -93,6 +96,7 @@ private:
     QVector<QSharedPointer<AttackMove>> attackList;
     Type type1;
     Type type2;
+    Ability ability;
 
     double getStatStageMultiplier(int stage) const;
     double getAccuracyStageMultiplier(int stage) const;

@@ -39,6 +39,7 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
     , attackList(attackList_)
     , type1(type1_)
     , type2(type2_)
+    , ability(Ability(BattleStage::SUMMON, [](QSharedPointer<Pokemon>, QSharedPointer<Pokemon>){}))
 {
     // calculate IVs
     if (owner.isEmpty()) {
@@ -372,6 +373,15 @@ Type Pokemon::getType1() const {
 Type Pokemon::getType2() const {
     return type2;
 }
+
+Ability Pokemon::getAbility() {
+    return ability;
+}
+
+void Pokemon::setAbility(Ability ability_) {
+    ability = ability_;
+}
+
 
 QVector<QSharedPointer<AttackMove> > Pokemon::getAttackList() const {
     return attackList;

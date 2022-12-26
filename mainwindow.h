@@ -6,6 +6,7 @@
 #include "battlepage.h"
 #include "mainmenupage.h"
 #include "repository.h"
+#include "ability.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "pagenavigator.h"
-
+#include "abilityfactory.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
     charmander->setAttackList(attackList);
+    charmander->setAbility(Ability(BattleStage::SUMMON, AbilityFactory::getAbility(0)));
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
     player = QSharedPointer<Trainer>::create(playerTeam);
 

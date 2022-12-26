@@ -48,6 +48,16 @@ void BattleViewmodel::summonFirstPokemon() {
     currentPlayerPokemon->resetAllStages();
     currentOpponentPokemon->resetAllStages();
 
+    Ability ability = currentPlayerPokemon->getAbility();
+    if (ability.getBattleStage() == BattleStage::SUMMON) {
+        ability.useAbility(currentPlayerPokemon, currentOpponentPokemon);
+    }
+
+    ability = currentOpponentPokemon->getAbility();
+    if (ability.getBattleStage() == BattleStage::SUMMON) {
+        ability.useAbility(currentOpponentPokemon, currentPlayerPokemon);
+    }
+
     emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
 }
 
