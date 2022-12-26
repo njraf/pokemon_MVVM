@@ -21,8 +21,6 @@ private:
     QSqlDatabase db;
     QSharedPointer<PokemonDao> pokemonDao;
 
-    bool populateDatabase();
-
 signals:
 
 };

@@ -51,6 +51,7 @@ public:
     int getLevel() const;
     void setLevel(int newLevel);
     QVector<QSharedPointer<AttackMove> > getAttackList() const;
+    void setAttackList(QVector<QSharedPointer<AttackMove> > newAttackList);
     Type getType1() const;
     Type getType2() const;
 

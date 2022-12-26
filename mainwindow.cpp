@@ -11,9 +11,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     // create repository
     QSharedPointer<PokemonDao> pokemonDao = QSharedPointer<PokemonDao>::create();
-    QSharedPointer<Repository> repository = QSharedPointer<Repository>::create(pokemonDao);
+    repository = QSharedPointer<Repository>::create(pokemonDao);
     if (!repository->hasConnection()) {
         //TODO: make an error dialog
+        qDebug() << "ERROR: Could not connect to repository";
         return;
     }
 
@@ -65,8 +66,10 @@ QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
     QVector<QSharedPointer<AttackMove>> attackList = {
         QSharedPointer<AttackMove>::create("Water Gun", 40, 100, 25, 25, Type::WATER, Category::SPECIAL)
     };
-    QSharedPointer<Pokemon> squirtle = QSharedPointer<Pokemon>::create("Squirtle", "", NatureUtilities::randomNature(), 44, 48, 65, 50, 64, 43, 44, 5, attackList, Type::WATER);
-    QVector<QSharedPointer<Pokemon>> opponentTeam = {squirtle};
+    //QSharedPointer<Pokemon> squirtle = QSharedPointer<Pokemon>::create("Squirtle", "", NatureUtilities::randomNature(), 44, 48, 65, 50, 64, 43, 44, 5, attackList, Type::WATER);
+    QSharedPointer<Pokemon> bulbasaur = repository->getPokemon(2);
+    bulbasaur->setAttackList(attackList);
+    QVector<QSharedPointer<Pokemon>> opponentTeam = {bulbasaur};
     QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam);
     QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(repository, player, opponent);
 

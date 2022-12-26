@@ -13,6 +13,7 @@ public:
 
 protected:
     QSqlDatabase db;
+    const QString SQLITE_CONN;
 
 signals:
 

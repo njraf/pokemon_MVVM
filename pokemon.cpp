@@ -370,7 +370,9 @@ QVector<QSharedPointer<AttackMove> > Pokemon::getAttackList() const {
     return attackList;
 }
 
-
+void Pokemon::setAttackList(QVector<QSharedPointer<AttackMove> > newAttackList) {
+    attackList = newAttackList;
+}
 
 
 
