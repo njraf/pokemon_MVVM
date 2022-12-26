@@ -2,7 +2,6 @@
 #define POKEMONDAO_H
 
 #include <QObject>
-#include <QtSql>
 
 #include "pokemon.h"
 #include "idao.h"

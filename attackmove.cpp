@@ -1,5 +1,11 @@
 #include "attackmove.h"
 
+QMap<QString, int> AttackMove::strToUnderlying = {
+    {"PHYSICAL", to_underlying(Category::PHYSICAL)},
+    {"SPECIAL", to_underlying(Category::SPECIAL)},
+    {"OTHER", to_underlying(Category::OTHER)}
+};
+
 AttackMove::AttackMove(QString name_, int power_, int accuracy_, int pp_, int maxPP_, Type type_, Category category_, QObject *parent)
     : QObject(parent)
     , name(name_)
@@ -36,6 +42,11 @@ int AttackMove::getPp() const
 void AttackMove::setPp(int newPp)
 {
     pp = newPp;
+    if (pp < 0) {
+        pp = 0;
+    } else if (pp > maxPP) {
+        pp = maxPP;
+    }
 }
 
 int AttackMove::getMaxPP() const

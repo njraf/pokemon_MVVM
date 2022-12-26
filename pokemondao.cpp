@@ -8,7 +8,7 @@ PokemonDao::PokemonDao(QObject *parent) : IDao(parent)
     db.setUserName("iamroot");
     db.setPassword("thisisme");
     if (!db.open()) {
-        qDebug() << "ERROR: The IDao database could not be opened." << db.lastError().text();
+        qDebug() << "ERROR: The PokemonDao database could not be opened." << db.lastError().text();
         qDebug() << "Valid database driver" << db.driverName() << db.isDriverAvailable(SQLITE_CONN);
         return;
     }
@@ -18,7 +18,7 @@ PokemonDao::PokemonDao(QObject *parent) : IDao(parent)
 
 QSharedPointer<Pokemon> PokemonDao::getPokemon(int nationalDexNumber) {
     if (!db.isOpen()) {
-        qDebug() << "pokeDao database is not opened";
+        qDebug() << "PokemonDao database is not opened";
     }
     QSqlTableModel model(nullptr, db);
     model.setTable("Pokemon");
@@ -52,6 +52,7 @@ QSharedPointer<Pokemon> PokemonDao::getPokemon(int nationalDexNumber) {
 
 
 bool PokemonDao::populateDatabase() {
+    qDebug() << "Populating Pokemon database";
     QSqlQuery query(db);
     if (!query.exec("DROP TABLE Pokemon;")) {
         qDebug() << "Drop table failed" << db.lastError().text();
@@ -94,7 +95,7 @@ bool PokemonDao::populateDatabase() {
             table.insertRow(row);
             QString line = pokemonFile.readLine();
             QStringList parts = line.split(',');
-            if (line.isEmpty() || ((parts.count() + 1) != table.columnCount())) {
+            if (line.isEmpty() || (parts.count() != table.columnCount())) {
                 continue;
             }
 

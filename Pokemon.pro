@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     attackmove.cpp \
+    attackmovedao.cpp \
     battlepage.cpp \
     battleviewmodel.cpp \
     idao.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
 
 HEADERS += \
     attackmove.h \
+    attackmovedao.h \
     battlepage.h \
     battleviewmodel.h \
     idao.h \

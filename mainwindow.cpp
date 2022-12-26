@@ -11,7 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // create repository
     QSharedPointer<PokemonDao> pokemonDao = QSharedPointer<PokemonDao>::create();
-    repository = QSharedPointer<Repository>::create(pokemonDao);
+    QSharedPointer<AttackMoveDao> attackMoveDao = QSharedPointer<AttackMoveDao>::create();
+    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao);
     if (!repository->hasConnection()) {
         //TODO: make an error dialog
         qDebug() << "ERROR: Could not connect to repository";
@@ -19,11 +20,11 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // create player
-    QVector<QSharedPointer<AttackMove>> attackList = {
-        QSharedPointer<AttackMove>::create("Ember", 40, 100, 25, 25, Type::FIRE, Category::SPECIAL)
-    };
-    //QSharedPointer<Pokemon> charmander = QSharedPointer<Pokemon>::create("Charmander", "", NatureUtilities::randomNature(), 39, 52, 43, 60, 50, 65, 39, 5, attackList, Type::FIRE);
+    QVector<QSharedPointer<AttackMove>> attackList;
+    attackList.append(repository->getAttackByID(3));
+
     QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
+    charmander->setAttackList(attackList);
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
     player = QSharedPointer<Trainer>::create(playerTeam);
 
@@ -63,10 +64,9 @@ MainWindow::~MainWindow()
 QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
 
     // currently a static opponent. can change to be dynamic.
-    QVector<QSharedPointer<AttackMove>> attackList = {
-        QSharedPointer<AttackMove>::create("Water Gun", 40, 100, 25, 25, Type::WATER, Category::SPECIAL)
-    };
-    //QSharedPointer<Pokemon> squirtle = QSharedPointer<Pokemon>::create("Squirtle", "", NatureUtilities::randomNature(), 44, 48, 65, 50, 64, 43, 44, 5, attackList, Type::WATER);
+    QVector<QSharedPointer<AttackMove>> attackList;
+    attackList.append(repository->getAttackByID(2));
+
     QSharedPointer<Pokemon> bulbasaur = repository->getPokemon(3);
     bulbasaur->setAttackList(attackList);
     QVector<QSharedPointer<Pokemon>> opponentTeam = {bulbasaur};

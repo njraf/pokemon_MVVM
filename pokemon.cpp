@@ -56,6 +56,13 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
 }
 
 void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove) {
+
+    if (attackMove->getPp() <= 0) {
+        qDebug() << "This move has no PP left";
+        return;
+    }
+    attackMove->setPp(attackMove->getPp() - 1);
+
     // calculate accuracy
     int combinedStages = accuracyStatStage - opponent->getEvasionStatStage();
     if (combinedStages > 6) {
