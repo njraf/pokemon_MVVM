@@ -82,7 +82,7 @@ PageName BattlePage::getPageName() {
 
 void BattlePage::displayStats(QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon) {
     ui->allyName->setText(playerPokemon->getName());
-    ui->allyHp->setText(QString("%1/%2").arg(playerPokemon->getHealthStat()).arg(playerPokemon->getMaxHealthStat()));
+    ui->allyHp->setText(QString("HP: %1/%2").arg(playerPokemon->getHealthStat()).arg(playerPokemon->getMaxHealthStat()));
     ui->allyHpBar->setMaximum(playerPokemon->getMaxHealthStat());
     ui->allyHpBar->setValue(playerPokemon->getHealthStat());
     ui->allyLevel->setText(QString("L: %1").arg(playerPokemon->getLevel()));
@@ -101,7 +101,7 @@ void BattlePage::displayStats(QSharedPointer<Pokemon> playerPokemon, QSharedPoin
     }
 
     ui->opponentName->setText(opponentPokemon->getName());
-    ui->opponentHp->setText(QString("%1/%2").arg(opponentPokemon->getHealthStat()).arg(opponentPokemon->getMaxHealthStat()));
+    ui->opponentHp->setText(QString("HP: %1/%2").arg(opponentPokemon->getHealthStat()).arg(opponentPokemon->getMaxHealthStat()));
     ui->opponentHpBar->setMaximum(opponentPokemon->getMaxHealthStat());
     ui->opponentHpBar->setValue(opponentPokemon->getHealthStat());
     ui->opponentLevel->setText(QString("L: %1").arg(opponentPokemon->getLevel()));

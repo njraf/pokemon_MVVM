@@ -10,11 +10,13 @@ TeamMemberCard::TeamMemberCard(QSharedPointer<Pokemon> pokemon_, QWidget *parent
 {
     ui->setupUi(this);
 
-    //ui->healthLabel->setText("");
-    //ui->healthbar->setMaximum();
-    //ui->healthbar->setValue();
+    int health = pokemon->getHealthStat();
+    int maxHealth = pokemon->getMaxHealthStat();
+    ui->healthLabel->setText(QString("HP: %1/%2").arg(health).arg(maxHealth));
+    ui->healthbar->setMaximum(maxHealth);
+    ui->healthbar->setValue(health);
     ui->nameLabel->setText(pokemon->getName());
-    //ui->levelLabel->setText();
+    ui->levelLabel->setText(QString("L: %1").arg(pokemon->getLevel()));
 }
 
 TeamMemberCard::~TeamMemberCard()
@@ -24,7 +26,6 @@ TeamMemberCard::~TeamMemberCard()
 
 void TeamMemberCard::mousePressEvent(QMouseEvent *event)
 {
-    qDebug() << "card clicked";
     emit clicked();
 }
 
