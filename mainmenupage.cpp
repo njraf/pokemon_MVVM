@@ -10,7 +10,6 @@ MainMenuPage::MainMenuPage(QWidget *parent)
     connect(ui->battleButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::BATTLE); });
     connect(ui->bagButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::BAG); });
     connect(ui->pokemonButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::TEAM); });
-    connect(ui->exitButton, &QPushButton::clicked, this, [=] { emit quit(); });
 }
 
 MainMenuPage::~MainMenuPage()

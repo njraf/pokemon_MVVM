@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>532</width>
+    <width>1144</width>
     <height>300</height>
    </rect>
   </property>
@@ -21,6 +21,11 @@
     <layout class="QGridLayout" name="opponentInfoGrid">
      <item row="0" column="1">
       <widget class="QLabel" name="opponentLevel">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Pokemon Level goes here</string>
        </property>
@@ -34,10 +39,18 @@
        <property name="value">
         <number>24</number>
        </property>
+       <property name="textVisible">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="opponentHp">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>HP</string>
        </property>
@@ -48,6 +61,11 @@
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="opponentName">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Pokemon name goes here</string>
        </property>
@@ -65,6 +83,11 @@
      </property>
      <item row="0" column="0">
       <widget class="QLabel" name="allyName">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Pokemon name goes here</string>
        </property>
@@ -78,10 +101,18 @@
        <property name="value">
         <number>24</number>
        </property>
+       <property name="textVisible">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="allyLevel">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Pokemon Level goes here</string>
        </property>
@@ -92,6 +123,11 @@
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="allyHp">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>HP</string>
        </property>
@@ -106,7 +142,7 @@
     <widget class="QWidget" name="widget_2" native="true"/>
    </item>
    <item row="2" column="0" colspan="2">
-    <widget class="QStackedWidget" name="stackedWidget">
+    <widget class="QStackedWidget" name="actionArea">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
        <horstretch>0</horstretch>
@@ -118,8 +154,8 @@
      </property>
      <widget class="QWidget" name="actionPage">
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="fightButton">
+       <item row="1" column="0">
+        <widget class="QPushButton" name="bagButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -132,7 +168,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Fight</string>
+          <string>Bag</string>
          </property>
         </widget>
        </item>
@@ -154,24 +190,6 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="bagButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>20</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Bag</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="1">
         <widget class="QPushButton" name="runButton">
          <property name="sizePolicy">
@@ -190,55 +208,91 @@
          </property>
         </widget>
        </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="fightButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Fight</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="attackPage">
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="pushButton">
+       <item row="0" column="2">
+        <widget class="QPushButton" name="attack2Button">
          <property name="font">
           <font>
            <pointsize>20</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>PushButton</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="pushButton_2">
-         <property name="font">
-          <font>
-           <pointsize>20</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>PushButton</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="pushButton_3">
-         <property name="font">
-          <font>
-           <pointsize>20</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>PushButton</string>
+          <string/>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="attack3Button">
          <property name="font">
           <font>
            <pointsize>20</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>PushButton</string>
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" rowspan="2">
+        <widget class="QPushButton" name="backButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Back</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="attack4Button">
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="attack1Button">
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>

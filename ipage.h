@@ -2,6 +2,7 @@
 #define IPAGE_H
 
 #include <QWidget>
+#include <QtSql>
 #include <QDebug>
 
 enum class PageName : int {
@@ -13,7 +14,7 @@ class IPage : public QWidget
     Q_OBJECT
 public:
     explicit IPage(QWidget *parent = nullptr);
-    virtual ~IPage();
+    virtual ~IPage() = default;
     virtual PageName getPageName() = 0;
 
     template <typename E>
@@ -24,8 +25,6 @@ public:
 signals:
     void changedPage(PageName pageName); // to a new page. add to backstack.
     void returnedPage(); // to previous page in backstack
-
-signals:
 
 };
 

@@ -9,9 +9,22 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // create repository
+    QSharedPointer<PokemonDao> pokemonDao = QSharedPointer<PokemonDao>::create();
+    QSharedPointer<AttackMoveDao> attackMoveDao = QSharedPointer<AttackMoveDao>::create();
+    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao);
+    if (!repository->hasConnection()) {
+        //TODO: make an error dialog
+        qDebug() << "ERROR: Could not connect to repository";
+        return;
+    }
+
     // create player
-    QSharedPointer<Pokemon> charmander = QSharedPointer<Pokemon>::create("Charmander", 1, 1, 1, 1, 1, 1);
-    QSharedPointer<Pokemon> bulbasaur = QSharedPointer<Pokemon>::create("Bulbasaur", 1, 1, 1, 1, 1, 1);
+    QVector<QSharedPointer<AttackMove>> attackList;
+    attackList.append(repository->getAttackByID(3));
+
+    QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
+    charmander->setAttackList(attackList);
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
     player = QSharedPointer<Trainer>::create(playerTeam);
 
@@ -58,10 +71,14 @@ void MainWindow::connectPages(QSharedPointer<IPage> page) {
 QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
 
     // currently a static opponent. can change to be dynamic.
-    QSharedPointer<Pokemon> squirtle = QSharedPointer<Pokemon>::create("Squirtle", 1, 1, 1, 1, 1, 1);
-    QVector<QSharedPointer<Pokemon>> opponentTeam = {squirtle};
+    QVector<QSharedPointer<AttackMove>> attackList;
+    attackList.append(repository->getAttackByID(2));
+
+    QSharedPointer<Pokemon> bulbasaur = repository->getPokemon(3);
+    bulbasaur->setAttackList(attackList);
+    QVector<QSharedPointer<Pokemon>> opponentTeam = {bulbasaur};
     QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam);
-    QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(player, opponent);
+    QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(repository, player, opponent);
 
     QSharedPointer<BattlePage> battlePage = QSharedPointer<BattlePage>::create(battleViewmodel);
     return battlePage;
