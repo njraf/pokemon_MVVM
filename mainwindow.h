@@ -6,6 +6,7 @@
 #include "battlepage.h"
 #include "mainmenupage.h"
 #include "teampage.h"
+#include "summarypage.h"
 #include "repository.h"
 
 QT_BEGIN_NAMESPACE
@@ -23,6 +24,7 @@ public:
     QSharedPointer<MainMenuPage> constructMainMenuPage() ;
     QSharedPointer<BattlePage> constructBattlePage();
     QSharedPointer<TeamPage> constructTeamPage();
+    QSharedPointer<SummaryPage> constructSummaryPage(QVector<QVariant> data);
 
 private:
     Ui::MainWindow *ui;

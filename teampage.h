@@ -19,6 +19,7 @@ public:
     explicit TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent = nullptr);
     ~TeamPage();
     PageName getPageName() override;
+    void receiveData(QVector<QVariant> data) override;
 
 private:
     Ui::TeamPage *ui;

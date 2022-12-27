@@ -1,6 +1,8 @@
 #include "teammembercard.h"
 #include "ui_teammembercard.h"
+#include "pagenavigator.h"
 
+#include <QVariant>
 #include <QDebug>
 
 TeamMemberCard::TeamMemberCard(QSharedPointer<Pokemon> pokemon_, QWidget *parent)
@@ -26,6 +28,7 @@ TeamMemberCard::~TeamMemberCard()
 
 void TeamMemberCard::mousePressEvent(QMouseEvent *event)
 {
-    emit clicked();
+    QVector<QVariant> data = {QVariant::fromValue<QSharedPointer<Pokemon>>(pokemon)};
+    PageNavigator::getInstance()->navigateBack(data);
 }
 

@@ -15,14 +15,14 @@ public:
     static PageNavigator* getInstance();
     ~PageNavigator() = default;
 
-    void populateRoutes(QMap<PageName, std::function<QSharedPointer<IPage>(void)> > routes);
-    void navigate(PageName page);
-    void navigateBack();
+    void populateRoutes(QMap<PageName, std::function<QSharedPointer<IPage>(QVector<QVariant>)> > routes);
+    void navigate(PageName page, QVector<QVariant> data = QVector<QVariant>());
+    void navigateBack(QVector<QVariant> data = QVector<QVariant>());
 
 private:
     explicit PageNavigator(QObject *parent = nullptr);
     QStack<QSharedPointer<IPage>> backstack;
-    QMap<PageName, std::function<QSharedPointer<IPage>(void)>> routes;
+    QMap<PageName, std::function<QSharedPointer<IPage>(QVector<QVariant>)>> routes;
 
 signals:
     void pageChanged(QSharedPointer<IPage>);

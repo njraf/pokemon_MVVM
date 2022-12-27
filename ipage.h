@@ -16,6 +16,7 @@ public:
     explicit IPage(QWidget *parent = nullptr);
     virtual ~IPage() = default;
     virtual PageName getPageName() = 0;
+    virtual void receiveData(QVector<QVariant> data) = 0;
 
     template <typename E>
     static constexpr typename std::underlying_type<E>::type to_underlying(E e) noexcept {

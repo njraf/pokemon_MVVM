@@ -16,7 +16,8 @@ class MainMenuPage : public IPage
 public:
     explicit MainMenuPage(QWidget *parent = nullptr);
     ~MainMenuPage();
-    PageName getPageName();
+    PageName getPageName() override;
+    void receiveData(QVector<QVariant> data) override;
 
 private:
     Ui::MainMenuPage *ui;

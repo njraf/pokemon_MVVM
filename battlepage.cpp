@@ -81,6 +81,10 @@ PageName BattlePage::getPageName() {
     return PageName::BATTLE;
 }
 
+void BattlePage::receiveData(QVector<QVariant> data) {
+
+}
+
 void BattlePage::displayStats(QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon) {
     ui->allyName->setText(playerPokemon->getName());
     ui->allyHp->setText(QString("HP: %1/%2").arg(playerPokemon->getHealthStat()).arg(playerPokemon->getMaxHealthStat()));

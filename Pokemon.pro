@@ -21,6 +21,7 @@ SOURCES += \
     natureutilities.cpp \
     pagenavigator.cpp \
     pokemon.cpp \
+    summarypage.cpp \
     teammembercard.cpp \
     teampage.cpp \
     trainer.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
     natureutilities.h \
     pagenavigator.h \
     pokemon.h \
+    summarypage.h \
     teammembercard.h \
     teampage.h \
     trainer.h \
@@ -51,6 +53,7 @@ FORMS += \
     battlepage.ui \
     mainmenupage.ui \
     mainwindow.ui \
+    summarypage.ui \
     teammembercard.ui \
     teampage.ui
 

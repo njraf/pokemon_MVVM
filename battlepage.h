@@ -19,6 +19,7 @@ public:
     explicit BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent = nullptr);
     ~BattlePage();
     PageName getPageName() override;
+    void receiveData(QVector<QVariant> data) override;
 
 private:
     Ui::BattlePage *ui;

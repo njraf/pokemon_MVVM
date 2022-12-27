@@ -15,7 +15,9 @@ TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
     for (auto member : team) {
         TeamMemberCard *teamMemberCard = new TeamMemberCard(member);
         ui->teamGrid->addWidget(teamMemberCard, row, col);
-        connect(teamMemberCard, &TeamMemberCard::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::POKEMON_SUMMARY); });
+        //connect(teamMemberCard, &TeamMemberCard::clicked, this, [=] {
+            //PageNavigator::getInstance()->navigate(PageName::POKEMON_SUMMARY);
+        //});
 
         if ((col % 2) == 0) {
             col++;
@@ -45,4 +47,8 @@ TeamPage::~TeamPage()
 
 PageName TeamPage::getPageName() {
     return PageName::TEAM;
+}
+
+void TeamPage::receiveData(QVector<QVariant> data) {
+
 }

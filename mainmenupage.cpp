@@ -22,3 +22,7 @@ MainMenuPage::~MainMenuPage()
 PageName MainMenuPage::getPageName() {
     return PageName::MAIN_MENU;
 }
+
+void MainMenuPage::receiveData(QVector<QVariant> data) {
+
+}
