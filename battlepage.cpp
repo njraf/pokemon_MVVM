@@ -1,5 +1,6 @@
 #include "battlepage.h"
 #include "ui_battlepage.h"
+#include "pagenavigator.h"
 
 #include <QMessageBox>
 
@@ -24,9 +25,9 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
 
     // action buttons
     connect(ui->fightButton, &QPushButton::clicked, this, [=] { ui->actionArea->setCurrentIndex(1); });
-    connect(ui->bagButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::BAG); });
-    connect(ui->pokemonButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::TEAM); });
-    connect(ui->runButton, &QPushButton::clicked, this, [=] { emit returnedPage(); });
+    connect(ui->bagButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::BAG); });
+    connect(ui->pokemonButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::TEAM); });
+    connect(ui->runButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigateBack(); });
 
     // attack buttons
     connect(ui->backButton, &QPushButton::clicked, this, [=] { ui->actionArea->setCurrentIndex(0); });
@@ -63,7 +64,7 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
         QMessageBox winLoseDialog;
         winLoseDialog.setText(winLoseMessage);
         winLoseDialog.exec();
-        emit returnedPage();
+        PageNavigator::getInstance()->navigateBack();
     });
 
     if (!playerKOed && !opponentKOed) {

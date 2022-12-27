@@ -28,13 +28,20 @@ MainWindow::MainWindow(QWidget *parent)
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
     player = QSharedPointer<Trainer>::create(playerTeam);
 
-    // create startup page
-    QSharedPointer<MainMenuPage> menuPage = QSharedPointer<MainMenuPage>::create();
-    currentPage = menuPage;
-    ui->pages->addWidget(menuPage.data());
-    PageNavigator::getInstance()->addToBackstack(menuPage);
+    // change pages
+    connect(PageNavigator::getInstance(), &PageNavigator::pageChanged, this, [=](QSharedPointer<IPage> page) {
+        ui->pages->addWidget(page.data());
+        ui->pages->setCurrentIndex(ui->pages->count() - 1);
+    });
 
-    connectPages(currentPage);
+    // initialize PageNavigator
+    QMap<PageName, std::function<QSharedPointer<IPage>(void)> > routes;
+    routes.insert(PageName::MAIN_MENU, [=] { return constructMainMenuPage(); });
+    routes.insert(PageName::BATTLE, [=] { return constructBattlePage(); });
+    routes.insert(PageName::TEAM, [=] { return constructTeamPage(); });
+
+    PageNavigator::getInstance()->populateRoutes(routes);
+    PageNavigator::getInstance()->navigate(PageName::MAIN_MENU);
 }
 
 MainWindow::~MainWindow()
@@ -43,29 +50,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::connectPages(QSharedPointer<IPage> page) {
-    // connect page navigation
-    connect(page.data(), &IPage::changedPage, this, [=](PageName pageName) {
-        if (pageName == PageName::BATTLE) {
-            currentPage = constructBattlePage();
-        } else if (pageName == PageName::TEAM) {
-            currentPage = constructTeamPage();
-        } else {
-            return;
-        }
-
-        ui->pages->addWidget(currentPage.data());
-        ui->pages->setCurrentIndex(ui->pages->count() - 1);
-        PageNavigator::getInstance()->addToBackstack(currentPage);
-
-        // to previous page
-        connect(currentPage.data(), &IPage::returnedPage, this, [=] {
-            currentPage = PageNavigator::getInstance()->popFromBackstack();
-            ui->pages->removeWidget(currentPage.data());
-        });
-
-        connectPages(currentPage);
-    });
+QSharedPointer<MainMenuPage> MainWindow::constructMainMenuPage() {
+    return QSharedPointer<MainMenuPage>::create();
 }
 
 QSharedPointer<BattlePage> MainWindow::constructBattlePage() {

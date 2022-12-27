@@ -23,8 +23,8 @@ public:
     }
 
 signals:
-    void changedPage(PageName pageName); // to a new page. add to backstack.
-    void returnedPage(); // to previous page in backstack
+    //void changedPage(PageName pageName); // to a new page. add to backstack.
+    //void returnedPage(); // to previous page in backstack
 
 };
 

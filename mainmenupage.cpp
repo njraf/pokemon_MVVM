@@ -1,5 +1,6 @@
 #include "mainmenupage.h"
 #include "ui_mainmenupage.h"
+#include "pagenavigator.h"
 
 MainMenuPage::MainMenuPage(QWidget *parent)
     : IPage(parent)
@@ -7,9 +8,9 @@ MainMenuPage::MainMenuPage(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->battleButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::BATTLE); });
-    connect(ui->bagButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::BAG); });
-    connect(ui->pokemonButton, &QPushButton::clicked, this, [=] { emit changedPage(PageName::TEAM); });
+    connect(ui->battleButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::BATTLE); });
+    connect(ui->bagButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::BAG); });
+    connect(ui->pokemonButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::TEAM); });
 }
 
 MainMenuPage::~MainMenuPage()

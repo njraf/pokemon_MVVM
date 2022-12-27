@@ -20,12 +20,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void connectPages(QSharedPointer<IPage> page);
+    QSharedPointer<MainMenuPage> constructMainMenuPage() ;
     QSharedPointer<BattlePage> constructBattlePage();
     QSharedPointer<TeamPage> constructTeamPage();
 
 private:
     Ui::MainWindow *ui;
-    QSharedPointer<IPage> currentPage;
     QSharedPointer<Trainer> player;
     QSharedPointer<Repository> repository;
 

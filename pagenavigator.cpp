@@ -14,14 +14,28 @@ PageNavigator *PageNavigator::getInstance() {
     return instance;
 }
 
-void PageNavigator::addToBackstack(QSharedPointer<IPage> page) {
-    backstack.append(page);
+void PageNavigator::populateRoutes(QMap<PageName, std::function<QSharedPointer<IPage>(void)> > routes_) {
+    routes = routes_;
 }
 
-QSharedPointer<IPage> PageNavigator::popFromBackstack() {
-    return backstack.takeLast();
+void PageNavigator::navigate(PageName page) {
+    if (!routes.contains(page)) {
+        return;
+    }
+
+    if ((backstack.count() > 1) && (backstack.at(backstack.count() - 2)->getPageName() == page)) {
+        navigateBack();
+    } else { // make new page
+        auto currentPage = routes[page]();
+        backstack.append(currentPage);
+        emit pageChanged(currentPage);
+    }
 }
 
-
-
+void PageNavigator::navigateBack() {
+    if ((backstack.count() > 1)) {
+        backstack.pop();
+        emit pageChanged(backstack.top());
+    }
+}
 
