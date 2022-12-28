@@ -49,22 +49,7 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
     // viewmodel signals
     connect(viewmodel.data(), &BattleViewmodel::summonedPokemon, this, &BattlePage::displayStats);
     connect(viewmodel.data(), &BattleViewmodel::stateUpdated, this, [=] { displayStats(viewmodel->getCurrentPlayerPokemon(), viewmodel->getCurrentOpponentPokemon()); });
-    connect(viewmodel.data(), &BattleViewmodel::stateUpdated, this, [=] {
-        // determine win/lose
-        auto playerTeam = viewmodel->getPlayerTrainer()->getTeam();
-        auto opponentTeam = viewmodel->getOpponentTrainer()->getTeam();
-        bool playerKOed = (0 == std::count_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
-        bool opponentKOed = (0 == std::count_if(opponentTeam.begin(), opponentTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
-
-        QString winLoseMessage = "";
-        if (playerKOed) {
-            winLoseMessage = "You lost";
-        } else if (opponentKOed) {
-            winLoseMessage = "You won";
-        } else { // no KOs
-            return;
-        }
-
+    connect(viewmodel.data(), &BattleViewmodel::battleFinished, this, [=](QString winLoseMessage) {
         QMessageBox winLoseDialog;
         winLoseDialog.setText(winLoseMessage);
         winLoseDialog.exec();

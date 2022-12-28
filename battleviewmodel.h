@@ -32,9 +32,13 @@ private:
     QSharedPointer<Pokemon> currentPlayerPokemon;
     QSharedPointer<Pokemon> currentOpponentPokemon;
 
+private slots:
+    void afterAttacking();
+
 signals:
     void summonedPokemon(QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon);
     void stateUpdated();
+    void battleFinished(QString winLoseMessage);
 };
 
 #endif // BATTLEVIEWMODEL_H

@@ -7,6 +7,21 @@
 #include "pokemon.h"
 #include "teammembercard.h"
 
+/*
+ * battle state:
+ * shift (into battle)
+ * summary
+ * cancel
+ *
+ * menu state:
+ * summary
+ * switch (places in party)
+ * item
+ *   give
+ *   take
+ * cancel
+ */
+
 namespace Ui {
 class TeamPage;
 }

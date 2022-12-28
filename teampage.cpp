@@ -35,7 +35,7 @@ TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
                 if ((battlePokemon->getName() == member->getName()) && (battlePokemon->getLevel() == member->getLevel())) {
                     // selected pokemon is not the current pokemon in battle
                     //TODO: set better condition
-                    qDebug() << "Cannot send out the same pokemon";
+                    qDebug() << battlePokemon->getName() << "is already in battle";
                 } else if (member->getHealthStat() <= 0) {
                     qDebug() << "That pokemon has no HP left";
                 } else {

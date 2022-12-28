@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     // create player
     QVector<QSharedPointer<AttackMove>> attackList;
     QVector<QSharedPointer<AttackMove>> attackList2;
-    attackList.append(repository->getAttackByID(3));
+    attackList.append(repository->getAttackByID(1));
     attackList2.append(repository->getAttackByID(2));
 
     QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
@@ -65,9 +65,11 @@ QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
     QVector<QSharedPointer<AttackMove>> attackList;
     attackList.append(repository->getAttackByID(2));
 
-    QSharedPointer<Pokemon> bulbasaur = repository->getPokemon(3);
+    QSharedPointer<Pokemon> bulbasaur = repository->getPokemon(1);
+    QSharedPointer<Pokemon> bulbasaur2 = repository->getPokemon(2);
+    QSharedPointer<Pokemon> bulbasaur3 = repository->getPokemon(3);
     bulbasaur->setAttackList(attackList);
-    QVector<QSharedPointer<Pokemon>> opponentTeam = {bulbasaur};
+    QVector<QSharedPointer<Pokemon>> opponentTeam = {bulbasaur, bulbasaur2, bulbasaur3};
     QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam);
     QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(repository, player, opponent);
 
