@@ -3,11 +3,12 @@
 
 #include <QMainWindow>
 
+#include "repository.h"
 #include "battlepage.h"
 #include "mainmenupage.h"
 #include "teampage.h"
 #include "summarypage.h"
-#include "repository.h"
+#include "bagpage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -25,6 +26,7 @@ public:
     QSharedPointer<BattlePage> constructBattlePage();
     QSharedPointer<TeamPage> constructTeamPage();
     QSharedPointer<SummaryPage> constructSummaryPage(QSharedPointer<Pokemon> pokemon);
+    QSharedPointer<BagPage> constructBagPage();
 
 private:
     Ui::MainWindow *ui;

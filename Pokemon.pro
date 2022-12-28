@@ -14,6 +14,10 @@ INCLUDEPATH += \
 
 SOURCES += \
     attackmove.cpp \
+    bag.cpp \
+    pages/bagpage.cpp \
+    bagviewmodel.cpp \
+    healitem.cpp \
     repository/attackmovedao.cpp \
     pages/battlepage.cpp \
     battleviewmodel.cpp \
@@ -35,6 +39,10 @@ SOURCES += \
 
 HEADERS += \
     attackmove.h \
+    bag.h \
+    pages/bagpage.h \
+    bagviewmodel.h \
+    healitem.h \
     repository/attackmovedao.h \
     pages/battlepage.h \
     battleviewmodel.h \
@@ -54,6 +62,7 @@ HEADERS += \
     typeutilities.h
 
 FORMS += \
+    bagpage.ui \
     battlepage.ui \
     mainmenupage.ui \
     mainwindow.ui \
