@@ -19,6 +19,7 @@ public:
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
+    void paintEvent(QPaintEvent *) override; // allows styling from qss
 
 private:
     Ui::TeamMemberCard *ui;

@@ -26,7 +26,11 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
     // action buttons
     connect(ui->fightButton, &QPushButton::clicked, this, [=] { ui->actionArea->setCurrentIndex(1); });
     connect(ui->bagButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::BAG); });
-    connect(ui->pokemonButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::TEAM); });
+    connect(ui->pokemonButton, &QPushButton::clicked, this, [=] {
+        auto playerPokemon = QVariant::fromValue<QSharedPointer<Pokemon>>(viewmodel->getCurrentPlayerPokemon());
+        QVector<QVariant> data = {playerPokemon};
+        PageNavigator::getInstance()->navigate(PageName::TEAM, data);
+    });
     connect(ui->runButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigateBack(); });
 
     // attack buttons

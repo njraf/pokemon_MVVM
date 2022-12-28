@@ -16,3 +16,7 @@ QLabel {
 QPushButton {
     font: 18pt;
 }
+
+TeamMemberCard:hover {
+    background-color: #3dd7e5;
+}

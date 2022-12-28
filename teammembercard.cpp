@@ -4,6 +4,7 @@
 
 #include <QVariant>
 #include <QDebug>
+#include <QPainter>
 
 TeamMemberCard::TeamMemberCard(QSharedPointer<Pokemon> pokemon_, QWidget *parent)
     : QWidget(parent)
@@ -31,3 +32,10 @@ void TeamMemberCard::mousePressEvent(QMouseEvent *event)
     emit clicked();
 }
 
+void TeamMemberCard::paintEvent(QPaintEvent *)
+{
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
