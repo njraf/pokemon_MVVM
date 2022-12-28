@@ -21,6 +21,8 @@ public:
     QSharedPointer<Pokemon> getCurrentOpponentPokemon();
 
     void summonFirstPokemon();
+    void playerSummon(QSharedPointer<Pokemon> pokemon);
+    void opponentSummon(QSharedPointer<Pokemon> pokemon);
     void attack(int attackIndex);
 
 private:

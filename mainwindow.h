@@ -24,7 +24,7 @@ public:
     QSharedPointer<MainMenuPage> constructMainMenuPage() ;
     QSharedPointer<BattlePage> constructBattlePage();
     QSharedPointer<TeamPage> constructTeamPage();
-    QSharedPointer<SummaryPage> constructSummaryPage(QVector<QVariant> data);
+    QSharedPointer<SummaryPage> constructSummaryPage(QSharedPointer<Pokemon> pokemon);
 
 private:
     Ui::MainWindow *ui;

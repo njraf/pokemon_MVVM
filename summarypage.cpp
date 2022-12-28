@@ -1,5 +1,6 @@
 #include "summarypage.h"
 #include "ui_summarypage.h"
+#include "pagenavigator.h"
 
 SummaryPage::SummaryPage(QSharedPointer<Pokemon> pokemon_, QWidget *parent)
     : IPage(parent)
@@ -7,7 +8,7 @@ SummaryPage::SummaryPage(QSharedPointer<Pokemon> pokemon_, QWidget *parent)
     , pokemon(pokemon_)
 {
     ui->setupUi(this);
-    qDebug() << pokemon->getName();
+    connect(ui->backButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigateBack(); });
 }
 
 SummaryPage::~SummaryPage()
@@ -20,5 +21,10 @@ PageName SummaryPage::getPageName() {
 }
 
 void SummaryPage::receiveData(QVector<QVariant> data) {
-
+    if (data.isEmpty() || !data[0].canConvert<QSharedPointer<Pokemon>>()) {
+        qDebug() << "ERROR: Cannot convert QVariant to Pokemon";
+        return;
+    }
+    pokemon = data[0].value<QSharedPointer<Pokemon>>();
+    ui->label->setText(pokemon->getName());
 }

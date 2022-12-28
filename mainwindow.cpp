@@ -21,25 +21,29 @@ MainWindow::MainWindow(QWidget *parent)
 
     // create player
     QVector<QSharedPointer<AttackMove>> attackList;
+    QVector<QSharedPointer<AttackMove>> attackList2;
     attackList.append(repository->getAttackByID(3));
+    attackList2.append(repository->getAttackByID(2));
 
     QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
+    QSharedPointer<Pokemon> squirtle = repository->getPokemon(7);
     charmander->setAttackList(attackList);
-    QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
+    squirtle->setAttackList(attackList2);
+    QVector<QSharedPointer<Pokemon>> playerTeam = {charmander, squirtle};
     player = QSharedPointer<Trainer>::create(playerTeam);
 
     // change pages
     connect(PageNavigator::getInstance(), &PageNavigator::pageChanged, this, [=](QSharedPointer<IPage> page) {
-        int asd = ui->pages->addWidget(page.data());
+        ui->pages->addWidget(page.data());
         ui->pages->setCurrentIndex(ui->pages->count() - 1);
     });
 
     // initialize PageNavigator
-    QMap<PageName, std::function<QSharedPointer<IPage>(QVector<QVariant>)> > routes;
-    routes.insert(PageName::MAIN_MENU, [=](QVector<QVariant> data) { return constructMainMenuPage(); });
-    routes.insert(PageName::BATTLE, [=](QVector<QVariant> data) { return constructBattlePage(); });
-    routes.insert(PageName::TEAM, [=](QVector<QVariant> data) { return constructTeamPage(); });
-    routes.insert(PageName::POKEMON_SUMMARY, [=](QVector<QVariant> data) { return constructSummaryPage(data); });
+    QMap<PageName, std::function<QSharedPointer<IPage>(void)> > routes;
+    routes.insert(PageName::MAIN_MENU, [=] { return constructMainMenuPage(); });
+    routes.insert(PageName::BATTLE, [=] { return constructBattlePage(); });
+    routes.insert(PageName::TEAM, [=] { return constructTeamPage(); });
+    routes.insert(PageName::POKEMON_SUMMARY, [=] { return constructSummaryPage(repository->getPokemon(9)); });
 
     PageNavigator::getInstance()->populateRoutes(routes);
     PageNavigator::getInstance()->navigate(PageName::MAIN_MENU);
@@ -76,10 +80,6 @@ QSharedPointer<TeamPage> MainWindow::constructTeamPage() {
     return teamPage;
 }
 
-QSharedPointer<SummaryPage> MainWindow::constructSummaryPage(QVector<QVariant> data) {
-    if (!data[0].canConvert<QSharedPointer<Pokemon>>()) {
-        qDebug() << "ERROR: Cannot convert QVariant to Pokemon";
-    }
-    QSharedPointer<Pokemon> pokemon = data[0].value<QSharedPointer<Pokemon>>();
+QSharedPointer<SummaryPage> MainWindow::constructSummaryPage(QSharedPointer<Pokemon> pokemon) {
     return QSharedPointer<SummaryPage>::create(pokemon);
 }

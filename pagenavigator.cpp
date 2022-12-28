@@ -14,7 +14,7 @@ PageNavigator *PageNavigator::getInstance() {
     return instance;
 }
 
-void PageNavigator::populateRoutes(QMap<PageName, std::function<QSharedPointer<IPage>(QVector<QVariant>)> > routes_) {
+void PageNavigator::populateRoutes(QMap<PageName, std::function<QSharedPointer<IPage>(void)> > routes_) {
     routes = routes_;
 }
 
@@ -26,7 +26,8 @@ void PageNavigator::navigate(PageName page, QVector<QVariant> data) {
     if ((backstack.count() > 1) && (backstack.at(backstack.count() - 2)->getPageName() == page)) {
         navigateBack();
     } else { // make new page
-        auto currentPage = routes[page](data);
+        auto currentPage = routes[page]();
+        currentPage->receiveData(data);
         backstack.append(currentPage);
         emit pageChanged(currentPage);
     }
@@ -39,5 +40,11 @@ void PageNavigator::navigateBack(QVector<QVariant> data) {
         currentPage->receiveData(data);
         emit pageChanged(currentPage);
     }
+}
+
+QVector<PageName> PageNavigator::getRouteNames() {
+    QVector<PageName> routeNames(backstack.size());
+    std::transform(backstack.begin(), backstack.end(), routeNames.begin(), [=](QSharedPointer<IPage> page) { return page->getPageName(); });
+    return routeNames;
 }
 

@@ -51,6 +51,20 @@ void BattleViewmodel::summonFirstPokemon() {
     emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
 }
 
+void BattleViewmodel::playerSummon(QSharedPointer<Pokemon> pokemon) {
+    currentPlayerPokemon = pokemon;
+    currentPlayerPokemon->resetAllStages();
+    emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
+    int opponentAttackIndex = (QRandomGenerator::global()->generate() % currentOpponentPokemon->getAttackList().size());
+    currentOpponentPokemon->attack(currentPlayerPokemon, currentOpponentPokemon->getAttackList().at(opponentAttackIndex));
+}
+
+void BattleViewmodel::opponentSummon(QSharedPointer<Pokemon> pokemon) {
+    currentOpponentPokemon = pokemon;
+    currentOpponentPokemon->resetAllStages();
+    emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
+}
+
 void BattleViewmodel::attack(int attackIndex) {
     if (currentPlayerPokemon->getAttackList().size() <= attackIndex) {
         return;

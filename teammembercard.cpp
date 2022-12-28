@@ -28,7 +28,6 @@ TeamMemberCard::~TeamMemberCard()
 
 void TeamMemberCard::mousePressEvent(QMouseEvent *event)
 {
-    QVector<QVariant> data = {QVariant::fromValue<QSharedPointer<Pokemon>>(pokemon)};
-    PageNavigator::getInstance()->navigateBack(data);
+    emit clicked();
 }
 
