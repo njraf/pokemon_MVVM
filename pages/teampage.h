@@ -9,18 +9,21 @@
 #include "healitem.h"
 
 /*
- * battle state:
+ * battle context:
  * shift (into battle)
  * summary
  * cancel
  *
- * menu state:
+ * menu context:
  * summary
  * switch (places in party)
  * item
  *   give
  *   take
  * cancel
+ *
+ * bag context:
+ * use/give item
  */
 
 namespace Ui {
@@ -36,6 +39,8 @@ public:
     ~TeamPage();
     PageName getPageName() override;
     void receiveData(QVector<QVariant> data) override;
+    void showMenuDialog(QSharedPointer<Pokemon> pokemon);
+    void showBattleDialog(QSharedPointer<Pokemon> pokemon);
 
 private:
     enum class Context : int { // specifies the context this page was opened under (e.g. in battle or from the main menu)

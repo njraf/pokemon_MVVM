@@ -2,6 +2,8 @@
 #include "ui_teampage.h"
 #include "pagenavigator.h"
 
+#include <QMessageBox>
+
 TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
     : IPage(parent)
     , ui(new Ui::TeamPage)
@@ -34,21 +36,18 @@ TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
         ui->teamGrid->addWidget(teamMemberCard, row, col);
         connect(teamMemberCard, &TeamMemberCard::clicked, this, [=] {
             QVector<QVariant> data = {QVariant::fromValue<QSharedPointer<Pokemon>>(member)};
-            if (context == Context::BATTLE) {
-                if ((battlePokemon->getName() == member->getName()) && (battlePokemon->getLevel() == member->getLevel())) {
-                    // selected pokemon is not the current pokemon in battle
-                    //TODO: set better condition
-                    qDebug() << battlePokemon->getName() << "is already in battle";
-                } else if (member->getHealthStat() <= 0) {
-                    qDebug() << "That pokemon has no HP left";
+            if (context == Context::BAG) {
+                if ((member->getHealthStat() != 0) && (member->getHealthStat() < member->getMaxHealthStat())) {
+                    //TODO: assumes HealItem. Allow actions from other items.
+                    healItemToUse->use(member);
+                    PageNavigator::getInstance()->navigateBack();
                 } else {
-                    PageNavigator::getInstance()->navigateBack(data);
+                    qDebug() << "Cannot heal this pokemon";
                 }
+            } else if (context == Context::BATTLE) {
+                showBattleDialog(member);
             } else if (context == Context::MAIN_MENU) {
-                PageNavigator::getInstance()->navigate(PageName::POKEMON_SUMMARY, data);
-            } else if (context == Context::BAG) {
-                healItemToUse->use(member);
-                PageNavigator::getInstance()->navigateBack();
+                showMenuDialog(member);
             }
         });
 
@@ -92,4 +91,72 @@ void TeamPage::receiveData(QVector<QVariant> data) {
     } else if (context == Context::BAG && data[0].canConvert<QSharedPointer<HealItem>>()) {
         healItemToUse = data[0].value<QSharedPointer<HealItem>>();
     }
+}
+
+void TeamPage::showMenuDialog(QSharedPointer<Pokemon> pokemon) {
+    QVariant pokeData = QVariant::fromValue<QSharedPointer<Pokemon>>(pokemon);
+    QVector<QVariant> data = {pokeData};
+    QPushButton *summaryButton = new QPushButton("Summary");
+    QPushButton *switchButton = new QPushButton("Switch");
+    QPushButton *itemButton = new QPushButton("Item");
+    QPushButton *cancelButton = new QPushButton("Cancel");
+
+    QMessageBox dialog;
+    QLayout *layout = dialog.layout();
+    QLayoutItem *item;
+    while ((item = layout->takeAt(0)) != nullptr) {
+        delete item;
+    }
+    layout->addWidget(summaryButton);
+    layout->addWidget(switchButton);
+    layout->addWidget(itemButton);
+    layout->addWidget(cancelButton);
+
+
+    dialog.setLayout(layout);
+
+    connect(summaryButton, &QPushButton::clicked, this, [&] { dialog.reject(); PageNavigator::getInstance()->navigate(PageName::POKEMON_SUMMARY, data); });
+    connect(switchButton, &QPushButton::clicked, this, [&] {  });
+    connect(itemButton, &QPushButton::clicked, this, [&] {  });
+    connect(cancelButton, &QPushButton::clicked, this, [&] { dialog.reject(); });
+
+    dialog.exec();
+}
+
+void TeamPage::showBattleDialog(QSharedPointer<Pokemon> pokemon) {
+    QVariant pokeData = QVariant::fromValue<QSharedPointer<Pokemon>>(pokemon);
+    QVector<QVariant> data = {pokeData};
+    QPushButton *shiftButton = new QPushButton("Shift");
+    QPushButton *summaryButton = new QPushButton("Summary");
+    QPushButton *cancelButton = new QPushButton("Cancel");
+
+    QMessageBox dialog;
+    QLayout *layout = dialog.layout();
+    QLayoutItem *item;
+    while ((item = layout->takeAt(0)) != nullptr) {
+        delete item;
+    }
+    layout->addWidget(shiftButton);
+    layout->addWidget(summaryButton);
+    layout->addWidget(cancelButton);
+
+
+    dialog.setLayout(layout);
+
+    connect(shiftButton, &QPushButton::clicked, this, [&] {
+        if ((battlePokemon->getName() == pokemon->getName()) && (battlePokemon->getLevel() == pokemon->getLevel())) {
+            // selected pokemon is not the current pokemon in battle
+            //TODO: set better condition
+            qDebug() << battlePokemon->getName() << "is already in battle";
+        } else if (pokemon->getHealthStat() <= 0) {
+            qDebug() << "That pokemon has no HP left";
+        } else {
+            dialog.reject();
+            PageNavigator::getInstance()->navigateBack(data);
+        }
+    });
+    connect(summaryButton, &QPushButton::clicked, this, [&] { dialog.reject(); PageNavigator::getInstance()->navigate(PageName::POKEMON_SUMMARY, data); });
+    connect(cancelButton, &QPushButton::clicked, this, [&] { dialog.reject(); });
+
+    dialog.exec();
 }

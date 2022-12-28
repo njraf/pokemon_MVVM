@@ -40,7 +40,7 @@ QSharedPointer<AttackMove> AttackMoveDao::getAttackByID(int id) {
 }
 
 bool AttackMoveDao::populateDatabase() {
-    qDebug() << "Populating AttackMoves database";
+    //qDebug() << "Populating AttackMoves database";
     QSqlQuery query(db);
     if (!query.exec("DROP TABLE AttackMove;")) {
         qDebug() << "Drop table failed" << db.lastError().text();

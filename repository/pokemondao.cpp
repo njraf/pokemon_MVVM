@@ -52,7 +52,7 @@ QSharedPointer<Pokemon> PokemonDao::getPokemon(int nationalDexNumber) {
 
 
 bool PokemonDao::populateDatabase() {
-    qDebug() << "Populating Pokemon database";
+    //qDebug() << "Populating Pokemon database";
     QSqlQuery query(db);
     if (!query.exec("DROP TABLE Pokemon;")) {
         qDebug() << "Drop table failed" << db.lastError().text();
