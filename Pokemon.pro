@@ -8,45 +8,49 @@ CONFIG += c++11
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += \
+    repository \
+    pages
+
 SOURCES += \
     attackmove.cpp \
-    attackmovedao.cpp \
-    battlepage.cpp \
+    repository/attackmovedao.cpp \
+    pages/battlepage.cpp \
     battleviewmodel.cpp \
-    idao.cpp \
-    ipage.cpp \
+    repository/idao.cpp \
+    pages/ipage.cpp \
     main.cpp \
-    mainmenupage.cpp \
+    pages/mainmenupage.cpp \
     mainwindow.cpp \
     natureutilities.cpp \
     pagenavigator.cpp \
     pokemon.cpp \
-    summarypage.cpp \
+    pages/summarypage.cpp \
     teammembercard.cpp \
-    teampage.cpp \
+    pages/teampage.cpp \
     trainer.cpp \
-    pokemondao.cpp \
-    repository.cpp \
+    repository/pokemondao.cpp \
+    repository/repository.cpp \
     typeutilities.cpp
 
 HEADERS += \
     attackmove.h \
-    attackmovedao.h \
-    battlepage.h \
+    repository/attackmovedao.h \
+    pages/battlepage.h \
     battleviewmodel.h \
-    idao.h \
-    ipage.h \
-    mainmenupage.h \
+    repository/idao.h \
+    pages/ipage.h \
+    pages/mainmenupage.h \
     mainwindow.h \
     natureutilities.h \
     pagenavigator.h \
     pokemon.h \
-    summarypage.h \
+    pages/summarypage.h \
     teammembercard.h \
-    teampage.h \
+    pages/teampage.h \
     trainer.h \
-    pokemondao.h \
-    repository.h \
+    repository/pokemondao.h \
+    repository/repository.h \
     typeutilities.h
 
 FORMS += \
