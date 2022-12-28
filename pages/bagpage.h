@@ -21,10 +21,17 @@ public:
 
     PageName getPageName() override;
     void receiveData(QVector<QVariant> data) override;
+    void displayItems();
 
 private:
+    enum class Context : int {
+        NONE,
+        TEAM, // from TeamPage
+        MENU  // from main menu or battle
+    };
     Ui::BagPage *ui;
     QSharedPointer<BagViewmodel> viewmodel;
+    Context context;
 };
 
 #endif // BAGPAGE_H

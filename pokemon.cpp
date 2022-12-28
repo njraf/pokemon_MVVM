@@ -138,6 +138,7 @@ int Pokemon::getHealthStat() const {
 
 void Pokemon::setHealthStat(int newHealthStat) {
     currentHealthStat = (newHealthStat < 0 ? 0 : newHealthStat);
+    currentHealthStat = (currentHealthStat > getMaxHealthStat() ? getMaxHealthStat() : currentHealthStat);
 }
 
 int Pokemon::getSpeedStat() const {

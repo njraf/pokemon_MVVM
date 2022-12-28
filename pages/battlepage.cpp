@@ -75,6 +75,8 @@ void BattlePage::receiveData(QVector<QVariant> data) {
         QSharedPointer<Pokemon> pokemon = data[0].value<QSharedPointer<Pokemon>>();
         viewmodel->playerSummon(pokemon);
     }
+
+    displayStats(viewmodel->getCurrentPlayerPokemon(), viewmodel->getCurrentOpponentPokemon());
 }
 
 void BattlePage::displayStats(QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon) {

@@ -6,6 +6,7 @@
 #include "ipage.h"
 #include "pokemon.h"
 #include "teammembercard.h"
+#include "healitem.h"
 
 /*
  * battle state:
@@ -37,13 +38,14 @@ public:
     void receiveData(QVector<QVariant> data) override;
 
 private:
-    enum class InteractionState : int { // specifies the context this page was opened under (e.g. in battle or from the main menu)
-        NONE, BATTLE, MAIN_MENU
+    enum class Context : int { // specifies the context this page was opened under (e.g. in battle or from the main menu)
+        NONE, BATTLE, MAIN_MENU, BAG
     };
     Ui::TeamPage *ui;
     QVector<QSharedPointer<Pokemon>> team;
-    InteractionState state;
+    Context context;
     QSharedPointer<Pokemon> battlePokemon;
+    QSharedPointer<HealItem> healItemToUse;
 };
 
 #endif // TEAMPAGE_H
