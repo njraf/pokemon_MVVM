@@ -21,6 +21,7 @@ SOURCES += \
     repository/attackmovedao.cpp \
     pages/battlepage.cpp \
     battleviewmodel.cpp \
+    repository/healitemdao.cpp \
     repository/idao.cpp \
     pages/ipage.cpp \
     main.cpp \
@@ -46,6 +47,7 @@ HEADERS += \
     repository/attackmovedao.h \
     pages/battlepage.h \
     battleviewmodel.h \
+    repository/healitemdao.h \
     repository/idao.h \
     pages/ipage.h \
     pages/mainmenupage.h \

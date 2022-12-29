@@ -12,7 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
     // create repository
     QSharedPointer<PokemonDao> pokemonDao = QSharedPointer<PokemonDao>::create();
     QSharedPointer<AttackMoveDao> attackMoveDao = QSharedPointer<AttackMoveDao>::create();
-    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao);
+    QSharedPointer<HealItemDao> healItemDao = QSharedPointer<HealItemDao>::create();
+    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao, healItemDao);
     if (!repository->hasConnection()) {
         //TODO: make an error dialog
         qDebug() << "ERROR: Could not connect to repository";
@@ -32,9 +33,15 @@ MainWindow::MainWindow(QWidget *parent)
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander, squirtle};
 
     QSharedPointer<Bag> bag = QSharedPointer<Bag>::create();
-    bag->addHealItem(QSharedPointer<HealItem>::create("Potion", 20, 5, "Heal for 20 HP"));
-    bag->addHealItem(QSharedPointer<HealItem>::create("Super Potion", 50, 5, "Heal for 50 HP"));
-    bag->addHealItem(QSharedPointer<HealItem>::create("Hyper Potion", 120, 5, "Heal for 120 HP"));
+    auto potion = repository->getHealItemByID(1);
+    potion->setQuantity(5);
+    auto superPotion = repository->getHealItemByID(2);
+    superPotion->setQuantity(3);
+    auto hyperPotion = repository->getHealItemByID(3);
+    hyperPotion->setQuantity(2);
+    bag->addHealItem(potion);
+    bag->addHealItem(superPotion);
+    bag->addHealItem(hyperPotion);
     player = QSharedPointer<Trainer>::create(playerTeam, bag);
 
     // change pages
