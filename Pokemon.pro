@@ -15,6 +15,8 @@ INCLUDEPATH += \
 SOURCES += \
     attackmove.cpp \
     bag.cpp \
+    overworldpage.cpp \
+    overworldviewmodel.cpp \
     pages/bagpage.cpp \
     bagviewmodel.cpp \
     healitem.cpp \
@@ -33,6 +35,7 @@ SOURCES += \
     pages/summarypage.cpp \
     teammembercard.cpp \
     pages/teampage.cpp \
+    tile.cpp \
     trainer.cpp \
     repository/pokemondao.cpp \
     repository/repository.cpp \
@@ -41,6 +44,8 @@ SOURCES += \
 HEADERS += \
     attackmove.h \
     bag.h \
+    overworldpage.h \
+    overworldviewmodel.h \
     pages/bagpage.h \
     bagviewmodel.h \
     healitem.h \
@@ -58,6 +63,7 @@ HEADERS += \
     pages/summarypage.h \
     teammembercard.h \
     pages/teampage.h \
+    tile.h \
     trainer.h \
     repository/pokemondao.h \
     repository/repository.h \
@@ -68,6 +74,7 @@ FORMS += \
     battlepage.ui \
     mainmenupage.ui \
     mainwindow.ui \
+    overworldpage.ui \
     summarypage.ui \
     teammembercard.ui \
     teampage.ui

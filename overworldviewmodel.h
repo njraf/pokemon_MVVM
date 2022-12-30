@@ -1,0 +1,45 @@
+#ifndef OVERWORLDVIEWMODEL_H
+#define OVERWORLDVIEWMODEL_H
+
+#include <QObject>
+#include <QSharedPointer>
+#include <QVector>
+
+#include "tile.h"
+
+class OverworldViewmodel : public QObject
+{
+    Q_OBJECT
+public:
+    explicit OverworldViewmodel(QObject *parent = nullptr);
+    ~OverworldViewmodel() = default;
+    QVector<QVector<QSharedPointer<Tile>>> getWorld();
+    int getPlayerRow();
+    int getPlayerCol();
+
+
+private:
+    const int ROWS;
+    const int COLS;
+    const int playerRow;
+    const int playerCol;
+    QVector<QVector<QSharedPointer<Tile>>> world = {
+        {QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS)},
+        {QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS)},
+        {QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS)},
+        {QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS)},
+        {QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS)},
+        {QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS)},
+        {QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS)},
+        {QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS)},
+        {QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS)},
+        {QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS)},
+        {QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS), QSharedPointer<Tile>::create(TileType::GRASS)}
+    };
+
+signals:
+    void worldUpdated(QVector<QVector<QSharedPointer<Tile>>> world);
+
+};
+
+#endif // OVERWORLDVIEWMODEL_H

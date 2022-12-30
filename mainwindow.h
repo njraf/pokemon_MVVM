@@ -9,6 +9,7 @@
 #include "teampage.h"
 #include "summarypage.h"
 #include "bagpage.h"
+#include "overworldpage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,6 +28,7 @@ public:
     QSharedPointer<TeamPage> constructTeamPage();
     QSharedPointer<SummaryPage> constructSummaryPage(QSharedPointer<Pokemon> pokemon);
     QSharedPointer<BagPage> constructBagPage();
+    QSharedPointer<OverworldPage> constructOverworldPage();
 
 private:
     Ui::MainWindow *ui;

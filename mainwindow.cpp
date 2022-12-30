@@ -57,9 +57,10 @@ MainWindow::MainWindow(QWidget *parent)
     routes.insert(PageName::TEAM, [=] { return constructTeamPage(); });
     routes.insert(PageName::POKEMON_SUMMARY, [=] { return constructSummaryPage(repository->getPokemon(9)); });
     routes.insert(PageName::BAG, [=] { return constructBagPage(); });
+    routes.insert(PageName::OVERWORLD, [=] { return constructOverworldPage(); });
 
     PageNavigator::getInstance()->populateRoutes(routes);
-    PageNavigator::getInstance()->navigate(PageName::MAIN_MENU);
+    PageNavigator::getInstance()->navigate(PageName::OVERWORLD);
 }
 
 MainWindow::~MainWindow()
@@ -104,4 +105,9 @@ QSharedPointer<BagPage> MainWindow::constructBagPage() {
     QSharedPointer<BagViewmodel> bagViewmodel = QSharedPointer<BagViewmodel>::create(player->getBag());
     QSharedPointer<BagPage> bagPage = QSharedPointer<BagPage>::create(bagViewmodel);
     return bagPage;
+}
+
+QSharedPointer<OverworldPage> MainWindow::constructOverworldPage() {
+    auto viewmodel = QSharedPointer<OverworldViewmodel>::create();
+    return QSharedPointer<OverworldPage>::create(viewmodel);
 }
