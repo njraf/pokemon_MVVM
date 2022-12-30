@@ -2,6 +2,7 @@
 #define OVERWORLDPAGE_H
 
 #include <QWidget>
+#include <QKeyEvent>
 
 #include "ipage.h"
 #include "overworldviewmodel.h"
@@ -20,11 +21,15 @@ public:
 
     PageName getPageName() override;
     void receiveData(QVector<QVariant> data) override;
+    QString tileToColor(QSharedPointer<Tile> tile);
+
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
     Ui::OverworldPage *ui;
-    const int ROWS = 11;
-    const int COLS = ROWS + (ROWS / 2);
+    const int ROWS;
+    const int COLS;
     QSharedPointer<OverworldViewmodel> viewmodel;
 
 public slots:
