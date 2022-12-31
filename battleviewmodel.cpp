@@ -3,16 +3,11 @@
 
 #include <QRandomGenerator>
 
-BattleViewmodel::BattleViewmodel(QSharedPointer<Repository> repository_, QSharedPointer<Trainer> player_, QSharedPointer<Trainer> opponent_)
+BattleViewmodel::BattleViewmodel(QSharedPointer<Repository> repository_, QSharedPointer<Trainer> player_)
     : repository(repository_)
     , player(player_)
-    , opponent(opponent_)
 {
     for (auto member : player->getTeam()) {
-        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::afterAttacking);
-    }
-
-    for (auto member : opponent->getTeam()) {
         connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::afterAttacking);
     }
 }
@@ -55,6 +50,13 @@ QSharedPointer<Trainer> BattleViewmodel::getPlayerTrainer() {
 
 QSharedPointer<Trainer> BattleViewmodel::getOpponentTrainer() {
     return opponent;
+}
+
+void BattleViewmodel::setOpponentTrainer(QSharedPointer<Trainer> opponent_) {
+    opponent = opponent_;
+    for (auto member : opponent->getTeam()) {
+        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::afterAttacking);
+    }
 }
 
 QSharedPointer<Pokemon> BattleViewmodel::getCurrentPlayerPokemon() {

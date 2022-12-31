@@ -74,20 +74,7 @@ QSharedPointer<MainMenuPage> MainWindow::constructMainMenuPage() {
 }
 
 QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
-
-    // currently a static opponent. can change to be dynamic.
-    QVector<QSharedPointer<AttackMove>> attackList;
-    attackList.append(repository->getAttackByID(2));
-
-    // opponent team
-    QSharedPointer<Pokemon> bulbasaur = repository->getPokemon(1);
-    QSharedPointer<Pokemon> bulbasaur2 = repository->getPokemon(2);
-    QSharedPointer<Pokemon> bulbasaur3 = repository->getPokemon(3);
-    bulbasaur->setAttackList(attackList);
-    QVector<QSharedPointer<Pokemon>> opponentTeam = {bulbasaur, bulbasaur2, bulbasaur3};
-    QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam, QSharedPointer<Bag>::create());
-    QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(repository, player, opponent);
-
+    QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(repository, player);
     QSharedPointer<BattlePage> battlePage = QSharedPointer<BattlePage>::create(battleViewmodel);
     return battlePage;
 }

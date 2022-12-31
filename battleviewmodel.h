@@ -13,10 +13,11 @@ class BattleViewmodel : public QObject
 {
     Q_OBJECT
 public:
-    BattleViewmodel(QSharedPointer<Repository> repository_, QSharedPointer<Trainer> player_, QSharedPointer<Trainer> opponent_);
+    BattleViewmodel(QSharedPointer<Repository> repository_, QSharedPointer<Trainer> player_);
     ~BattleViewmodel() = default;
     QSharedPointer<Trainer> getPlayerTrainer();
     QSharedPointer<Trainer> getOpponentTrainer();
+    void setOpponentTrainer(QSharedPointer<Trainer> opponent_);
     QSharedPointer<Pokemon> getCurrentPlayerPokemon();
     QSharedPointer<Pokemon> getCurrentOpponentPokemon();
 

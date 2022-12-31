@@ -1,5 +1,7 @@
 #include "overworldviewmodel.h"
 #include "pagenavigator.h"
+#include "bag.h"
+#include "trainer.h"
 
 OverworldViewmodel::OverworldViewmodel(QSharedPointer<Repository> repository_, QObject *parent)
     : QObject(parent)
@@ -61,9 +63,18 @@ void OverworldViewmodel::move(QString direction) {
 
     emit worldUpdated(world);
 
-    if (world[playerRow][playerCol]->getType() == TileType::TALL_GRASS) {
+    // 10% chance to encounter a wild pokemon in tall grass
+    if ((world[playerRow][playerCol]->getType() == TileType::TALL_GRASS) && ((QRandomGenerator::global()->generate() % 10) == 0)) {
+        QVector<QSharedPointer<AttackMove>> attackList;
+        attackList.append(repository->getAttackByID(2));
+
         auto wildPokemon = repository->getPokemon(4);
-        QVector<QVariant> data = {QVariant::fromValue<QSharedPointer<Pokemon>>(wildPokemon)};
-        PageNavigator::getInstance()->navigate(PageName::BATTLE);
+        wildPokemon->setAttackList(attackList);
+
+        QVector<QSharedPointer<Pokemon>> opponentTeam = {wildPokemon};
+        QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam, QSharedPointer<Bag>::create());
+
+        QVector<QVariant> data = {QVariant::fromValue<QSharedPointer<Trainer>>(opponent)};
+        PageNavigator::getInstance()->navigate(PageName::BATTLE, data);
     }
 }

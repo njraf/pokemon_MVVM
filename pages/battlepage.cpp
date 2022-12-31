@@ -13,6 +13,7 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
 
     setObjectName("BattlePage");
 
+    /*
     auto playerTeam = viewmodel->getPlayerTrainer()->getTeam();
     auto opponentTeam = viewmodel->getOpponentTrainer()->getTeam();
     bool playerKOed = (0 == std::count_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
@@ -22,6 +23,7 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
     } else if (opponentKOed) {
         qDebug() << "ERROR: The opponent has no usable pokemon";
     }
+    */
 
     // action buttons
     connect(ui->fightButton, &QPushButton::clicked, this, [=] { ui->actionArea->setCurrentIndex(1); });
@@ -55,10 +57,6 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
         winLoseDialog.exec();
         PageNavigator::getInstance()->navigateBack();
     });
-
-    if (!playerKOed && !opponentKOed) {
-        viewmodel->summonFirstPokemon();
-    }
 }
 
 BattlePage::~BattlePage()
@@ -71,9 +69,15 @@ PageName BattlePage::getPageName() {
 }
 
 void BattlePage::receiveData(QVector<QVariant> data) {
-    if (!data.isEmpty() && data[0].canConvert<QSharedPointer<Pokemon>>()) { // player switched pokemon in battle
-        QSharedPointer<Pokemon> pokemon = data[0].value<QSharedPointer<Pokemon>>();
-        viewmodel->playerSummon(pokemon);
+    if (!data.isEmpty()) {
+        if (data[0].canConvert<QSharedPointer<Pokemon>>()) { // player switched pokemon in battle
+            QSharedPointer<Pokemon> pokemon = data[0].value<QSharedPointer<Pokemon>>();
+            viewmodel->playerSummon(pokemon);
+        } else if (data[0].canConvert<QSharedPointer<Trainer>>()) { // start encounter with wild pokemon or trainer
+            auto opponentTrainer = data[0].value<QSharedPointer<Trainer>>();
+            viewmodel->setOpponentTrainer(opponentTrainer);
+            viewmodel->summonFirstPokemon();
+        }
     }
 
     displayStats(viewmodel->getCurrentPlayerPokemon(), viewmodel->getCurrentOpponentPokemon());

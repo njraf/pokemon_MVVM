@@ -15,7 +15,7 @@ INCLUDEPATH += \
 SOURCES += \
     attackmove.cpp \
     bag.cpp \
-    overworldpage.cpp \
+    pages/overworldpage.cpp \
     overworldviewmodel.cpp \
     pages/bagpage.cpp \
     bagviewmodel.cpp \
@@ -44,7 +44,7 @@ SOURCES += \
 HEADERS += \
     attackmove.h \
     bag.h \
-    overworldpage.h \
+    pages/overworldpage.h \
     overworldviewmodel.h \
     pages/bagpage.h \
     bagviewmodel.h \
