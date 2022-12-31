@@ -6,12 +6,13 @@
 #include <QVector>
 
 #include "tile.h"
+#include "repository.h"
 
 class OverworldViewmodel : public QObject
 {
     Q_OBJECT
 public:
-    explicit OverworldViewmodel(QObject *parent = nullptr);
+    explicit OverworldViewmodel(QSharedPointer<Repository> repository_, QObject *parent = nullptr);
     ~OverworldViewmodel() = default;
     QVector<QVector<QSharedPointer<Tile>>> getWorld();
     int getPlayerRow();
@@ -24,6 +25,7 @@ private:
     int playerRow;
     int playerCol;
     QVector<QVector<QSharedPointer<Tile>>> world;
+    QSharedPointer<Repository> repository;
 
 signals:
     void worldUpdated(QVector<QVector<QSharedPointer<Tile>>> world);

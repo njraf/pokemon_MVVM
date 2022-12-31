@@ -4,7 +4,7 @@
 #include <QObject>
 
 enum class TileType : int {
-    NONE, DIRT, GRASS, WALL
+    NONE, DIRT, GRASS, TALL_GRASS, WALL
 };
 
 class Tile : public QObject
@@ -15,6 +15,11 @@ public:
     ~Tile() = default;
     TileType getType();
 
+
+    template <typename E>
+    static constexpr typename std::underlying_type<E>::type to_underlying(E e) noexcept {
+        return static_cast<typename std::underlying_type<E>::type>(e);
+    }
 
 private:
     TileType type;

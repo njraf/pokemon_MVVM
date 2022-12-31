@@ -71,7 +71,7 @@ PageName BattlePage::getPageName() {
 }
 
 void BattlePage::receiveData(QVector<QVariant> data) {
-    if (!data.isEmpty() && data[0].canConvert<QSharedPointer<Pokemon>>()) {
+    if (!data.isEmpty() && data[0].canConvert<QSharedPointer<Pokemon>>()) { // player switched pokemon in battle
         QSharedPointer<Pokemon> pokemon = data[0].value<QSharedPointer<Pokemon>>();
         viewmodel->playerSummon(pokemon);
     }

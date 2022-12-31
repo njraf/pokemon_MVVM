@@ -108,6 +108,6 @@ QSharedPointer<BagPage> MainWindow::constructBagPage() {
 }
 
 QSharedPointer<OverworldPage> MainWindow::constructOverworldPage() {
-    auto viewmodel = QSharedPointer<OverworldViewmodel>::create();
+    auto viewmodel = QSharedPointer<OverworldViewmodel>::create(repository);
     return QSharedPointer<OverworldPage>::create(viewmodel);
 }

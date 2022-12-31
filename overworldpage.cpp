@@ -49,9 +49,9 @@ void OverworldPage::drawOverworld(QVector<QVector<QSharedPointer<Tile>>> world) 
 
     // window the world into a grid that fits on screen
     QVector<QVector<QSharedPointer<Tile>>> screen;
-    for (int row = -(WORLD_ROWS/2); row < (WORLD_ROWS/2) + 1; row++) {
+    for (int row = -(ROWS/2); row < ((ROWS/2) + 1); row++) {
         QVector<QSharedPointer<Tile>> r;
-        for (int col = -(WORLD_COLS/2); col < (WORLD_COLS/2); col++) {
+        for (int col = -(COLS/2); col < (COLS/2); col++) {
             int screenRow = playerRow + row;
             int screenCol = playerCol + col;
             if ((screenRow >= 0) && (screenRow < WORLD_ROWS) && (screenCol >= 0) && (screenCol < WORLD_COLS)) {
@@ -96,6 +96,9 @@ QString OverworldPage::tileToColor(QSharedPointer<Tile> tile) {
         break;
     case TileType::GRASS:
         color = "limegreen";
+        break;
+    case TileType::TALL_GRASS:
+        color = "green";
         break;
     case TileType::WALL:
         color = "gray";
