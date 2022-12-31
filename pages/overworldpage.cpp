@@ -1,5 +1,8 @@
 #include "overworldpage.h"
 #include "ui_overworldpage.h"
+#include "pagenavigator.h"
+
+#include <QPushButton>
 
 OverworldPage::OverworldPage(QSharedPointer<OverworldViewmodel> viewmodel_, QWidget *parent) :
     IPage(parent),
@@ -14,9 +17,45 @@ OverworldPage::OverworldPage(QSharedPointer<OverworldViewmodel> viewmodel_, QWid
     for (int row = 0; row < ROWS; row++) {
         for (int col = 0; col < COLS; col++) {
             auto gridLayout = ui->gridLayout;
-            QWidget *tileWidget = new QWidget();
-            tileWidget->setStyleSheet("border: 1px solid black; background-color: lightgray;");
-            gridLayout->addWidget(tileWidget, row, col);
+
+            if ((row >= ((ROWS / 2) - 1)) && (row <= ((ROWS / 2) + 1)) && (col >= (COLS - 2))) {
+                if ((row == ((ROWS / 2) - 1)) && (col == (COLS - 2))) {
+                    // create menuStackWidget
+                    // grid page
+                    menuStackWidget = new QStackedWidget();
+                    auto worldGrid = new QGridLayout();
+
+                    worldGrid->addWidget(new QWidget(), 0,0);
+                    worldGrid->addWidget(new QWidget(), 1,0);
+                    worldGrid->addWidget(new QWidget(), 2,0);
+                    worldGrid->addWidget(new QWidget(), 0,1);
+                    worldGrid->addWidget(new QWidget(), 1,1);
+                    worldGrid->addWidget(new QWidget(), 2,1);
+                    QWidget *worldTilePage = new QWidget();
+                    worldTilePage->setLayout(worldGrid);
+
+                    // menu page
+                    auto menuLayout = new QVBoxLayout();
+                    auto pokemonButton = new QPushButton("Pokemon");
+                    auto bagButton = new QPushButton("Bag");
+                    connect(pokemonButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::TEAM); });
+                    connect(bagButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::BAG); });
+
+                    menuLayout->addWidget(pokemonButton);
+                    menuLayout->addWidget(bagButton);
+                    QWidget *menuPage = new QWidget();
+                    menuPage->setLayout(menuLayout);
+
+                    // add pages to menuStackWidget
+                    menuStackWidget->addWidget(worldTilePage);
+                    menuStackWidget->addWidget(menuPage);
+                    gridLayout->addWidget(menuStackWidget, row, col, 3, 2);
+                }
+            } else {
+                QWidget *tileWidget = new QWidget();
+                tileWidget->setStyleSheet("border: 1px solid black; background-color: lightgray;");
+                gridLayout->addWidget(tileWidget, row, col);
+            }
 
         }
     }
@@ -36,6 +75,7 @@ PageName OverworldPage::getPageName() {
 
 void OverworldPage::receiveData(QVector<QVariant> data) {
     setFocusPolicy(Qt::StrongFocus);
+    menuStackWidget->setCurrentIndex(0);
 }
 
 void OverworldPage::drawOverworld(QVector<QVector<QSharedPointer<Tile>>> world) {
@@ -71,9 +111,26 @@ void OverworldPage::drawOverworld(QVector<QVector<QSharedPointer<Tile>>> world) 
                 continue;
             }
 
-            tileWidget = qobject_cast<QWidget*>(item->widget());
-            if (tileWidget == nullptr) {
-                continue;
+            if ((row >= ((ROWS / 2) - 1)) && (row <= ((ROWS / 2) + 1)) && (col >= (COLS - 2))) {
+                // draw grid on menuStackWidget
+                int stackRow = 2 - ((ROWS / 2) - row + 1);
+                int stackCol = 1 - (COLS - col - 1);
+                auto page = menuStackWidget->widget(0);
+                auto pageGrid = qobject_cast<QGridLayout*>(page->layout());
+                item = pageGrid->itemAtPosition(stackRow, stackCol);
+                if ((item == nullptr) || (item->widget() == nullptr)) {
+                    continue;
+                }
+
+                tileWidget = qobject_cast<QWidget*>(item->widget());
+                if (tileWidget == nullptr) {
+                    continue;
+                }
+            } else {
+                tileWidget = qobject_cast<QWidget*>(item->widget());
+                if (tileWidget == nullptr) {
+                    continue;
+                }
             }
 
             QSharedPointer<Tile> tile = screen[row][col];
@@ -127,6 +184,7 @@ void OverworldPage::keyPressEvent(QKeyEvent *event) {
         break;
     case Qt::Key_Return:
     case Qt::Key_Enter: // keypad
+        menuStackWidget->setCurrentIndex(1 - menuStackWidget->currentIndex());
         break;
     }
 }

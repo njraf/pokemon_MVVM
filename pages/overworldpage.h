@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QKeyEvent>
+#include <QStackedWidget>
 
 #include "ipage.h"
 #include "overworldviewmodel.h"
@@ -31,6 +32,7 @@ private:
     const int ROWS;
     const int COLS;
     QSharedPointer<OverworldViewmodel> viewmodel;
+    QStackedWidget *menuStackWidget;
 
 public slots:
     void drawOverworld(QVector<QVector<QSharedPointer<Tile>>> world);
