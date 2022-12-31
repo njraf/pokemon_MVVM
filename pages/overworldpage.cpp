@@ -24,25 +24,33 @@ OverworldPage::OverworldPage(QSharedPointer<OverworldViewmodel> viewmodel_, QWid
                     // grid page
                     menuStackWidget = new QStackedWidget();
                     auto worldGrid = new QGridLayout();
+                    worldGrid->setContentsMargins(0, 0, 0, 0);
 
-                    worldGrid->addWidget(new QWidget(), 0,0);
-                    worldGrid->addWidget(new QWidget(), 1,0);
-                    worldGrid->addWidget(new QWidget(), 2,0);
-                    worldGrid->addWidget(new QWidget(), 0,1);
-                    worldGrid->addWidget(new QWidget(), 1,1);
-                    worldGrid->addWidget(new QWidget(), 2,1);
+                    worldGrid->addWidget(new QWidget(), 0, 0);
+                    worldGrid->addWidget(new QWidget(), 1, 0);
+                    worldGrid->addWidget(new QWidget(), 2, 0);
+                    worldGrid->addWidget(new QWidget(), 0, 1);
+                    worldGrid->addWidget(new QWidget(), 1, 1);
+                    worldGrid->addWidget(new QWidget(), 2, 1);
                     QWidget *worldTilePage = new QWidget();
                     worldTilePage->setLayout(worldGrid);
 
                     // menu page
                     auto menuLayout = new QVBoxLayout();
+                    menuLayout->setContentsMargins(0, 0, 0, 0);
+                    auto pokedexButton = new QPushButton("Pokedex");
                     auto pokemonButton = new QPushButton("Pokemon");
                     auto bagButton = new QPushButton("Bag");
+                    auto saveButton = new QPushButton("Save");
+                    //connect(pokedexButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::POKEDEX); });
                     connect(pokemonButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::TEAM); });
                     connect(bagButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigate(PageName::BAG); });
+                    //connect(saveButton, &QPushButton::clicked, this, [=] {  });
 
+                    menuLayout->addWidget(pokedexButton);
                     menuLayout->addWidget(pokemonButton);
                     menuLayout->addWidget(bagButton);
+                    menuLayout->addWidget(saveButton);
                     QWidget *menuPage = new QWidget();
                     menuPage->setLayout(menuLayout);
 

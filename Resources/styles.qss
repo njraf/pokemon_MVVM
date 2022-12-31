@@ -14,7 +14,7 @@ QLabel {
 }
 
 QPushButton {
-    font: 18pt;
+    font: 14pt;
 }
 
 TeamMemberCard:hover {
