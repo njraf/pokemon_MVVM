@@ -12,21 +12,17 @@ OverworldViewmodel::OverworldViewmodel(QSharedPointer<Repository> repository_, Q
     , repository(repository_)
     , paused(false)
 {
-    for (int row = 0; row < ROWS; row++) {
-        QVector<QSharedPointer<Tile>> r;
-        for (int col = 0; col < COLS; col++) {
-            if ((col % 5) == 3) {
-                r.append(QSharedPointer<Tile>::create(TileType::ROCK_PATH));
-            } else if (row == (playerRow - 1)) {
-                r.append(QSharedPointer<Tile>::create(TileType::TALL_GRASS));
-            } else if ((row % 2) == 0) {
-                r.append(QSharedPointer<Tile>::create(TileType::GRASS_PATH));
-            } else {
-                r.append(QSharedPointer<Tile>::create(TileType::STONE_WALL));
-            }
-        }
-        world.append(r);
+
+    // make the overworld
+    world = repository->getMapByID(0);
+    int maxCol = 0;
+    for (auto row : world) {
+        maxCol = std::max(row.size(), maxCol);
     }
+    ROWS = world.size();
+    COLS = maxCol;
+    playerRow = (ROWS / 2);
+    playerCol = (COLS / 2);
 }
 
 QVector<QVector<QSharedPointer<Tile>>> OverworldViewmodel::getWorld() {
@@ -42,7 +38,7 @@ int OverworldViewmodel::getPlayerCol() {
 }
 
 void OverworldViewmodel::move(QString direction) {
-    if (paused) {
+    if (paused || world.isEmpty() || world[0].isEmpty()) {
         return;
     }
 

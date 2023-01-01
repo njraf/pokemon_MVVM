@@ -90,6 +90,10 @@ void OverworldPage::receiveData(QVector<QVariant> data) {
 }
 
 void OverworldPage::drawOverworld(QVector<QVector<QSharedPointer<Tile>>> world) {
+    if (world.isEmpty() || world[0].isEmpty()) {
+        qDebug() << "ERROR: Could not load the world";
+        return;
+    }
     const int WORLD_ROWS = world.size();
     const int WORLD_COLS = world[0].size();
     const int playerRow = viewmodel->getPlayerRow();

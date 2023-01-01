@@ -13,7 +13,8 @@ MainWindow::MainWindow(QWidget *parent)
     QSharedPointer<PokemonDao> pokemonDao = QSharedPointer<PokemonDao>::create();
     QSharedPointer<AttackMoveDao> attackMoveDao = QSharedPointer<AttackMoveDao>::create();
     QSharedPointer<HealItemDao> healItemDao = QSharedPointer<HealItemDao>::create();
-    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao, healItemDao);
+    QSharedPointer<OverworldDao> overworldDao = QSharedPointer<OverworldDao>::create();
+    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao, healItemDao, overworldDao);
     if (!repository->hasConnection()) {
         //TODO: make an error dialog
         qDebug() << "ERROR: Could not connect to repository";

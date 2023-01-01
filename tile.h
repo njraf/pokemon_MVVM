@@ -26,6 +26,8 @@ public:
         return static_cast<typename std::underlying_type<E>::type>(e);
     }
 
+    static const QVector<TileType> tileTypes;
+
 private:
     TileType type;
     bool passable; // player can step on this tile

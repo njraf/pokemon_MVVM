@@ -21,8 +21,8 @@ public:
     void togglePause();
 
 private:
-    const int ROWS;
-    const int COLS;
+    int ROWS;
+    int COLS;
     int playerRow;
     int playerCol;
     QVector<QVector<QSharedPointer<Tile>>> world;
