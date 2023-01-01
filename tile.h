@@ -4,7 +4,11 @@
 #include <QObject>
 
 enum class TileType : int {
-    NONE, DIRT, GRASS, TALL_GRASS, WALL
+    NONE, // default
+    TALL_GRASS, // special tiles
+    SHALLOW_WATER, WATER, DEEP_WATER, // water
+    DIRT_PATH, GRASS_PATH, ROCK_PATH, STONE_PATH, SAND_PATH, // passable tiles (lighter colors)
+    ROCK_WALL, STONE_WALL // impassable tiles (darker colors)
 };
 
 class Tile : public QObject
@@ -14,6 +18,7 @@ public:
     explicit Tile(TileType type_, QObject *parent = nullptr);
     ~Tile() = default;
     TileType getType();
+    bool getPassable();
 
 
     template <typename E>
@@ -23,9 +28,7 @@ public:
 
 private:
     TileType type;
-
-
-signals:
+    bool passable; // player can step on this tile
 
 };
 

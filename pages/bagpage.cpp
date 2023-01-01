@@ -19,6 +19,7 @@ BagPage::BagPage(QSharedPointer<BagViewmodel> viewmodel_, QWidget *parent) :
         break;
     case PageName::MAIN_MENU:
     case PageName::BATTLE:
+    case PageName::OVERWORLD:
         context = Context::MENU;
         break;
     default:

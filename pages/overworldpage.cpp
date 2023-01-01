@@ -17,6 +17,8 @@ OverworldPage::OverworldPage(QSharedPointer<OverworldViewmodel> viewmodel_, QWid
     for (int row = 0; row < ROWS; row++) {
         for (int col = 0; col < COLS; col++) {
             auto gridLayout = ui->gridLayout;
+            gridLayout->setHorizontalSpacing(0);
+            gridLayout->setVerticalSpacing(0);
 
             if ((row >= ((ROWS / 2) - 1)) && (row <= ((ROWS / 2) + 1)) && (col >= (COLS - 2))) {
                 if ((row == ((ROWS / 2) - 1)) && (col == (COLS - 2))) {
@@ -25,6 +27,8 @@ OverworldPage::OverworldPage(QSharedPointer<OverworldViewmodel> viewmodel_, QWid
                     menuStackWidget = new QStackedWidget();
                     auto worldGrid = new QGridLayout();
                     worldGrid->setContentsMargins(0, 0, 0, 0);
+                    worldGrid->setHorizontalSpacing(0);
+                    worldGrid->setVerticalSpacing(0);
 
                     worldGrid->addWidget(new QWidget(), 0, 0);
                     worldGrid->addWidget(new QWidget(), 1, 0);
@@ -83,7 +87,6 @@ PageName OverworldPage::getPageName() {
 
 void OverworldPage::receiveData(QVector<QVariant> data) {
     setFocusPolicy(Qt::StrongFocus);
-    menuStackWidget->setCurrentIndex(0);
 }
 
 void OverworldPage::drawOverworld(QVector<QVector<QSharedPointer<Tile>>> world) {
@@ -154,26 +157,32 @@ void OverworldPage::drawOverworld(QVector<QVector<QSharedPointer<Tile>>> world) 
 }
 
 QString OverworldPage::tileToColor(QSharedPointer<Tile> tile) {
-    QString color = "";
     switch (tile->getType()) {
-    case TileType::DIRT:
-        color = "brown";
-        break;
-    case TileType::GRASS:
-        color = "limegreen";
-        break;
+    case TileType::DIRT_PATH:
+        return "peru";
+    case TileType::ROCK_PATH:
+        return "sienna";
+    case TileType::SAND_PATH:
+        return "sandybrown";
+    case TileType::GRASS_PATH:
+        return "limegreen";
+    case TileType::STONE_PATH:
+        return "lightgray";
     case TileType::TALL_GRASS:
-        color = "green";
-        break;
-    case TileType::WALL:
-        color = "gray";
-        break;
+        return "green";
+    case TileType::STONE_WALL:
+        return "gray";
+    case TileType::ROCK_WALL:
+        return "saddlebrown";
+    case TileType::SHALLOW_WATER:
+        return "aqua";
+    case TileType::WATER:
+        return "blue";
+    case TileType::DEEP_WATER:
+        return "darkblue";
     default:
-        color = "black";
-        break;
+        return "black";
     }
-
-    return color;
 }
 
 void OverworldPage::keyPressEvent(QKeyEvent *event) {
@@ -193,6 +202,7 @@ void OverworldPage::keyPressEvent(QKeyEvent *event) {
     case Qt::Key_Return:
     case Qt::Key_Enter: // keypad
         menuStackWidget->setCurrentIndex(1 - menuStackWidget->currentIndex());
+        viewmodel->togglePause();
         break;
     }
 }

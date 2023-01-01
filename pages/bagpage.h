@@ -27,7 +27,7 @@ private:
     enum class Context : int {
         NONE,
         TEAM, // from TeamPage
-        MENU  // from main menu or battle
+        MENU // from main menu or battle
     };
     Ui::BagPage *ui;
     QSharedPointer<BagViewmodel> viewmodel;

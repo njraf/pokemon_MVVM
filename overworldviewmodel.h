@@ -18,6 +18,7 @@ public:
     int getPlayerRow();
     int getPlayerCol();
     void move(QString direction);
+    void togglePause();
 
 private:
     const int ROWS;
@@ -26,6 +27,7 @@ private:
     int playerCol;
     QVector<QVector<QSharedPointer<Tile>>> world;
     QSharedPointer<Repository> repository;
+    bool paused;
 
 signals:
     void worldUpdated(QVector<QVector<QSharedPointer<Tile>>> world);

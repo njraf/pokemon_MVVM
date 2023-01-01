@@ -24,6 +24,9 @@ TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
     case PageName::BAG:
         context = Context::BAG;
         break;
+    case PageName::OVERWORLD:
+        context = Context::OVERWORLD;
+        break;
     default:
         context = Context::NONE;
         break;
@@ -46,7 +49,7 @@ TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
                 }
             } else if (context == Context::BATTLE) {
                 showBattleDialog(member);
-            } else if (context == Context::MAIN_MENU) {
+            } else if ((context == Context::MAIN_MENU) || (context == Context::OVERWORLD)) {
                 showMenuDialog(member);
             }
         });

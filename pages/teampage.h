@@ -44,7 +44,7 @@ public:
 
 private:
     enum class Context : int { // specifies the context this page was opened under (e.g. in battle or from the main menu)
-        NONE, BATTLE, MAIN_MENU, BAG
+        NONE, BATTLE, MAIN_MENU, BAG, OVERWORLD
     };
     Ui::TeamPage *ui;
     QVector<QSharedPointer<Pokemon>> team;
