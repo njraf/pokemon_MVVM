@@ -32,9 +32,12 @@ private:
     QSharedPointer<Trainer> opponent;
     QSharedPointer<Pokemon> currentPlayerPokemon;
     QSharedPointer<Pokemon> currentOpponentPokemon;
+    QVector<QSharedPointer<Pokemon>> fighters; // point to currentPlayerPokemon and currentOpponenetPokemon
+
+    void resolveTurn(); // run at the end of each turn, after all attacks
 
 private slots:
-    void afterAttacking();
+    void resolveAttack(); // run after each pokemon's attack
 
 signals:
     void summonedPokemon(QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon);

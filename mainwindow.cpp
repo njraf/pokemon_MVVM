@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     PageNavigator::getInstance()->populateRoutes(routes);
     PageNavigator::getInstance()->navigate(PageName::OVERWORLD);
+    ui->pages->currentWidget()->setFocusPolicy(Qt::StrongFocus);
 }
 
 MainWindow::~MainWindow()

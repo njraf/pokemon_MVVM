@@ -8,11 +8,11 @@ BattleViewmodel::BattleViewmodel(QSharedPointer<Repository> repository_, QShared
     , player(player_)
 {
     for (auto member : player->getTeam()) {
-        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::afterAttacking);
+        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::resolveAttack);
     }
 }
 
-void BattleViewmodel::afterAttacking() {
+void BattleViewmodel::resolveAttack() {
     emit stateUpdated();
     // determine win/lose and emit signal
     auto playerTeam = player->getTeam();
@@ -42,6 +42,28 @@ void BattleViewmodel::afterAttacking() {
         livingOpponentTeam.resize(std::distance(livingOpponentTeam.begin(), teamIt));
         opponentSummon(livingOpponentTeam.at(QRandomGenerator::global()->generate() % livingOpponentTeam.size())); //TODO: change summon strategy
     }
+
+    static int numAttacks = 0;
+    numAttacks++;
+    if (numAttacks == fighters.size()) {
+        numAttacks = 0;
+        resolveTurn();
+    }
+}
+
+void BattleViewmodel::resolveTurn() {
+    for (auto pokemon : fighters) {
+        if (pokemon->getStatusCondition() == Status::BURNED) {
+            pokemon->setHealthStat(pokemon->getHealthStat() - (pokemon->getMaxHealthStat() * 0.0625));
+        } else if (pokemon->getStatusCondition() == Status::POISONED) {
+            pokemon->setHealthStat(pokemon->getHealthStat() - (pokemon->getMaxHealthStat() * 0.125));
+        } else if (pokemon->getStatusCondition() == Status::BADLY_POISONED) {
+            int badPoisonTurn = std::min(pokemon->getBadlyPoisonedTurn() + 1, 15);
+            int poisonDamage = pokemon->getMaxHealthStat() * badPoisonTurn * 0.0625;
+            pokemon->setHealthStat(pokemon->getHealthStat() - poisonDamage);
+            pokemon->setBadlyPoisonedTurn(badPoisonTurn);
+        }
+    }
 }
 
 QSharedPointer<Trainer> BattleViewmodel::getPlayerTrainer() {
@@ -55,7 +77,7 @@ QSharedPointer<Trainer> BattleViewmodel::getOpponentTrainer() {
 void BattleViewmodel::setOpponentTrainer(QSharedPointer<Trainer> opponent_) {
     opponent = opponent_;
     for (auto member : opponent->getTeam()) {
-        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::afterAttacking);
+        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::resolveAttack);
     }
 }
 
@@ -82,21 +104,33 @@ void BattleViewmodel::summonFirstPokemon() {
 
     currentPlayerPokemon->resetAllStages();
     currentOpponentPokemon->resetAllStages();
+    fighters.append(currentPlayerPokemon);
+    fighters.append(currentOpponentPokemon);
 
     emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
 }
 
 void BattleViewmodel::playerSummon(QSharedPointer<Pokemon> pokemon) {
+    if (!currentPlayerPokemon.isNull() && (currentPlayerPokemon->getStatusCondition() == Status::BADLY_POISONED)) {
+        currentPlayerPokemon->setStatusCondition(Status::POISONED);
+        currentPlayerPokemon->setBadlyPoisonedTurn(0);
+    }
     currentPlayerPokemon = pokemon;
     currentPlayerPokemon->resetAllStages();
+    fighters[0] = currentPlayerPokemon;
     emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
     int opponentAttackIndex = (QRandomGenerator::global()->generate() % currentOpponentPokemon->getAttackList().size()); //TODO: change attack strategy
     currentOpponentPokemon->attack(currentPlayerPokemon, currentOpponentPokemon->getAttackList().at(opponentAttackIndex));
 }
 
 void BattleViewmodel::opponentSummon(QSharedPointer<Pokemon> pokemon) {
+    if (!currentOpponentPokemon.isNull() && (currentOpponentPokemon->getStatusCondition() == Status::BADLY_POISONED)) {
+        currentOpponentPokemon->setStatusCondition(Status::POISONED);
+        currentOpponentPokemon->setBadlyPoisonedTurn(0);
+    }
     currentOpponentPokemon = pokemon;
     currentOpponentPokemon->resetAllStages();
+    fighters[1] = currentOpponentPokemon;
     emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
 }
 

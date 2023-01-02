@@ -45,6 +45,7 @@ SOURCES += \
 HEADERS += \
     attackmove.h \
     bag.h \
+    commonenumerations.h \
     overworlddao.h \
     pages/overworldpage.h \
     overworldviewmodel.h \

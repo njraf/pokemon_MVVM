@@ -86,7 +86,7 @@ PageName OverworldPage::getPageName() {
 }
 
 void OverworldPage::receiveData(QVector<QVariant> data) {
-    setFocusPolicy(Qt::StrongFocus);
+    setFocus();
 }
 
 void OverworldPage::drawOverworld(QVector<QVector<QSharedPointer<Tile>>> world) {

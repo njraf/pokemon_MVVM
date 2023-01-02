@@ -39,6 +39,9 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
     , attackList(attackList_)
     , type1(type1_)
     , type2(type2_)
+    , statusCondition(Status::NONE)
+    , confused(false)
+    , infatuated(false)
 {
     // calculate IVs
     if (owner.isEmpty()) {
@@ -62,6 +65,12 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
         return;
     }
     attackMove->setPp(attackMove->getPp() - 1);
+
+    //TODO: process confusion
+
+
+    //TODO: process infatuation
+
 
     // calculate accuracy
     int combinedStages = accuracyStatStage - opponent->getEvasionStatStage();
@@ -97,6 +106,9 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
     }
 
     double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * attack * attackPower / defense) / 50.0) + 2.0) * stab * weakResist * randomNumber / 100.0;
+    if ((statusCondition == Status::BURNED) && (attackMove->getCategory() == Category::PHYSICAL)) {
+        damage *= 0.5;
+    }
     int dmg = ((damage - qFloor(damage)) < 0.5) ? qFloor(damage) : qCeil(damage); // round damage to the nearest whole number
 
     opponent->setHealthStat(opponent->getHealthStat() - dmg);
@@ -382,5 +394,34 @@ void Pokemon::setAttackList(QVector<QSharedPointer<AttackMove> > newAttackList) 
     attackList = newAttackList;
 }
 
+Status Pokemon::getStatusCondition() {
+    return statusCondition;
+}
 
+void Pokemon::setStatusCondition(Status status) {
+    statusCondition = status;
+}
 
+bool Pokemon::isConfused() {
+    return confused;
+}
+
+void Pokemon::isConfused(bool confused_) {
+    confused = confused_;
+}
+
+bool Pokemon::isInfatuated() {
+    return infatuated;
+}
+
+void Pokemon::isInfatuated(bool infatuated_) {
+    infatuated = infatuated_;
+}
+
+int Pokemon::getBadlyPoisonedTurn() {
+    return badPoisonTurn;
+}
+
+void Pokemon::setBadlyPoisonedTurn(int badlyPoisonedTurn_) {
+    badPoisonTurn = badlyPoisonedTurn_;
+}
