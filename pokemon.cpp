@@ -42,6 +42,11 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
     , statusCondition(Status::NONE)
     , confused(false)
     , infatuated(false)
+    , badPoisonTurn(0)
+    , maxSleepTurns(0)
+    , numTurnsAsleep(0)
+    , maxConfusionTurns(0)
+    , numTurnsConfused(0)
 {
     // calculate IVs
     if (owner.isEmpty()) {
@@ -64,13 +69,56 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
         qDebug() << "This move has no PP left";
         return;
     }
+
+    // process frozen status condition
+    if (statusCondition == Status::FROZEN) {
+        bool thawed = (QRandomGenerator::global()->generate() % 5) == 0; // 20% chance to thaw
+        if (thawed) {
+            statusCondition = Status::NONE;
+        } else {
+            return;
+        }
+    } else if (statusCondition == Status::ASLEEP) { // process sleep
+        numTurnsAsleep++; //TODO: move this to viewmodel in case pokemon does not attack and item is used instead
+        if (numTurnsAsleep == maxSleepTurns) {
+            numTurnsAsleep = 0;
+            maxSleepTurns = 0;
+            statusCondition = Status::NONE; // wake up
+        } else {
+            return;
+        }
+    } else if (statusCondition == Status::PARALYZED) { // process paralysis
+        if ((QRandomGenerator::global()->generate() % 4) == 0) { // 25% chance to not attack
+            qDebug() << name << "is paralyzed and cannot attack.";
+            return;
+        }
+    }
+
+    // process infatuation
+    if (infatuated && ((QRandomGenerator::global()->generate() % 2) == 0)) {
+        qDebug() << name << "is infatuated and cannot attack.";
+        return;
+    }
+
+    // process confusion
+    if (confused) {
+        numTurnsConfused++;
+        if (numTurnsConfused == maxConfusionTurns) {
+            numTurnsConfused = 0;
+            maxConfusionTurns = 0;
+            confused = false;
+            qDebug() << name << "snapped out of confusion";
+        } else if ((QRandomGenerator::global()->generate() % 3) == 0) { // hurt by confusion
+            QSharedPointer<Pokemon> self(this);
+            QSharedPointer<AttackMove> confusionStatus = QSharedPointer<AttackMove>::create("Confusion Status", 40, 100, 99, 99, Type::NONE, Category::PHYSICAL);
+            int dmg = calculateDamage(self, confusionStatus);
+            setHealthStat(currentHealthStat - dmg);
+            qDebug() << name << "hit itself in confusion";
+            return;
+        }
+    }
+
     attackMove->setPp(attackMove->getPp() - 1);
-
-    //TODO: process confusion
-
-
-    //TODO: process infatuation
-
 
     // calculate accuracy
     int combinedStages = accuracyStatStage - opponent->getEvasionStatStage();
@@ -89,14 +137,27 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
 
 
     // calculate damage
+    int dmg = calculateDamage(opponent, attackMove);
+    opponent->setHealthStat(opponent->getHealthStat() - dmg);
+    qDebug() << name << "attacked" << opponent->getName() << "with" << attackMove->getName() << "and dealt" << dmg << "damage.";
+
+    if ((opponent->getStatusCondition() == Status::FROZEN) && (attackMove->getType() == Type::FIRE) && (attackMove->getPower() > 0)) {
+        opponent->setStatusCondition(Status::NONE); // thaw the opponent if attacked with a damaging fire type move
+    }
+
+    emit attacked();
+}
+
+
+int Pokemon::calculateDamage(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove) {
     double attackPower = (double)attackMove->getPower();
     double stab = ((attackMove->getType() == type1) || (attackMove->getType() == type2)) ? 1.5 : 1.0;
     double weakResist = TypeUtilities::calcEffectiveness(attackMove->getType(), opponent->getType1());
     weakResist *= TypeUtilities::calcEffectiveness(attackMove->getType(), opponent->getType2());
     double randomNumber = (double)((QRandomGenerator::global()->generate() % 16) + 85); // get a random number (85 - 100)
 
-    double attack = 0.0;
-    double defense = 0.0;
+    double attack = 1.0;
+    double defense = 1.0;
     if (attackMove->getCategory() == Category::PHYSICAL) {
         attack = getAttackStat();
         defense = opponent->getDefenseStat();
@@ -110,10 +171,7 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
         damage *= 0.5;
     }
     int dmg = ((damage - qFloor(damage)) < 0.5) ? qFloor(damage) : qCeil(damage); // round damage to the nearest whole number
-
-    opponent->setHealthStat(opponent->getHealthStat() - dmg);
-    qDebug() << name << "attacked" << opponent->getName() << "with" << attackMove->getName() << "and dealt" << dmg << "damage.";
-    emit attacked();
+    return dmg;
 }
 
 QString Pokemon::getName() const {
@@ -154,8 +212,12 @@ void Pokemon::setHealthStat(int newHealthStat) {
 }
 
 int Pokemon::getSpeedStat() const {
-    return ((((double)speedStatIV + 2.0 * (double)baseSpeedStat + ((double)speedStatEV / 4.0)) * (double)level / 100.0) + 5.0) *
+    int speed = ((((double)speedStatIV + 2.0 * (double)baseSpeedStat + ((double)speedStatEV / 4.0)) * (double)level / 100.0) + 5.0) *
             NatureUtilities::calcMultiplier(nature, NatureUtilities::Stat::SPEED) * getStatStageMultiplier(speedStatStage);
+    if (statusCondition == Status::PARALYZED) {
+        speed *= 0.5;
+    }
+    return speed;
 }
 
 int Pokemon::getMaxHealthStat() const {
@@ -399,7 +461,18 @@ Status Pokemon::getStatusCondition() {
 }
 
 void Pokemon::setStatusCondition(Status status) {
-    statusCondition = status;
+    if (statusCondition == Status::NONE) {
+        if (((status == Status::FROZEN) && (type1 != Type::ICE) && (type2 != Type::ICE)) || // do not freeze ice types
+                ((status == Status::BURNED) && (type1 != Type::FIRE) && (type2 != Type::FIRE)) || // do not burn fire types
+                ((status == Status::PARALYZED) && (type1 != Type::ELECTRIC) && (type2 != Type::ELECTRIC)) || // do not paralyze electric types
+                (((status == Status::POISONED) || (status == Status::BADLY_POISONED)) && (type1 != Type::POISON) && (type2 != Type::POISON) && (type1 != Type::STEEL) && (type2 != Type::STEEL)) // do not poison steel or poison types
+                )
+        {
+            statusCondition = status;
+        } else if (status == Status::ASLEEP) {
+            maxSleepTurns = (QRandomGenerator::global()->generate() % 3) + 1;
+        }
+    }
 }
 
 bool Pokemon::isConfused() {
@@ -424,4 +497,36 @@ int Pokemon::getBadlyPoisonedTurn() {
 
 void Pokemon::setBadlyPoisonedTurn(int badlyPoisonedTurn_) {
     badPoisonTurn = badlyPoisonedTurn_;
+}
+
+int Pokemon::getMaxSleepTurns() {
+    return maxSleepTurns;
+}
+
+void Pokemon::setMaxSleepTurns(int maxSleepTurns_) {
+    maxSleepTurns = maxSleepTurns_;
+}
+
+int Pokemon::getNumSleepTurns() {
+    return numTurnsAsleep;
+}
+
+void Pokemon::setNumSleepTurns(int sleepTurns_) {
+    numTurnsAsleep = sleepTurns_;
+}
+
+int Pokemon::getMaxConfusionTurns() {
+    return maxConfusionTurns;
+}
+
+void Pokemon::setMaxConfusionTurns(int maxTurns_) {
+    maxConfusionTurns = maxTurns_;
+}
+
+int Pokemon::getNumConfusionTurns() {
+    return numTurnsConfused;
+}
+
+void Pokemon::setNumConfusionTurns(int numTurns_) {
+    numTurnsConfused = numTurns_;
 }

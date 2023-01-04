@@ -55,6 +55,7 @@ public:
     void setAttackList(QVector<QSharedPointer<AttackMove> > newAttackList);
     Type getType1() const;
     Type getType2() const;
+
     Status getStatusCondition();
     void setStatusCondition(Status status);
     bool isConfused();
@@ -63,6 +64,14 @@ public:
     void isInfatuated(bool infatuated_);
     int getBadlyPoisonedTurn();
     void setBadlyPoisonedTurn(int badlyPoisonedTurn_);
+    int getMaxSleepTurns();
+    void setMaxSleepTurns(int maxSleepTurns_);
+    int getNumSleepTurns();
+    void setNumSleepTurns(int sleepTurns_);
+    int getMaxConfusionTurns();
+    void setMaxConfusionTurns(int maxTurns_);
+    int getNumConfusionTurns();
+    void setNumConfusionTurns(int numTurns_);
 
 private:
     int baseAttackStat;
@@ -102,14 +111,21 @@ private:
     QVector<QSharedPointer<AttackMove>> attackList;
     Type type1;
     Type type2;
+
     Status statusCondition;
     bool confused;
     bool infatuated; // under the effect of attract
     int badPoisonTurn; // number of turns under Status::BADLY_POISONED
+    int maxSleepTurns;
+    int numTurnsAsleep;
+    int maxConfusionTurns;
+    int numTurnsConfused;
 
     double getStatStageMultiplier(int stage) const;
     double getAccuracyStageMultiplier(int stage) const;
     double getEvasionStageMultiplier(int stage) const;
+
+    int calculateDamage(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove);
 
 
 signals:

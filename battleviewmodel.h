@@ -35,6 +35,7 @@ private:
     QVector<QSharedPointer<Pokemon>> fighters; // point to currentPlayerPokemon and currentOpponenetPokemon
 
     void resolveTurn(); // run at the end of each turn, after all attacks
+    void summonPokemon(QSharedPointer<Pokemon> pokemon); // a generic summon method
 
 private slots:
     void resolveAttack(); // run after each pokemon's attack

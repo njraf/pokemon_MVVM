@@ -102,8 +102,8 @@ void BattleViewmodel::summonFirstPokemon() {
         currentOpponentPokemon = *pokeIt;
     }
 
-    currentPlayerPokemon->resetAllStages();
-    currentOpponentPokemon->resetAllStages();
+    summonPokemon(currentPlayerPokemon);
+    summonPokemon(currentOpponentPokemon);
     fighters.append(currentPlayerPokemon);
     fighters.append(currentOpponentPokemon);
 
@@ -111,12 +111,9 @@ void BattleViewmodel::summonFirstPokemon() {
 }
 
 void BattleViewmodel::playerSummon(QSharedPointer<Pokemon> pokemon) {
-    if (!currentPlayerPokemon.isNull() && (currentPlayerPokemon->getStatusCondition() == Status::BADLY_POISONED)) {
-        currentPlayerPokemon->setStatusCondition(Status::POISONED);
-        currentPlayerPokemon->setBadlyPoisonedTurn(0);
-    }
     currentPlayerPokemon = pokemon;
-    currentPlayerPokemon->resetAllStages();
+    summonPokemon(currentPlayerPokemon);
+
     fighters[0] = currentPlayerPokemon;
     emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
     int opponentAttackIndex = (QRandomGenerator::global()->generate() % currentOpponentPokemon->getAttackList().size()); //TODO: change attack strategy
@@ -124,14 +121,27 @@ void BattleViewmodel::playerSummon(QSharedPointer<Pokemon> pokemon) {
 }
 
 void BattleViewmodel::opponentSummon(QSharedPointer<Pokemon> pokemon) {
-    if (!currentOpponentPokemon.isNull() && (currentOpponentPokemon->getStatusCondition() == Status::BADLY_POISONED)) {
-        currentOpponentPokemon->setStatusCondition(Status::POISONED);
-        currentOpponentPokemon->setBadlyPoisonedTurn(0);
-    }
     currentOpponentPokemon = pokemon;
-    currentOpponentPokemon->resetAllStages();
+    summonPokemon(currentOpponentPokemon);
+
     fighters[1] = currentOpponentPokemon;
     emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
+}
+
+void BattleViewmodel::summonPokemon(QSharedPointer<Pokemon> pokemon) {
+    pokemon->resetAllStages();
+    if (pokemon->getStatusCondition() == Status::BADLY_POISONED) {
+        pokemon->setStatusCondition(Status::POISONED);
+        pokemon->setBadlyPoisonedTurn(0);
+    }
+
+    if (pokemon->isConfused()) {
+        pokemon->isConfused(false);
+    }
+
+    if (pokemon->isInfatuated()) {
+        pokemon->isInfatuated(false);
+    }
 }
 
 void BattleViewmodel::attack(int attackIndex) {
