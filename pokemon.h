@@ -9,7 +9,7 @@
 #include "typeutilities.h"
 #include "attackmove.h"
 #include "natureutilities.h"
-#include "commonenumerations.h"
+#include "statusutilities.h"
 
 class Pokemon : public QObject
 {
@@ -130,6 +130,7 @@ private:
 
 signals:
     void attacked();
+    void statusConditionSet(Status statusCondition);
 };
 
 #endif // POKEMON_H

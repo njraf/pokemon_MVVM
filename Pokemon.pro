@@ -34,6 +34,7 @@ SOURCES += \
     pagenavigator.cpp \
     pokemon.cpp \
     pages/summarypage.cpp \
+    statusutilities.cpp \
     teammembercard.cpp \
     pages/teampage.cpp \
     tile.cpp \
@@ -45,7 +46,6 @@ SOURCES += \
 HEADERS += \
     attackmove.h \
     bag.h \
-    commonenumerations.h \
     overworlddao.h \
     pages/overworldpage.h \
     overworldviewmodel.h \
@@ -64,6 +64,7 @@ HEADERS += \
     pagenavigator.h \
     pokemon.h \
     pages/summarypage.h \
+    statusutilities.h \
     teammembercard.h \
     pages/teampage.h \
     tile.h \

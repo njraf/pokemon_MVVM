@@ -471,7 +471,9 @@ void Pokemon::setStatusCondition(Status status) {
             statusCondition = status;
         } else if (status == Status::ASLEEP) {
             maxSleepTurns = (QRandomGenerator::global()->generate() % 3) + 1;
+            statusCondition = status;
         }
+        emit statusConditionSet(status);
     }
 }
 

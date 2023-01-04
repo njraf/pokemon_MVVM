@@ -129,6 +129,7 @@ void BattleViewmodel::opponentSummon(QSharedPointer<Pokemon> pokemon) {
 }
 
 void BattleViewmodel::summonPokemon(QSharedPointer<Pokemon> pokemon) {
+    connect(pokemon.data(), &Pokemon::statusConditionSet, this, &BattleViewmodel::stateUpdated);
     pokemon->resetAllStages();
     if (pokemon->getStatusCondition() == Status::BADLY_POISONED) {
         pokemon->setStatusCondition(Status::POISONED);
