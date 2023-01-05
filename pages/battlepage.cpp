@@ -89,8 +89,8 @@ void BattlePage::displayStats(QSharedPointer<Pokemon> playerPokemon, QSharedPoin
     ui->allyHpBar->setMaximum(playerPokemon->getMaxHealthStat());
     ui->allyHpBar->setValue(playerPokemon->getHealthStat());
     ui->allyLevel->setText(QString("L: %1").arg(playerPokemon->getLevel()));
-    ui->allyStatusConditionLabel->setText(statusToName(playerPokemon->getStatusCondition()));
-    ui->allyStatusConditionLabel->setStyleSheet("background-color: " + statusToColor(playerPokemon->getStatusCondition()) + ";");
+    ui->allyStatusConditionLabel->setText(playerPokemon->getStatusCondition()->toName());
+    ui->allyStatusConditionLabel->setStyleSheet("background-color: " + playerPokemon->getStatusCondition()->toColor() + ";");
     for (int attackIndex = 0; attackIndex < playerPokemon->getAttackList().size(); attackIndex++) {
         int row = ((attackIndex % 2) == 0) ? 0 : 1;
         int col = (attackIndex >= 2) ? 2 : 1;
@@ -110,8 +110,8 @@ void BattlePage::displayStats(QSharedPointer<Pokemon> playerPokemon, QSharedPoin
     ui->opponentHpBar->setMaximum(opponentPokemon->getMaxHealthStat());
     ui->opponentHpBar->setValue(opponentPokemon->getHealthStat());
     ui->opponentLevel->setText(QString("L: %1").arg(opponentPokemon->getLevel()));
-    ui->opponentStatusConditionLabel->setText(statusToName(opponentPokemon->getStatusCondition()));
-    ui->opponentStatusConditionLabel->setStyleSheet("background-color: " + statusToColor(opponentPokemon->getStatusCondition()) + ";");
+    ui->opponentStatusConditionLabel->setText(opponentPokemon->getStatusCondition()->toName());
+    ui->opponentStatusConditionLabel->setStyleSheet("background-color: " + opponentPokemon->getStatusCondition()->toColor() + ";");
 
     ui->actionArea->setCurrentIndex(0);
 }

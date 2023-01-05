@@ -53,16 +53,8 @@ void BattleViewmodel::resolveAttack() {
 
 void BattleViewmodel::resolveTurn() {
     for (auto pokemon : fighters) {
-        if (pokemon->getStatusCondition() == Status::BURNED) {
-            pokemon->setHealthStat(pokemon->getHealthStat() - (pokemon->getMaxHealthStat() * 0.0625));
-        } else if (pokemon->getStatusCondition() == Status::POISONED) {
-            pokemon->setHealthStat(pokemon->getHealthStat() - (pokemon->getMaxHealthStat() * 0.125));
-        } else if (pokemon->getStatusCondition() == Status::BADLY_POISONED) {
-            int badPoisonTurn = std::min(pokemon->getBadlyPoisonedTurn() + 1, 15);
-            int poisonDamage = pokemon->getMaxHealthStat() * badPoisonTurn * 0.0625;
-            pokemon->setHealthStat(pokemon->getHealthStat() - poisonDamage);
-            pokemon->setBadlyPoisonedTurn(badPoisonTurn);
-        }
+        auto statusCondition = pokemon->getStatusCondition();
+        pokemon->setHealthStat(pokemon->getHealthStat() - (pokemon->getMaxHealthStat() * statusCondition->getStatusDamageMultiplier()));
     }
 }
 
@@ -131,23 +123,21 @@ void BattleViewmodel::opponentSummon(QSharedPointer<Pokemon> pokemon) {
 void BattleViewmodel::summonPokemon(QSharedPointer<Pokemon> pokemon) {
     connect(pokemon.data(), &Pokemon::statusConditionSet, this, &BattleViewmodel::stateUpdated);
     pokemon->resetAllStages();
-    if (pokemon->getStatusCondition() == Status::BADLY_POISONED) {
+    auto statusCondition = pokemon->getStatusCondition();
+    if (statusCondition->getBadlyPoisoned()) {
         pokemon->setStatusCondition(Status::POISONED);
-        pokemon->setBadlyPoisonedTurn(0);
     }
 
-    if (pokemon->isConfused()) {
-        pokemon->isConfused(false);
-    }
-
-    if (pokemon->isInfatuated()) {
-        pokemon->isInfatuated(false);
-    }
+    statusCondition->resetStatuses();
 }
 
 void BattleViewmodel::attack(int attackIndex) {
     if (currentPlayerPokemon->getAttackList().size() <= attackIndex) {
         return; // the attack button is not tied to any moves
+    }
+
+    for (auto f : fighters) { // counters for confusion, etc.
+        f->getStatusCondition()->incrementTurnCounters();
     }
 
     QVector<QPair<QSharedPointer<Pokemon>,int>> turnOrder;

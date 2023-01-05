@@ -1,7 +1,6 @@
 #include "teammembercard.h"
 #include "ui_teammembercard.h"
 #include "pagenavigator.h"
-#include "statusutilities.h"
 
 #include <QVariant>
 #include <QDebug>
@@ -14,6 +13,7 @@ TeamMemberCard::TeamMemberCard(QSharedPointer<Pokemon> pokemon_, QWidget *parent
 {
     ui->setupUi(this);
 
+    QSharedPointer<StatusCondition> status = pokemon->getStatusCondition();
     int health = pokemon->getHealthStat();
     int maxHealth = pokemon->getMaxHealthStat();
     ui->healthLabel->setText(QString("HP: %1/%2").arg(health).arg(maxHealth));
@@ -21,8 +21,8 @@ TeamMemberCard::TeamMemberCard(QSharedPointer<Pokemon> pokemon_, QWidget *parent
     ui->healthbar->setValue(health);
     ui->nameLabel->setText(pokemon->getName());
     ui->levelLabel->setText(QString("L: %1").arg(pokemon->getLevel()));
-    ui->statusConditionLabel->setText(statusToName(pokemon->getStatusCondition()));
-    ui->statusConditionLabel->setStyleSheet("background-color: " + statusToColor(pokemon->getStatusCondition()) + ";");
+    ui->statusConditionLabel->setText(status->toName());
+    ui->statusConditionLabel->setStyleSheet("background-color: " + status->toColor() + ";");
 }
 
 TeamMemberCard::~TeamMemberCard()

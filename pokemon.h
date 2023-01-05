@@ -9,7 +9,7 @@
 #include "typeutilities.h"
 #include "attackmove.h"
 #include "natureutilities.h"
-#include "statusutilities.h"
+#include "statuscondition.h"
 
 class Pokemon : public QObject
 {
@@ -56,30 +56,16 @@ public:
     Type getType1() const;
     Type getType2() const;
 
-    Status getStatusCondition();
-    void setStatusCondition(Status status);
-    bool isConfused();
-    void isConfused(bool confused_);
-    bool isInfatuated();
-    void isInfatuated(bool infatuated_);
-    int getBadlyPoisonedTurn();
-    void setBadlyPoisonedTurn(int badlyPoisonedTurn_);
-    int getMaxSleepTurns();
-    void setMaxSleepTurns(int maxSleepTurns_);
-    int getNumSleepTurns();
-    void setNumSleepTurns(int sleepTurns_);
-    int getMaxConfusionTurns();
-    void setMaxConfusionTurns(int maxTurns_);
-    int getNumConfusionTurns();
-    void setNumConfusionTurns(int numTurns_);
+    QSharedPointer<StatusCondition> getStatusCondition();
+    void setStatusCondition(Status status_);
 
 private:
-    int baseAttackStat;
-    int baseSpAttackStat;
-    int baseDefenseStat;
-    int baseSpDefenseStat;
-    int baseSpeedStat;
-    int baseMaxHealthStat;
+    const int baseAttackStat;
+    const int baseSpAttackStat;
+    const int baseDefenseStat;
+    const int baseSpDefenseStat;
+    const int baseSpeedStat;
+    const int baseMaxHealthStat;
 
     int attackStatIV;
     int spAttackStatIV;
@@ -112,14 +98,8 @@ private:
     Type type1;
     Type type2;
 
-    Status statusCondition;
-    bool confused;
-    bool infatuated; // under the effect of attract
-    int badPoisonTurn; // number of turns under Status::BADLY_POISONED
-    int maxSleepTurns;
-    int numTurnsAsleep;
-    int maxConfusionTurns;
-    int numTurnsConfused;
+    QSharedPointer<StatusCondition> status;
+
 
     double getStatStageMultiplier(int stage) const;
     double getAccuracyStageMultiplier(int stage) const;

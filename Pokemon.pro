@@ -34,7 +34,7 @@ SOURCES += \
     pagenavigator.cpp \
     pokemon.cpp \
     pages/summarypage.cpp \
-    statusutilities.cpp \
+    statuscondition.cpp \
     teammembercard.cpp \
     pages/teampage.cpp \
     tile.cpp \
@@ -64,7 +64,7 @@ HEADERS += \
     pagenavigator.h \
     pokemon.h \
     pages/summarypage.h \
-    statusutilities.h \
+    statuscondition.h \
     teammembercard.h \
     pages/teampage.h \
     tile.h \
