@@ -13,6 +13,7 @@ INCLUDEPATH += \
     pages
 
 SOURCES += \
+    attackeffectfactory.cpp \
     attackmove.cpp \
     bag.cpp \
     overworlddao.cpp \
@@ -44,6 +45,7 @@ SOURCES += \
     typeutilities.cpp
 
 HEADERS += \
+    attackeffectfactory.h \
     attackmove.h \
     bag.h \
     overworlddao.h \

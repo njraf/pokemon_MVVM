@@ -1,5 +1,7 @@
 #include "attackmovedao.h"
 
+#include "attackeffectfactory.h"
+
 AttackMoveDao::AttackMoveDao(QObject *parent) : IDao(parent)
 {
     db = QSqlDatabase::addDatabase(SQLITE_CONN, "AttackMoveDaoConnection");
@@ -35,7 +37,8 @@ QSharedPointer<AttackMove> AttackMoveDao::getAttackByID(int id) {
                 record.value("MaxPP").toInt(), // current PP
                 record.value("MaxPP").toInt(), // max PP
                 static_cast<Type>(record.value("Type").toInt()),
-                static_cast<Category>(record.value("Category").toInt())
+                static_cast<Category>(record.value("Category").toInt()),
+                AttackEffectFactory::getEffectByID(id)
                 );
 }
 

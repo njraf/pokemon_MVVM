@@ -54,7 +54,22 @@ void BattleViewmodel::resolveAttack() {
 void BattleViewmodel::resolveTurn() {
     for (auto pokemon : fighters) {
         auto statusCondition = pokemon->getStatusCondition();
-        pokemon->setHealthStat(pokemon->getHealthStat() - (pokemon->getMaxHealthStat() * statusCondition->getStatusDamageMultiplier()));
+        auto asd = (pokemon->getMaxHealthStat() * statusCondition->getStatusDamageMultiplier());
+        pokemon->setHealthStat(pokemon->getHealthStat() - asd);
+    }
+    emit stateUpdated();
+    // determine win/lose and emit signal
+    auto playerTeam = player->getTeam();
+    auto opponentTeam = opponent->getTeam();
+    bool playerKOed = (0 == std::count_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+    bool opponentKOed = (0 == std::count_if(opponentTeam.begin(), opponentTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+
+    if (playerKOed) { // lose even if tied
+        emit battleFinished("You lost");
+        return;
+    } else if (opponentKOed) {
+        emit battleFinished("You won");
+        return;
     }
 }
 

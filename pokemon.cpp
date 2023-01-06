@@ -1,4 +1,5 @@
 #include "pokemon.h"
+#include "attackeffectfactory.h"
 
 #include <QDebug>
 #include <QRandomGenerator>
@@ -56,8 +57,8 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
     }
 
     connect(status.data(), &StatusCondition::hurtByConfusion, this, [=] {
-        QSharedPointer<Pokemon> self(this);
-        QSharedPointer<AttackMove> confusionStatus = QSharedPointer<AttackMove>::create("Confusion Status", 40, 100, 99, 99, Type::NONE, Category::PHYSICAL);
+        auto self = QSharedPointer<Pokemon>(this, [](Pokemon *p){});
+        QSharedPointer<AttackMove> confusionStatus = QSharedPointer<AttackMove>::create("Confusion Status", 40, 100, 99, 99, Type::NONE, Category::PHYSICAL, AttackEffectFactory::getEffectByID(-1));
         int dmg = calculateDamage(self, confusionStatus);
         setHealthStat(currentHealthStat - dmg);
         qDebug() << name << "hit itself in confusion";
@@ -94,13 +95,18 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
 
 
     // calculate damage
-    int dmg = calculateDamage(opponent, attackMove);
-    opponent->setHealthStat(opponent->getHealthStat() - dmg);
-    qDebug() << name << "attacked" << opponent->getName() << "with" << attackMove->getName() << "and dealt" << dmg << "damage.";
+    if (attackMove->getPower() > 0) {
+        int dmg = calculateDamage(opponent, attackMove);
+        opponent->setHealthStat(opponent->getHealthStat() - dmg);
+        qDebug() << name << "attacked" << opponent->getName() << "with" << attackMove->getName() << "and dealt" << dmg << "damage.";
 
-    if ((opponent->getStatusCondition()->getFrozen()) && (attackMove->getType() == Type::FIRE) && (attackMove->getPower() > 0)) {
-        opponent->getStatusCondition()->setStatusCondition(Status::NONE);
+        if ((opponent->getStatusCondition()->getFrozen()) && (attackMove->getType() == Type::FIRE) && (attackMove->getPower() > 0)) {
+            opponent->getStatusCondition()->setStatusCondition(Status::NONE);
+        }
     }
+
+    auto self = QSharedPointer<Pokemon>(this, [](Pokemon *p){});
+    attackMove->useEffect(self, opponent);
 
     emit attacked();
 }
@@ -123,7 +129,7 @@ int Pokemon::calculateDamage(QSharedPointer<Pokemon> opponent, QSharedPointer<At
         defense = opponent->getSpDefenseStat();
     }
 
-    double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * attack * attackPower / defense) / 50.0) + 2.0) * stab * weakResist * randomNumber * status->damageMultiplier(attackMove);
+    double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * attack * attackPower / defense) / 50.0) + 2.0) * stab * weakResist * randomNumber * status->damageMultiplier(attackMove) / 100;
     int dmg = ((damage - qFloor(damage)) < 0.5) ? qFloor(damage) : qCeil(damage); // round damage to the nearest whole number
     return dmg;
 }

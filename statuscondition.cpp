@@ -79,7 +79,7 @@ double StatusCondition::getStatusDamageMultiplier() {
         setBadPoisonTurn(getBadPoisonTurn() + 1);
         return static_cast<double>(badPoisonTurn) * 0.0625;
     }
-    return 1.0;
+    return 0.0;
 }
 
 void StatusCondition::resetStatuses() {

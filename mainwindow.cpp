@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     QVector<QSharedPointer<AttackMove>> attackList;
     QVector<QSharedPointer<AttackMove>> attackList2;
     attackList.append(repository->getAttackByID(1));
+    attackList.append(repository->getAttackByID(4));
     attackList2.append(repository->getAttackByID(2));
 
     QSharedPointer<Pokemon> charmander = repository->getPokemon(6);

@@ -1,4 +1,5 @@
 #include "pokemondao.h"
+#include "attackeffectfactory.h"
 
 PokemonDao::PokemonDao(QObject *parent) : IDao(parent)
 {
@@ -29,7 +30,8 @@ QSharedPointer<Pokemon> PokemonDao::getPokemon(int nationalDexNumber) {
 
     auto record = model.record(0);
     QVector<QSharedPointer<AttackMove>> attackList = {
-        QSharedPointer<AttackMove>::create("Ember", 40, 100, 25, 25, Type::FIRE, Category::SPECIAL)
+        //QSharedPointer<AttackMove>::create("Ember", 40, 100, 25, 25, Type::FIRE, Category::SPECIAL, AttackEffectFactory::getEffectByID(-1))
+
     };
 
     return QSharedPointer<Pokemon>::create(
