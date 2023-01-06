@@ -18,7 +18,7 @@ AttackMoveDao::AttackMoveDao(QObject *parent) : IDao(parent)
     populateDatabase();
 }
 
-QSharedPointer<AttackMove> AttackMoveDao::getAttackByID(int id) {
+QSharedPointer<AttackMove> AttackMoveDao::getAttackByID(int id, int effectID) {
     if (!db.isOpen()) {
         qDebug() << "AttackMoveDao database is not opened";
     }
@@ -26,7 +26,7 @@ QSharedPointer<AttackMove> AttackMoveDao::getAttackByID(int id) {
     model.setTable("AttackMove");
     model.setFilter(QString("ID=%1").arg(id));
     if (!model.select()) {
-        qDebug() << "ERROR: getPokemon()::select() failed" << db.lastError().text();
+        qDebug() << "ERROR: getAttackByID()::select() failed" << db.lastError().text();
     }
 
     auto record = model.record(0);
@@ -38,7 +38,31 @@ QSharedPointer<AttackMove> AttackMoveDao::getAttackByID(int id) {
                 record.value("MaxPP").toInt(), // max PP
                 static_cast<Type>(record.value("Type").toInt()),
                 static_cast<Category>(record.value("Category").toInt()),
-                AttackEffectFactory::getEffectByID(id)
+                AttackEffectFactory::getEffectByID(effectID)
+                );
+}
+
+QSharedPointer<AttackMove> AttackMoveDao::getAttackByName(QString name, int effectID) {
+    if (!db.isOpen()) {
+        qDebug() << "AttackMoveDao database is not opened";
+    }
+    QSqlTableModel model(nullptr, db);
+    model.setTable("AttackMove");
+    model.setFilter(QString("Name=\"%1\"").arg(name));
+    if (!model.select()) {
+        qDebug() << "ERROR: getAttackByName()::select() failed" << db.lastError().text() << "No attack named" << name;
+    }
+
+    auto record = model.record(0);
+    return QSharedPointer<AttackMove>::create(
+                record.value("Name").toString(),
+                record.value("Power").toInt(),
+                record.value("Accuracy").toInt(),
+                record.value("MaxPP").toInt(), // current PP
+                record.value("MaxPP").toInt(), // max PP
+                static_cast<Type>(record.value("Type").toInt()),
+                static_cast<Category>(record.value("Category").toInt()),
+                AttackEffectFactory::getEffectByID(effectID)
                 );
 }
 
@@ -94,7 +118,7 @@ bool AttackMoveDao::populateDatabase() {
                         qDebug() << "ERROR: Could not set int data" << db.lastError().text();
                     }
                 } else { // string data
-                    QString strData = data.toString();
+                    QString strData = data.toString().simplified();
                     if (AttackMove::strToUnderlying.contains(strData)) {
                         int intData = AttackMove::strToUnderlying[strData];
                         if (!table.setData(table.index(row, col), intData)) {

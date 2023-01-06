@@ -38,8 +38,8 @@ BattlePage::BattlePage(QSharedPointer<BattleViewmodel> vm_, QWidget *parent)
     // attack buttons
     connect(ui->backButton, &QPushButton::clicked, this, [=] { ui->actionArea->setCurrentIndex(0); });
     for (int attackIndex = 0; attackIndex < 4; attackIndex++) {
-        int row = ((attackIndex % 2) == 0) ? 0 : 1;
-        int col = (attackIndex >= 2) ? 2 : 1;
+        int row = (attackIndex >= 2) ? 1 : 0;
+        int col = ((attackIndex % 2) == 0) ? 1 : 2;
         auto layoutItem = qobject_cast<QGridLayout*>(ui->attackPage->layout())->itemAtPosition(row, col);
         if (!layoutItem || !layoutItem->widget()) {
             continue;
@@ -91,19 +91,24 @@ void BattlePage::displayStats(QSharedPointer<Pokemon> playerPokemon, QSharedPoin
     ui->allyLevel->setText(QString("L: %1").arg(playerPokemon->getLevel()));
     ui->allyStatusConditionLabel->setText(playerPokemon->getStatusCondition()->toName());
     ui->allyStatusConditionLabel->setStyleSheet("background-color: " + playerPokemon->getStatusCondition()->toColor() + ";");
-    for (int attackIndex = 0; attackIndex < playerPokemon->getAttackList().size(); attackIndex++) {
-        int row = ((attackIndex % 2) == 0) ? 0 : 1;
-        int col = (attackIndex >= 2) ? 2 : 1;
+    for (int attackIndex = 0; attackIndex < 4; attackIndex++) {
+        int row = (attackIndex >= 2) ? 1 : 0;
+        int col = ((attackIndex % 2) == 0) ? 1 : 2;
         auto layoutItem = qobject_cast<QGridLayout*>(ui->attackPage->layout())->itemAtPosition(row, col);
         if (!layoutItem || !layoutItem->widget()) {
             continue;
         }
         auto button = qobject_cast<QPushButton*>(layoutItem->widget());
-        auto attack = playerPokemon->getAttackList().at(attackIndex);
-        QString attackName = attack->getName();
-        QString ppLine = QString("%1/%2").arg(attack->getPp()).arg(attack->getMaxPP());
+        QString attackName = "";
+        QString ppLine = "";
+        if (playerPokemon->getAttackList().size() > attackIndex) {
+            auto attack = playerPokemon->getAttackList().at(attackIndex);
+            attackName = attack->getName();
+            ppLine = QString("%1/%2").arg(attack->getPp()).arg(attack->getMaxPP());
+        }
         button->setText(attackName + "\n" + ppLine);
     }
+
 
     ui->opponentName->setText(opponentPokemon->getName());
     ui->opponentHp->setText(QString("HP: %1/%2").arg(opponentPokemon->getHealthStat()).arg(opponentPokemon->getMaxHealthStat()));

@@ -26,7 +26,7 @@ public:
     QSharedPointer<MainMenuPage> constructMainMenuPage() ;
     QSharedPointer<BattlePage> constructBattlePage();
     QSharedPointer<TeamPage> constructTeamPage();
-    QSharedPointer<SummaryPage> constructSummaryPage(QSharedPointer<Pokemon> pokemon);
+    QSharedPointer<SummaryPage> constructSummaryPage();
     QSharedPointer<BagPage> constructBagPage();
     QSharedPointer<OverworldPage> constructOverworldPage();
 

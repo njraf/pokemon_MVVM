@@ -20,7 +20,8 @@ public:
 
     bool hasConnection();
     QSharedPointer<Pokemon> getPokemon(int nationalDexNumber);
-    QSharedPointer<AttackMove> getAttackByID(int id);
+    QSharedPointer<AttackMove> getAttackByID(int id, int effectID = 0);
+    QSharedPointer<AttackMove> getAttackByName(QString name, int effectID = 0);
     QSharedPointer<HealItem> getHealItemByID(int id);
     QVector<QVector<QSharedPointer<Tile>>> getMapByID(int id);
 

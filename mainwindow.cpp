@@ -24,12 +24,14 @@ MainWindow::MainWindow(QWidget *parent)
     // create player
     QVector<QSharedPointer<AttackMove>> attackList;
     QVector<QSharedPointer<AttackMove>> attackList2;
-    attackList.append(repository->getAttackByID(1));
-    attackList.append(repository->getAttackByID(4));
+    attackList.append(repository->getAttackByID(2));
+    attackList.append(repository->getAttackByName("Toxic", 1));
+    attackList.append(repository->getAttackByName("Swords Dance", 2));
     attackList2.append(repository->getAttackByID(2));
 
     QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
     QSharedPointer<Pokemon> squirtle = repository->getPokemon(7);
+    squirtle->setLevel(99);
     charmander->setAttackList(attackList);
     squirtle->setAttackList(attackList2);
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander, squirtle};
@@ -57,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     routes.insert(PageName::MAIN_MENU, [=] { return constructMainMenuPage(); });
     routes.insert(PageName::BATTLE, [=] { return constructBattlePage(); });
     routes.insert(PageName::TEAM, [=] { return constructTeamPage(); });
-    routes.insert(PageName::POKEMON_SUMMARY, [=] { return constructSummaryPage(repository->getPokemon(9)); });
+    routes.insert(PageName::POKEMON_SUMMARY, [=] { return constructSummaryPage(); });
     routes.insert(PageName::BAG, [=] { return constructBagPage(); });
     routes.insert(PageName::OVERWORLD, [=] { return constructOverworldPage(); });
 
@@ -87,8 +89,8 @@ QSharedPointer<TeamPage> MainWindow::constructTeamPage() {
     return teamPage;
 }
 
-QSharedPointer<SummaryPage> MainWindow::constructSummaryPage(QSharedPointer<Pokemon> pokemon) {
-    return QSharedPointer<SummaryPage>::create(pokemon);
+QSharedPointer<SummaryPage> MainWindow::constructSummaryPage() {
+    return QSharedPointer<SummaryPage>::create();
 }
 
 QSharedPointer<BagPage> MainWindow::constructBagPage() {

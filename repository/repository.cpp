@@ -34,8 +34,12 @@ QSharedPointer<Pokemon> Repository::getPokemon(int nationalDexNumber) {
     return pokemonDao->getPokemon(nationalDexNumber);
 }
 
-QSharedPointer<AttackMove> Repository::getAttackByID(int id) {
-    return attackMoveDao->getAttackByID(id);
+QSharedPointer<AttackMove> Repository::getAttackByID(int id, int effectID) {
+    return attackMoveDao->getAttackByID(id, effectID);
+}
+
+QSharedPointer<AttackMove> Repository::getAttackByName(QString name, int effectID) {
+    return attackMoveDao->getAttackByName(name, effectID);
 }
 
 QSharedPointer<HealItem> Repository::getHealItemByID(int id) {

@@ -13,7 +13,8 @@ public:
     explicit AttackMoveDao(QObject *parent = nullptr);
     ~AttackMoveDao() = default;
 
-    QSharedPointer<AttackMove> getAttackByID(int id);
+    QSharedPointer<AttackMove> getAttackByID(int id, int effectID);
+    QSharedPointer<AttackMove> getAttackByName(QString name, int effectID);
     bool populateDatabase() override;
 
 signals:

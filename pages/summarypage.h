@@ -15,7 +15,7 @@ class SummaryPage : public IPage
     Q_OBJECT
 
 public:
-    explicit SummaryPage(QSharedPointer<Pokemon> pokemon_, QWidget *parent = nullptr);
+    explicit SummaryPage(QWidget *parent = nullptr);
     ~SummaryPage();
     PageName getPageName() override;
     void receiveData(QVector<QVariant> data) override;
