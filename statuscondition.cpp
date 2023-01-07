@@ -36,7 +36,6 @@ bool StatusCondition::canMove() {
         frozen = ((QRandomGenerator::global()->generate() % 5) == 0); // 20% chance to thaw
         return frozen;
     } else if (asleep) {
-        qDebug() << "Asleep" << numTurnsAsleep << "/" << maxSleepTurns;
         if (numTurnsAsleep == maxSleepTurns) {
             numTurnsAsleep = 0;
             maxSleepTurns = 0;

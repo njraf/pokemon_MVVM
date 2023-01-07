@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     QVector<QSharedPointer<AttackMove>> attackList;
     QVector<QSharedPointer<AttackMove>> attackList2;
     attackList.append(repository->getAttackByID(2));
-    attackList.append(repository->getAttackByName("Toxic", 1));
+    attackList.append(repository->getAttackByName("Will-O-Wisp", 5));
     attackList.append(repository->getAttackByName("Spore", 4));
     attackList.append(repository->getAttackByName("Confuse Ray", 3));
     attackList2.append(repository->getAttackByID(2));

@@ -21,12 +21,14 @@ std::function<void(QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponen
     case 3: // set CONFUSION status on opponent
         return [](QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent) {
             opponent->getStatusCondition()->setConfused(true);
-            qDebug() << opponent->getName() << "is now confused";
         };
     case 4: // set SLEEP status on opponent
         return [](QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent) {
             opponent->getStatusCondition()->setStatusCondition(Status::ASLEEP);
-            qDebug() << opponent->getName() << "fell asleep";
+        };
+    case 5: // set BURN status on opponent
+        return [](QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent) {
+            opponent->getStatusCondition()->setStatusCondition(Status::BURNED);
         };
     default: // do nothing
         return [](QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent) {};
