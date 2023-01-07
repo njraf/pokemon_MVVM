@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     attackList.append(repository->getAttackByID(2));
     attackList.append(repository->getAttackByName("Toxic", 1));
     attackList.append(repository->getAttackByName("Swords Dance", 2));
+    attackList.append(repository->getAttackByName("Confuse Ray", 3));
     attackList2.append(repository->getAttackByID(2));
 
     QSharedPointer<Pokemon> charmander = repository->getPokemon(6);

@@ -13,10 +13,15 @@ std::function<void(QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponen
         return [](QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent) {
             opponent->getStatusCondition()->setStatusCondition(Status::BADLY_POISONED);
         };
-    case 2: // increase attack 2 stages
+    case 2: // increase self attack 2 stages
         return [](QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent) {
             self->setAttackStatStage(self->getAttackStatStage() + 2);
-            qDebug() << self->getName() << "Raised its attack by 2 stages. Attack stages" << self->getAttackStatStage();
+            qDebug() << self->getName() << "raised its attack by 2 stages. Attack stages" << self->getAttackStatStage();
+        };
+    case 3: // set confusion status on opponent
+        return [](QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent) {
+            opponent->getStatusCondition()->setConfused(true);
+            qDebug() << opponent->getName() << "is now confused";
         };
     default: // do nothing
         return [](QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent) {};

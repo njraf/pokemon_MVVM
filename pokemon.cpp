@@ -73,6 +73,7 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
     }
 
     if (!status->canMove()) {
+        emit attacked();
         return;
     }
 
@@ -90,6 +91,7 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
     quint32 iAccuracy = ((dAccuracy - qFloor(dAccuracy)) < 0.5) ? qFloor(dAccuracy) : qCeil(dAccuracy);
     if ((attackMove->getAccuracy() > 0) && ((QRandomGenerator::global()->generate() % 101) > iAccuracy)) {
         qDebug() << "The attack missed";
+        emit attacked();
         return;
     }
 
@@ -167,8 +169,12 @@ int Pokemon::getHealthStat() const {
 }
 
 void Pokemon::setHealthStat(int newHealthStat) {
+    bool damaged = (newHealthStat < currentHealthStat);
     currentHealthStat = (newHealthStat < 0 ? 0 : newHealthStat);
     currentHealthStat = (currentHealthStat > getMaxHealthStat() ? getMaxHealthStat() : currentHealthStat);
+    if (damaged) {
+        emit tookDamage();
+    }
 }
 
 int Pokemon::getSpeedStat() const {

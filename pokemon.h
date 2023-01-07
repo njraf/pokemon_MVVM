@@ -109,6 +109,7 @@ private:
 
 
 signals:
+    void tookDamage();
     void attacked();
     void statusConditionSet(Status statusCondition);
 };

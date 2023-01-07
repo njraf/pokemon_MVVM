@@ -36,7 +36,6 @@ bool StatusCondition::canMove() {
         frozen = ((QRandomGenerator::global()->generate() % 5) == 0); // 20% chance to thaw
         return frozen;
     } else if (asleep) {
-        numTurnsAsleep++;
         if (numTurnsAsleep == maxSleepTurns) {
             numTurnsAsleep = 0;
             maxSleepTurns = 0;
@@ -49,12 +48,11 @@ bool StatusCondition::canMove() {
         //qDebug() << name << "is infatuated and cannot attack.";
         return ((QRandomGenerator::global()->generate() % 2) == 0); // 50% chance to not attack
     } else if (confused) {
-        numTurnsConfused++;
         if (numTurnsConfused == maxConfusionTurns) {
             numTurnsConfused = 0;
             maxConfusionTurns = 0;
             confused = false;
-            //qDebug() << name << "snapped out of confusion";
+            qDebug() << "snapped out of confusion";
         } else if ((QRandomGenerator::global()->generate() % 3) == 0) { // hurt by confusion
             emit hurtByConfusion();
             return false;

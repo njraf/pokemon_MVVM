@@ -9,6 +9,7 @@ BattleViewmodel::BattleViewmodel(QSharedPointer<Repository> repository_, QShared
 {
     for (auto member : player->getTeam()) {
         connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::resolveAttack);
+        connect(member.data(), &Pokemon::tookDamage, this, &BattleViewmodel::stateUpdated);
     }
 }
 
@@ -54,8 +55,7 @@ void BattleViewmodel::resolveAttack() {
 void BattleViewmodel::resolveTurn() {
     for (auto pokemon : fighters) {
         auto statusCondition = pokemon->getStatusCondition();
-        auto asd = (pokemon->getMaxHealthStat() * statusCondition->getStatusDamageMultiplier());
-        pokemon->setHealthStat(pokemon->getHealthStat() - asd);
+        pokemon->setHealthStat(pokemon->getHealthStat() - (pokemon->getMaxHealthStat() * statusCondition->getStatusDamageMultiplier()));
     }
     emit stateUpdated();
     // determine win/lose and emit signal
@@ -85,6 +85,7 @@ void BattleViewmodel::setOpponentTrainer(QSharedPointer<Trainer> opponent_) {
     opponent = opponent_;
     for (auto member : opponent->getTeam()) {
         connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::resolveAttack);
+        connect(member.data(), &Pokemon::tookDamage, this, &BattleViewmodel::stateUpdated);
     }
 }
 
