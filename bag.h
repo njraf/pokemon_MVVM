@@ -6,6 +6,7 @@
 #include <QVector>
 
 #include "healitem.h"
+#include "pokeballitem.h"
 
 class Bag : public QObject
 {
@@ -15,9 +16,12 @@ public:
 
     void addHealItem(QSharedPointer<HealItem> item);
     QVector<QSharedPointer<HealItem>> getHealItems();
+    void addPokeballItem(QSharedPointer<PokeballItem> item);
+    QVector<QSharedPointer<PokeballItem>> getPokeballItems();
 
 private:
     QVector<QSharedPointer<HealItem>> healItems;
+    QVector<QSharedPointer<PokeballItem>> pokeballItems;
 
 signals:
 

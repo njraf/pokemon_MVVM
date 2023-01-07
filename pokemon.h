@@ -58,6 +58,7 @@ public:
 
     QSharedPointer<StatusCondition> getStatusCondition();
     void setStatusCondition(Status status_);
+    int getCatchRate();
 
 private:
     const int baseAttackStat;
@@ -99,6 +100,7 @@ private:
     Type type2;
 
     QSharedPointer<StatusCondition> status;
+    int catchRate;
 
 
     double getStatStageMultiplier(int stage) const;

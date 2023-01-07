@@ -16,6 +16,9 @@ public:
     void addHealItem(QSharedPointer<HealItem> item);
     QVector<QSharedPointer<HealItem>> getHealItems();
 
+    void addPokeballItem(QSharedPointer<PokeballItem> item);
+    QVector<QSharedPointer<PokeballItem>> getPokeballItems();
+
 private:
     QSharedPointer<Bag> bag;
 

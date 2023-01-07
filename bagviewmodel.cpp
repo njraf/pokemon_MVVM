@@ -14,3 +14,11 @@ void BagViewmodel::addHealItem(QSharedPointer<HealItem> item) {
 QVector<QSharedPointer<HealItem>> BagViewmodel::getHealItems() {
     return bag->getHealItems();
 }
+
+void BagViewmodel::addPokeballItem(QSharedPointer<PokeballItem> item) {
+    bag->addPokeballItem(item);
+}
+
+QVector<QSharedPointer<PokeballItem>> BagViewmodel::getPokeballItems() {
+    return bag->getPokeballItems();
+}

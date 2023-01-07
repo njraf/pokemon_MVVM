@@ -77,6 +77,15 @@ void BattlePage::receiveData(QVector<QVariant> data) {
             auto opponentTrainer = data[0].value<QSharedPointer<Trainer>>();
             viewmodel->setOpponentTrainer(opponentTrainer);
             viewmodel->summonFirstPokemon();
+        } else if (data[0].canConvert<QSharedPointer<PokeballItem>>()) { // attempt to catch the wild pokemon
+            QSharedPointer<PokeballItem> pokeball = data[0].value<QSharedPointer<PokeballItem>>();
+            if (pokeball->throwAtPokemon(viewmodel->getCurrentOpponentPokemon())) {
+                auto team = viewmodel->getPlayerTrainer()->getTeam();
+                if (team.size() < 6) {
+                    team.append(viewmodel->getCurrentOpponentPokemon());
+                }
+                PageNavigator::getInstance()->navigateBack();
+            }
         }
     }
 

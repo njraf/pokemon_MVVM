@@ -2,26 +2,45 @@
 
 #include <QtMath>
 #include <QRandomGenerator>
+#include <QDebug>
 
-PokeballItem::PokeballItem(QString name_, double catchRate_, QObject *parent)
+PokeballItem::PokeballItem(QString name_, double catchRate_, int quantity_, QObject *parent)
     : QObject(parent)
     , name(name_)
     , catchRate(catchRate_)
+    , quantity(quantity_)
 {
 
 }
 
+QString PokeballItem::getName() {
+    return name;
+}
+
+int PokeballItem::getQuantity() {
+    return quantity;
+}
+
+void PokeballItem::setQuantity(int quantity_) {
+    quantity = quantity_;
+}
+
 bool PokeballItem::throwAtPokemon(QSharedPointer<Pokemon> pokemon) {
-    double catchChance = qFloor((3 * pokemon->getMaxHealthStat() - 2 * pokemon->getHealthStat()) * 4096 + 0.5); // TODO: multiply floored value by species catch rate
-    catchChance *= catchRate; // pokeball catch rate
-    catchChance = qFloor(((36 - 2 * pokemon->getLevel()) * catchChance) / 10); // make it easier to cathc pokemon level 13 and under
+    return false;
+    int maxHealth = pokemon->getMaxHealthStat();
+    int catchChance = (3 * maxHealth - 2 * pokemon->getHealthStat()) * pokemon->getCatchRate() * catchRate;
+    catchChance /= (3 * pokemon->getMaxHealthStat());
+    catchChance = ((36 - 2 * pokemon->getLevel()) * catchChance) / 10; // make it easier to cathc pokemon level 13 and under
     catchChance *= pokemon->getStatusCondition()->catchMultiplier(); // status condition multiplier
+    uint shakeChance = 1048560 / qSqrt(qSqrt(16711680 / catchChance));
     for (int i = 0; i < 4; i++) {
-        double shakeChance = qPow(65536 / ((255 * 4096) / catchChance), 0.1875);
-        if (QRandomGenerator::global()->generate() >= shakeChance) {
+        QDebug deb = qDebug();
+        deb << "shake chance" << shakeChance;
+        if (true || (QRandomGenerator::global()->generate() % 65536) >= shakeChance) { //TODO: force fail for debug
+            deb << "failed";
             return false;
         }
-
+        deb << "success";
         //if (i < 3) {
         //    emit shook();
         //}

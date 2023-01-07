@@ -26,7 +26,7 @@ private:
     QMap<PageName, std::function<QSharedPointer<IPage>(void)>> routes;
 
 signals:
-    void pageChanged(QSharedPointer<IPage>);
+    void pageChanged(QSharedPointer<IPage> page, bool navigateBack = false);
 
 };
 

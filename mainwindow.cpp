@@ -14,7 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
     QSharedPointer<AttackMoveDao> attackMoveDao = QSharedPointer<AttackMoveDao>::create();
     QSharedPointer<HealItemDao> healItemDao = QSharedPointer<HealItemDao>::create();
     QSharedPointer<OverworldDao> overworldDao = QSharedPointer<OverworldDao>::create();
-    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao, healItemDao, overworldDao);
+    QSharedPointer<PokeballItemDao> pokeballItemDao = QSharedPointer<PokeballItemDao>::create();
+    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao, healItemDao, overworldDao, pokeballItemDao);
     if (!repository->hasConnection()) {
         //TODO: make an error dialog
         qDebug() << "ERROR: Could not connect to repository";
@@ -30,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     attackList.append(repository->getAttackByName("Confuse Ray", 3));
     attackList2.append(repository->getAttackByID(2));
 
+    // player team
     QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
     QSharedPointer<Pokemon> squirtle = repository->getPokemon(7);
     squirtle->setLevel(99);
@@ -37,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     squirtle->setAttackList(attackList2);
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander, squirtle};
 
+    // player bag
     QSharedPointer<Bag> bag = QSharedPointer<Bag>::create();
     auto potion = repository->getHealItemByID(1);
     potion->setQuantity(5);
@@ -47,12 +50,20 @@ MainWindow::MainWindow(QWidget *parent)
     bag->addHealItem(potion);
     bag->addHealItem(superPotion);
     bag->addHealItem(hyperPotion);
+    auto pokeball = repository->getPokeballItemByID(1);
+    pokeball->setQuantity(10);
+    bag->addPokeballItem(pokeball);
     player = QSharedPointer<Trainer>::create(playerTeam, bag);
 
     // change pages
-    connect(PageNavigator::getInstance(), &PageNavigator::pageChanged, this, [=](QSharedPointer<IPage> page) {
-        ui->pages->addWidget(page.data());
-        ui->pages->setCurrentIndex(ui->pages->count() - 1);
+    connect(PageNavigator::getInstance(), &PageNavigator::pageChanged, this, [=](QSharedPointer<IPage> page, bool navigateBack) {
+        //qDebug() << "To page" << page->objectName();
+        if (navigateBack) {
+            ui->pages->removeWidget(page.data());
+        } else {
+            ui->pages->addWidget(page.data());
+            ui->pages->setCurrentIndex(ui->pages->count() - 1);
+        }
     });
 
     // initialize PageNavigator

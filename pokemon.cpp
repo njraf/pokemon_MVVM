@@ -41,6 +41,7 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
     , type1(type1_)
     , type2(type2_)
     , status(QSharedPointer<StatusCondition>::create())
+    , catchRate(100)
 {
     // calculate IVs
     if (owner.isEmpty()) {
@@ -439,4 +440,8 @@ void Pokemon::setStatusCondition(Status status_) {
         }
         emit statusConditionSet(status_);
     }
+}
+
+int Pokemon::getCatchRate() {
+    return catchRate;
 }

@@ -20,3 +20,7 @@ QPushButton {
 TeamMemberCard:hover {
     background-color: #3dd7e5;
 }
+
+QListWidget {
+    font: 12pt;
+}
