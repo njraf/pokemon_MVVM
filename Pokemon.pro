@@ -22,6 +22,7 @@ SOURCES += \
     pages/bagpage.cpp \
     bagviewmodel.cpp \
     healitem.cpp \
+    pokeballitem.cpp \
     repository/attackmovedao.cpp \
     pages/battlepage.cpp \
     battleviewmodel.cpp \
@@ -54,6 +55,7 @@ HEADERS += \
     pages/bagpage.h \
     bagviewmodel.h \
     healitem.h \
+    pokeballitem.h \
     repository/attackmovedao.h \
     pages/battlepage.h \
     battleviewmodel.h \

@@ -31,6 +31,24 @@ double StatusCondition::speedMultiplier() const {
     return (paralyzed ? 0.5 : 1.0);
 }
 
+double StatusCondition::catchMultiplier() {
+    switch (statusCondition) {
+    case Status::FROZEN:
+        return 2.5;
+    case Status::ASLEEP:
+        return 2.5;
+    case Status::PARALYZED:
+        return 1.5;
+    case Status::BURNED:
+        return 1.5;
+    case Status::POISONED:
+    case Status::BADLY_POISONED:
+        return 1.5;
+    default:
+        return 1.0;
+    }
+}
+
 bool StatusCondition::canMove() {
     if (frozen) {
         frozen = ((QRandomGenerator::global()->generate() % 5) == 0); // 20% chance to thaw

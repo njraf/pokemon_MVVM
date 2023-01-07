@@ -20,7 +20,7 @@ public:
     double damageMultiplier(QSharedPointer<AttackMove> move) const;
     double speedMultiplier() const;
     bool canMove();
-
+    double catchMultiplier();
 
     void incrementTurnCounters();
     double getStatusDamageMultiplier(); // end turn damage from poison and burn
