@@ -16,7 +16,7 @@ SOURCES += \
     attackeffectfactory.cpp \
     attackmove.cpp \
     bag.cpp \
-    boxpage.cpp \
+    pages/boxpage.cpp \
     boxviewmodel.cpp \
     overworlddao.cpp \
     pages/overworldpage.cpp \
@@ -50,7 +50,7 @@ HEADERS += \
     attackeffectfactory.h \
     attackmove.h \
     bag.h \
-    boxpage.h \
+    pages/boxpage.h \
     boxviewmodel.h \
     overworlddao.h \
     pages/overworldpage.h \
@@ -80,15 +80,15 @@ HEADERS += \
     typeutilities.h
 
 FORMS += \
-    bagpage.ui \
-    battlepage.ui \
-    boxpage.ui \
-    mainmenupage.ui \
+    pages/bagpage.ui \
+    pages/battlepage.ui \
+    pages/boxpage.ui \
+    pages/mainmenupage.ui \
     mainwindow.ui \
-    overworldpage.ui \
-    summarypage.ui \
+    pages/overworldpage.ui \
+    pages/summarypage.ui \
     teammembercard.ui \
-    teampage.ui
+    pages/teampage.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
