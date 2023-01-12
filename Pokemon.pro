@@ -16,6 +16,8 @@ SOURCES += \
     attackeffectfactory.cpp \
     attackmove.cpp \
     bag.cpp \
+    boxpage.cpp \
+    boxviewmodel.cpp \
     overworlddao.cpp \
     pages/overworldpage.cpp \
     overworldviewmodel.cpp \
@@ -48,6 +50,8 @@ HEADERS += \
     attackeffectfactory.h \
     attackmove.h \
     bag.h \
+    boxpage.h \
+    boxviewmodel.h \
     overworlddao.h \
     pages/overworldpage.h \
     overworldviewmodel.h \
@@ -78,6 +82,7 @@ HEADERS += \
 FORMS += \
     bagpage.ui \
     battlepage.ui \
+    boxpage.ui \
     mainmenupage.ui \
     mainwindow.ui \
     overworldpage.ui \

@@ -63,9 +63,10 @@ MainWindow::MainWindow(QWidget *parent)
     routes.insert(PageName::POKEMON_SUMMARY, [=] { return constructSummaryPage(); });
     routes.insert(PageName::BAG, [=] { return constructBagPage(); });
     routes.insert(PageName::OVERWORLD, [=] { return constructOverworldPage(); });
+    routes.insert(PageName::BOX, [=] { return constructBoxPage(); });
 
     PageNavigator::getInstance()->populateRoutes(routes);
-    PageNavigator::getInstance()->navigate(PageName::OVERWORLD);
+    PageNavigator::getInstance()->navigate(PageName::BOX);
     ui->pages->currentWidget()->setFocusPolicy(Qt::StrongFocus);
 }
 
@@ -96,11 +97,15 @@ QSharedPointer<SummaryPage> MainWindow::constructSummaryPage() {
 
 QSharedPointer<BagPage> MainWindow::constructBagPage() {
     QSharedPointer<BagViewmodel> bagViewmodel = QSharedPointer<BagViewmodel>::create(player->getBag());
-    QSharedPointer<BagPage> bagPage = QSharedPointer<BagPage>::create(bagViewmodel);
-    return bagPage;
+    return QSharedPointer<BagPage>::create(bagViewmodel);
 }
 
 QSharedPointer<OverworldPage> MainWindow::constructOverworldPage() {
     auto viewmodel = QSharedPointer<OverworldViewmodel>::create(repository);
     return QSharedPointer<OverworldPage>::create(viewmodel);
+}
+
+QSharedPointer<BoxPage> MainWindow::constructBoxPage() {
+    auto viewmodel = QSharedPointer<BoxViewmodel>::create(repository);
+    return QSharedPointer<BoxPage>::create(viewmodel);
 }

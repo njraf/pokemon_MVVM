@@ -6,7 +6,7 @@
 #include <QDebug>
 
 enum class PageName : int {
-    BATTLE, BAG, MAIN_MENU, TEAM, POKEMON_SUMMARY, OVERWORLD
+    BATTLE, BAG, MAIN_MENU, TEAM, POKEMON_SUMMARY, OVERWORLD, BOX
 };
 
 class IPage : public QWidget
