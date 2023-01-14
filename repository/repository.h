@@ -9,17 +9,19 @@
 #include "attackmovedao.h"
 #include "healitemdao.h"
 #include "overworlddao.h"
+#include "ownedpokemondao.h"
 
 class Repository : public QObject
 {
     Q_OBJECT
 public:
     explicit Repository(QSharedPointer<PokemonDao> pokemonDao_, QSharedPointer<AttackMoveDao> attackMoveDao_, QSharedPointer<HealItemDao> healItemDao_,
-                        QSharedPointer<OverworldDao> overworldDao_, QObject *parent = nullptr);
+                        QSharedPointer<OverworldDao> overworldDao_, QSharedPointer<OwnedPokemonDao> ownedPokemonDao_, QObject *parent = nullptr);
     ~Repository();
 
     bool hasConnection();
     QSharedPointer<Pokemon> getPokemon(int nationalDexNumber);
+    QSharedPointer<Pokemon> getPokemonByID(int id);
     QSharedPointer<AttackMove> getAttackByID(int id, int effectID = 0);
     QSharedPointer<AttackMove> getAttackByName(QString name, int effectID = 0);
     QSharedPointer<HealItem> getHealItemByID(int id);
@@ -31,6 +33,7 @@ private:
     QSharedPointer<AttackMoveDao> attackMoveDao;
     QSharedPointer<HealItemDao> healItemDao;
     QSharedPointer<OverworldDao> overworldDao;
+    QSharedPointer<OwnedPokemonDao> ownedPokemonDao;
 
 };
 

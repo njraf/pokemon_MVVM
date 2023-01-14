@@ -1,12 +1,13 @@
 #include "repository.h"
 
 Repository::Repository(QSharedPointer<PokemonDao> pokemonDao_, QSharedPointer<AttackMoveDao> attackMoveDao_, QSharedPointer<HealItemDao> healItemDao_,
-                       QSharedPointer<OverworldDao> overworldDao_, QObject *parent)
+                       QSharedPointer<OverworldDao> overworldDao_, QSharedPointer<OwnedPokemonDao> ownedPokemonDao_, QObject *parent)
     : QObject(parent)
     , pokemonDao(pokemonDao_)
     , attackMoveDao(attackMoveDao_)
     , healItemDao(healItemDao_)
     , overworldDao(overworldDao_)
+    , ownedPokemonDao(ownedPokemonDao_)
 {
     db = QSqlDatabase::addDatabase("QSQLITE", "RepositoryConnection");
     db.setHostName("MyHost");
@@ -32,6 +33,10 @@ bool Repository::hasConnection() {
 
 QSharedPointer<Pokemon> Repository::getPokemon(int nationalDexNumber) {
     return pokemonDao->getPokemon(nationalDexNumber);
+}
+
+QSharedPointer<Pokemon> Repository::getPokemonByID(int id) {
+    return ownedPokemonDao->getPokemonByID(id);
 }
 
 QSharedPointer<AttackMove> Repository::getAttackByID(int id, int effectID) {

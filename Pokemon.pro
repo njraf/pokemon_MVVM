@@ -16,9 +16,10 @@ SOURCES += \
     attackeffectfactory.cpp \
     attackmove.cpp \
     bag.cpp \
+    repository/ownedpokemondao.cpp \
     pages/boxpage.cpp \
     boxviewmodel.cpp \
-    overworlddao.cpp \
+    repository/overworlddao.cpp \
     pages/overworldpage.cpp \
     overworldviewmodel.cpp \
     pages/bagpage.cpp \
@@ -50,9 +51,10 @@ HEADERS += \
     attackeffectfactory.h \
     attackmove.h \
     bag.h \
+    repository/ownedpokemondao.h \
     pages/boxpage.h \
     boxviewmodel.h \
-    overworlddao.h \
+    repository/overworlddao.h \
     pages/overworldpage.h \
     overworldviewmodel.h \
     pages/bagpage.h \
