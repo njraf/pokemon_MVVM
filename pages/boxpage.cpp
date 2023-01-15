@@ -9,18 +9,20 @@ BoxPage::BoxPage(QSharedPointer<BoxViewmodel> viewmodel_, QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //TODO: get pokemon from the repository
-    QVector<QSharedPointer<Pokemon>> boxedPokemon; // 2d vector?
-
     // populate box
     for (int r = 0; r < viewmodel->ROWS; r++) {
         for (int c = 0; c < viewmodel->COLS; c++) {
-            ui->boxedPokemonGrid->addWidget(new QWidget(), r, c);
+            auto card = new QLabel("");
+            card->setAlignment(Qt::AlignCenter);
+            card->setStyleSheet("border: 1px solid black;");
+            //connect(card, &QLabel::clicked, this, [=]{});
+            ui->boxedPokemonGrid->addWidget(card, r, c);
         }
     }
 
-    //TODO: get party pokemon from the repository
-    QVector<QSharedPointer<Pokemon>> partyPokemon;
+    drawBox(1);
+
+    QVector<QSharedPointer<Pokemon>> partyPokemon = viewmodel->getPartyPokemon();
 
     // populate party
     for (auto poke : partyPokemon) {
@@ -31,6 +33,19 @@ BoxPage::BoxPage(QSharedPointer<BoxViewmodel> viewmodel_, QWidget *parent) :
         ui->partyListArea->addWidget(new QWidget());
     }
 
+    connect(ui->prevBoxButton, &QPushButton::clicked, this, [=] {
+        viewmodel->setCurrentBox(viewmodel->getCurrentBox() - 1);
+        int box = viewmodel->getCurrentBox();
+        drawBox(box);
+        ui->boxNameLabel->setText("Box " + QString::number(box));
+    });
+
+    connect(ui->nextBoxButton, &QPushButton::clicked, this, [=] {
+        viewmodel->setCurrentBox(viewmodel->getCurrentBox() + 1);
+        int box = viewmodel->getCurrentBox();
+        drawBox(box);
+        ui->boxNameLabel->setText("Box " + QString::number(box));
+    });
 }
 
 BoxPage::~BoxPage()
@@ -44,4 +59,30 @@ PageName BoxPage::getPageName() {
 
 void BoxPage::receiveData(QVector<QVariant> data) {
 
+}
+
+void BoxPage::drawBox(int box) {
+    QVector<QSharedPointer<Pokemon>> boxedPokemon = viewmodel->getAllPokemonFromBox(box);
+    // populate box
+    for (int r = 0; r < viewmodel->ROWS; r++) {
+        for (int c = 0; c < viewmodel->COLS; c++) {
+            int index = r * viewmodel->COLS + c;
+
+            auto item = ui->boxedPokemonGrid->itemAtPosition(r, c);
+            if ((nullptr == item) || (nullptr == item->widget())) {
+                continue;
+            }
+
+            auto boxWidget = qobject_cast<QLabel*>(item->widget());
+            if (nullptr == boxWidget) {
+                continue;
+            }
+
+            if (index < boxedPokemon.size()) {
+                boxWidget->setText(boxedPokemon[index]->getName());
+            } else {
+                boxWidget->setText("");
+            }
+        }
+    }
 }
