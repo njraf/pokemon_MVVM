@@ -1,8 +1,9 @@
 #include "boxviewmodel.h"
 
-BoxViewmodel::BoxViewmodel(QSharedPointer<Repository> repository_,QObject *parent)
+BoxViewmodel::BoxViewmodel(QSharedPointer<Repository> repository_, QVector<QSharedPointer<Pokemon>> partyPokemon_, QObject *parent)
     : QObject(parent)
     , repository(repository_)
+    , partyPokemon(partyPokemon_)
     , currentBox(1)
 {
 
@@ -13,7 +14,7 @@ QVector<QSharedPointer<Pokemon>> BoxViewmodel::getAllPokemonFromBox(int box) {
 }
 
 QVector<QSharedPointer<Pokemon>> BoxViewmodel::getPartyPokemon() {
-    return repository->getPartyPokemon();
+    return partyPokemon;
 }
 
 int BoxViewmodel::getCurrentBox() {

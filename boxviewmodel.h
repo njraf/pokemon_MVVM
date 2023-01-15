@@ -11,7 +11,7 @@ class BoxViewmodel : public QObject
 {
     Q_OBJECT
 public:
-    explicit BoxViewmodel(QSharedPointer<Repository> repository_, QObject *parent = nullptr);
+    explicit BoxViewmodel(QSharedPointer<Repository> repository_, QVector<QSharedPointer<Pokemon>> partyPokemon, QObject *parent = nullptr);
     ~BoxViewmodel() = default;
 
     QVector<QSharedPointer<Pokemon>> getAllPokemonFromBox(int box);
@@ -25,6 +25,7 @@ public:
 private:
     const int MAX_BOX = 8;
     QSharedPointer<Repository> repository;
+    QVector<QSharedPointer<Pokemon>> partyPokemon;
     int currentBox;
 
 signals:

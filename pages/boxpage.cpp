@@ -25,7 +25,7 @@ BoxPage::BoxPage(QSharedPointer<BoxViewmodel> viewmodel_, QWidget *parent) :
 
     drawBox(1);
 
-    QVector<QSharedPointer<Pokemon>> partyPokemon = viewmodel->getPartyPokemon(); //TODO: pass party into constructor? DB not synced with memory
+    QVector<QSharedPointer<Pokemon>> partyPokemon = viewmodel->getPartyPokemon();
 
     // populate party
     for (auto poke : partyPokemon) {

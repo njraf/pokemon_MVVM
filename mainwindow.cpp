@@ -134,6 +134,6 @@ QSharedPointer<OverworldPage> MainWindow::constructOverworldPage() {
 }
 
 QSharedPointer<BoxPage> MainWindow::constructBoxPage() {
-    auto viewmodel = QSharedPointer<BoxViewmodel>::create(repository);
+    auto viewmodel = QSharedPointer<BoxViewmodel>::create(repository, player->getTeam());
     return QSharedPointer<BoxPage>::create(viewmodel);
 }
