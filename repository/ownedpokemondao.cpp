@@ -39,6 +39,19 @@ void OwnedPokemonDao::insertPokemon(QSharedPointer<Pokemon> pokemon) {
     record.setValue("BoxNumber", pokemon->getBoxNumber());
     record.setValue("NumTurnsAsleep", pokemon->getStatusCondition()->getNumTurnsAsleep());
     record.setValue("MaxTurnsAsleep", pokemon->getStatusCondition()->getMaxSleepTurns());
+    record.setValue("AttackStatIV", pokemon->getAttackStatIV());
+    record.setValue("SpAttackStatIV", pokemon->getSpAttackStatIV());
+    record.setValue("DefenseStatIV", pokemon->getDefenseStatIV());
+    record.setValue("SpDefenseStatIV", pokemon->getSpDefenseStatIV());
+    record.setValue("SpeedStatIV", pokemon->getSpeedStatIV());
+    record.setValue("MaxHealthStatIV", pokemon->getMaxHealthStatIV());
+    record.setValue("AttackStatEV", pokemon->getAttackStatEV());
+    record.setValue("SpAttackStatEV", pokemon->getSpAttackStatEV());
+    record.setValue("DefenseStatEV", pokemon->getDefenseStatEV());
+    record.setValue("SpDefenseStatEV", pokemon->getSpDefenseStatEV());
+    record.setValue("SpeedStatEV", pokemon->getSpeedStatEV());
+    record.setValue("MaxHealthStatEV", pokemon->getMaxHealthStatEV());
+    record.setValue("StatusCondition", StatusCondition::to_underlying(pokemon->getStatusCondition()->getStatusCondition()));
 
     if (!model.insertRecord(-1, record)) {
         qDebug() << "ERROR: Last OwnedPokemonDao::insertRecord() error." << model.lastError().text();
@@ -70,6 +83,19 @@ bool OwnedPokemonDao::populateDatabase() {
                     "BoxNumber int, "
                     "NumTurnsAsleep int,"
                     "MaxTurnsAsleep int,"
+                    "AttackStatIV int,"
+                    "SpAttackStatIV int,"
+                    "DefenseStatIV int,"
+                    "SpDefenseStatIV int,"
+                    "SpeedStatIV int,"
+                    "MaxHealthStatIV int,"
+                    "AttackStatEV int,"
+                    "SpAttackStatEV int,"
+                    "DefenseStatEV int,"
+                    "SpDefenseStatEV int,"
+                    "SpeedStatEV int,"
+                    "MaxHealthStatEV int,"
+                    "StatusCondition int,"
                     "FOREIGN KEY (NatDexNumber) REFERENCES Pokemon(NatDexNumber));"))
     {
         qDebug() << "Create OwnedPokemon table failed" << query.lastError().text();

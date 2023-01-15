@@ -46,8 +46,7 @@ QSharedPointer<Pokemon> OwnedPokemonAttackMoveDao::getPokemonByID(int id) {
     }
 
     auto record = pokemonModel.record(0);
-    auto asd = record.value("CurrentHealth").toInt();
-    return QSharedPointer<Pokemon>::create(
+    QSharedPointer<Pokemon> pokemon = QSharedPointer<Pokemon>::create(
                 record.value("ID").toInt(),
                 record.value("NatDexNumber").toInt(),
                 record.value("Name").toString(), //TODO: use nickame if not empty
@@ -66,6 +65,21 @@ QSharedPointer<Pokemon> OwnedPokemonAttackMoveDao::getPokemonByID(int id) {
                 static_cast<Type>(record.value("Type1").toInt()),
                 static_cast<Type>(record.value("Type2").toInt())
                 );
+    pokemon->setAttackStatIV(record.value("AttackStatIV").toInt());
+    pokemon->setSpAttackStatIV(record.value("SpAttackStatIV").toInt());
+    pokemon->setDefenseStatIV(record.value("DefenseStatIV").toInt());
+    pokemon->setSpDefenseStatIV(record.value("SpDefenseStatIV").toInt());
+    pokemon->setSpeedStatIV(record.value("SpeedStatIV").toInt());
+    pokemon->setMaxHealthStatIV(record.value("MaxHealthStatIV").toInt());
+    pokemon->setAttackStatEV(record.value("AttackStatEV").toInt());
+    pokemon->setSpAttackStatEV(record.value("SpAttackStatEV").toInt());
+    pokemon->setDefenseStatEV(record.value("DefenseStatEV").toInt());
+    pokemon->setSpDefenseStatEV(record.value("SpDefenseStatEV").toInt());
+    pokemon->setSpeedStatEV(record.value("SpeedStatEV").toInt());
+    pokemon->setMaxHealthStatEV(record.value("MaxHealthStatEV").toInt());
+    pokemon->setStatusCondition(static_cast<Status>(record.value("StatusCondition").toInt()));
+
+    return pokemon;
 }
 
 void OwnedPokemonAttackMoveDao::insertPokemon(QSharedPointer<Pokemon> pokemon) {

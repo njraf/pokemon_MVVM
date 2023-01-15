@@ -46,14 +46,12 @@ Pokemon::Pokemon(int id_, int natDexNumber_, QString name_, QString owner_, int 
     , status(QSharedPointer<StatusCondition>::create())
 {
     // calculate IVs
-    if (owner.isEmpty()) {
-        attackStatIV = QRandomGenerator::global()->generate() % 32;
-        spAttackStatIV = QRandomGenerator::global()->generate() % 32;
-        defenseStatIV = QRandomGenerator::global()->generate() % 32;
-        spDefenseStatIV = QRandomGenerator::global()->generate() % 32;
-        speedStatIV = QRandomGenerator::global()->generate() % 32;
-        maxHealthStatIV = QRandomGenerator::global()->generate() % 32;
-    }
+    attackStatIV = QRandomGenerator::global()->generate() % 32;
+    spAttackStatIV = QRandomGenerator::global()->generate() % 32;
+    defenseStatIV = QRandomGenerator::global()->generate() % 32;
+    spDefenseStatIV = QRandomGenerator::global()->generate() % 32;
+    speedStatIV = QRandomGenerator::global()->generate() % 32;
+    maxHealthStatIV = QRandomGenerator::global()->generate() % 32;
 
     if (currentHealthStat > getMaxHealthStat()) {
         currentHealthStat = getMaxHealthStat();
@@ -204,6 +202,102 @@ int Pokemon::getSpeedStat() const {
 
 int Pokemon::getMaxHealthStat() const {
     return (((double)maxHealthStatIV + 2.0 * (double)baseMaxHealthStat + ((double)maxHealthStatEV / 4.0)) * (double)level / 100.0) + 10.0 + (double)level;
+}
+
+int Pokemon::getAttackStatIV() {
+    return attackStatIV;
+}
+
+void Pokemon::setAttackStatIV(int newStat) {
+    attackStatIV = newStat;
+}
+
+int Pokemon::getSpAttackStatIV() {
+    return spAttackStatIV;
+}
+
+void Pokemon::setSpAttackStatIV(int newStat) {
+    spAttackStatIV = newStat;
+}
+
+int Pokemon::getDefenseStatIV() {
+    return defenseStatIV;
+}
+
+void Pokemon::setDefenseStatIV(int newStat) {
+    defenseStatIV = newStat;
+}
+
+int Pokemon::getSpDefenseStatIV() {
+    return spDefenseStatIV;
+}
+
+void Pokemon::setSpDefenseStatIV(int newStat) {
+    spDefenseStatIV = newStat;
+}
+
+int Pokemon::getSpeedStatIV() {
+    return speedStatIV;
+}
+
+void Pokemon::setSpeedStatIV(int newStat) {
+    speedStatIV = newStat;
+}
+
+int Pokemon::getMaxHealthStatIV() {
+    return maxHealthStatIV;
+}
+
+void Pokemon::setMaxHealthStatIV(int newStat) {
+    maxHealthStatIV = newStat;
+}
+
+int Pokemon::getAttackStatEV() {
+    return attackStatEV;
+}
+
+void Pokemon::setAttackStatEV(int newStat) {
+    attackStatEV = newStat;
+}
+
+int Pokemon::getSpAttackStatEV() {
+    return spAttackStatEV;
+}
+
+void Pokemon::setSpAttackStatEV(int newStat) {
+    spAttackStatEV = newStat;
+}
+
+int Pokemon::getDefenseStatEV() {
+    return defenseStatEV;
+}
+
+void Pokemon::setDefenseStatEV(int newStat) {
+    defenseStatEV = newStat;
+}
+
+int Pokemon::getSpDefenseStatEV() {
+    return spDefenseStatEV;
+}
+
+void Pokemon::setSpDefenseStatEV(int newStat) {
+    spDefenseStatEV = newStat;
+}
+
+int Pokemon::getSpeedStatEV() {
+    return speedStatEV;
+}
+
+void Pokemon::setSpeedStatEV(int newStat) {
+    speedStatEV = newStat;
+}
+
+int Pokemon::getMaxHealthStatEV() {
+    return maxHealthStatEV;
+}
+
+void Pokemon::setMaxHealthStatEV(int newStat) {
+    maxHealthStatEV = newStat;
 }
 
 int Pokemon::getAttackStatStage() const {

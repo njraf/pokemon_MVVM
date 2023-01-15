@@ -37,6 +37,31 @@ public:
     int getSpeedStat() const;
     int getMaxHealthStat() const;
 
+    int getAttackStatIV();
+    void setAttackStatIV(int newStat);
+    int getSpAttackStatIV();
+    void setSpAttackStatIV(int newStat);
+    int getDefenseStatIV();
+    void setDefenseStatIV(int newStat);
+    int getSpDefenseStatIV();
+    void setSpDefenseStatIV(int newStat);
+    int getSpeedStatIV();
+    void setSpeedStatIV(int newStat);
+    int getMaxHealthStatIV();
+    void setMaxHealthStatIV(int newStat);
+    int getAttackStatEV();
+    void setAttackStatEV(int newStat);
+    int getSpAttackStatEV();
+    void setSpAttackStatEV(int newStat);
+    int getDefenseStatEV();
+    void setDefenseStatEV(int newStat);
+    int getSpDefenseStatEV();
+    void setSpDefenseStatEV(int newStat);
+    int getSpeedStatEV();
+    void setSpeedStatEV(int newStat);
+    int getMaxHealthStatEV();
+    void setMaxHealthStatEV(int newStat);
+
     int getAttackStatStage() const;
     void setAttackStatStage(int stage);
     int getSpAttackStatStage() const;
@@ -107,7 +132,7 @@ private:
     QVector<QSharedPointer<AttackMove>> attackList;
     Type type1;
     Type type2;
-    int boxNumber; // 0 means party
+    int boxNumber; // 0 means party, -1 means wild or opponent trainer
 
     QSharedPointer<StatusCondition> status;
 
