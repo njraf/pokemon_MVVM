@@ -24,6 +24,8 @@ public:
     void addNewPokemon(QSharedPointer<Pokemon> pokemon); // catch or gift pokemon
     QSharedPointer<Pokemon> getNewPokemon(int nationalDexNumber); // create a new pokemon (i.e. wild encounter)
     QSharedPointer<Pokemon> getPokemonByID(int id); // get owned pokemon
+    QVector<QSharedPointer<Pokemon>> getPartyPokemon();
+    QVector<QSharedPointer<Pokemon>> getPokemonFromBox(int box);
     QSharedPointer<AttackMove> getAttackByID(int id, int effectID = 0);
     QSharedPointer<AttackMove> getAttackByName(QString name, int effectID = 0);
     QSharedPointer<HealItem> getHealItemByID(int id);

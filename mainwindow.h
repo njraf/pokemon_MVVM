@@ -23,7 +23,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    void connectPages(QSharedPointer<IPage> page);
+    void populateSampleTrainerPokemon(); // for testing, not production
+
     QSharedPointer<MainMenuPage> constructMainMenuPage() ;
     QSharedPointer<BattlePage> constructBattlePage();
     QSharedPointer<TeamPage> constructTeamPage();
