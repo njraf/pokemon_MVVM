@@ -17,6 +17,8 @@ public:
     explicit TeamMemberCard(QSharedPointer<Pokemon> pokemon_, QWidget *parent = nullptr);
     ~TeamMemberCard();
 
+    void refresh();
+
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *) override; // allows styling from qss

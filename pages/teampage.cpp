@@ -38,7 +38,7 @@ TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
         TeamMemberCard *teamMemberCard = new TeamMemberCard(member);
         ui->teamGrid->addWidget(teamMemberCard, row, col);
         connect(teamMemberCard, &TeamMemberCard::clicked, this, [=] {
-            QVector<QVariant> data = {QVariant::fromValue<QSharedPointer<Pokemon>>(member)};
+            selectedPokemon = member;
             if (context == Context::BAG) {
                 if ((member->getHealthStat() != 0) && (member->getHealthStat() < member->getMaxHealthStat())) {
                     //TODO: assumes HealItem. Allow actions from other items.
@@ -91,8 +91,23 @@ void TeamPage::receiveData(QVector<QVariant> data) {
 
     if (context == Context::BATTLE && data[0].canConvert<QSharedPointer<Pokemon>>()) {
         battlePokemon = data[0].value<QSharedPointer<Pokemon>>();
-    } else if (context == Context::BAG && data[0].canConvert<QSharedPointer<HealItem>>()) {
+    } else if (!data.isEmpty() && data[0].canConvert<QSharedPointer<HealItem>>()) {
         healItemToUse = data[0].value<QSharedPointer<HealItem>>();
+        healItemToUse->use(selectedPokemon);
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 2; c++) {
+                auto item = ui->teamGrid->itemAtPosition(r, c);
+                if ((nullptr == item) || (nullptr == item->widget())) {
+                    continue;
+                }
+
+                auto widget = qobject_cast<TeamMemberCard*>(item->widget());
+                if (nullptr == widget) {
+                    continue;
+                }
+                widget->refresh();
+            }
+        }
     }
 }
 
@@ -120,7 +135,10 @@ void TeamPage::showMenuDialog(QSharedPointer<Pokemon> pokemon) {
 
     connect(summaryButton, &QPushButton::clicked, this, [&] { dialog.reject(); PageNavigator::getInstance()->navigate(PageName::POKEMON_SUMMARY, data); });
     connect(switchButton, &QPushButton::clicked, this, [&] {  });
-    connect(itemButton, &QPushButton::clicked, this, [&] {  });
+    connect(itemButton, &QPushButton::clicked, this, [&] {
+        dialog.reject();
+        PageNavigator::getInstance()->navigate(PageName::BAG, data);
+    });
     connect(cancelButton, &QPushButton::clicked, this, [&] { dialog.reject(); });
 
     dialog.exec();

@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
     routes.insert(PageName::BOX, [=] { return constructBoxPage(); });
 
     PageNavigator::getInstance()->populateRoutes(routes);
-    PageNavigator::getInstance()->navigate(PageName::BOX);
+    PageNavigator::getInstance()->navigate(PageName::OVERWORLD);
     ui->pages->currentWidget()->setFocusPolicy(Qt::StrongFocus);
 }
 

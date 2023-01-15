@@ -51,6 +51,7 @@ private:
     Context context;
     QSharedPointer<Pokemon> battlePokemon;
     QSharedPointer<HealItem> healItemToUse;
+    QSharedPointer<Pokemon> selectedPokemon;
 };
 
 #endif // TEAMPAGE_H

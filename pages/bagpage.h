@@ -32,6 +32,7 @@ private:
     Ui::BagPage *ui;
     QSharedPointer<BagViewmodel> viewmodel;
     Context context;
+    QSharedPointer<Pokemon> selectedPokemon;
 };
 
 #endif // BAGPAGE_H

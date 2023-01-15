@@ -24,6 +24,7 @@ private:
     explicit PageNavigator(QObject *parent = nullptr);
     QStack<QSharedPointer<IPage>> backstack;
     QMap<PageName, std::function<QSharedPointer<IPage>(void)>> routes;
+    QSharedPointer<IPage> prevPage;
 
 signals:
     void pageChanged(QSharedPointer<IPage>);

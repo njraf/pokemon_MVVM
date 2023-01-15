@@ -13,6 +13,15 @@ TeamMemberCard::TeamMemberCard(QSharedPointer<Pokemon> pokemon_, QWidget *parent
 {
     ui->setupUi(this);
 
+    refresh();
+}
+
+TeamMemberCard::~TeamMemberCard()
+{
+    delete ui;
+}
+
+void TeamMemberCard::refresh() {
     QSharedPointer<StatusCondition> status = pokemon->getStatusCondition();
     int health = pokemon->getHealthStat();
     int maxHealth = pokemon->getMaxHealthStat();
@@ -23,11 +32,6 @@ TeamMemberCard::TeamMemberCard(QSharedPointer<Pokemon> pokemon_, QWidget *parent
     ui->levelLabel->setText(QString("L: %1").arg(pokemon->getLevel()));
     ui->statusConditionLabel->setText(status->toName());
     ui->statusConditionLabel->setStyleSheet("background-color: " + status->toColor() + ";");
-}
-
-TeamMemberCard::~TeamMemberCard()
-{
-    delete ui;
 }
 
 void TeamMemberCard::mousePressEvent(QMouseEvent *event)

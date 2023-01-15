@@ -25,6 +25,7 @@ public:
 private:
     Ui::BoxPage *ui;
     QSharedPointer<BoxViewmodel> viewmodel;
+    QSharedPointer<Pokemon> selectedPokemon;
 
 };
 

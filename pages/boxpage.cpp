@@ -1,6 +1,9 @@
 #include "boxpage.h"
 #include "ui_boxpage.h"
 #include "teammembercard.h"
+#include "pagenavigator.h"
+
+#include <QMessageBox>
 
 BoxPage::BoxPage(QSharedPointer<BoxViewmodel> viewmodel_, QWidget *parent) :
     IPage(parent),
@@ -22,17 +25,52 @@ BoxPage::BoxPage(QSharedPointer<BoxViewmodel> viewmodel_, QWidget *parent) :
 
     drawBox(1);
 
-    QVector<QSharedPointer<Pokemon>> partyPokemon = viewmodel->getPartyPokemon();
+    QVector<QSharedPointer<Pokemon>> partyPokemon = viewmodel->getPartyPokemon(); //TODO: pass party into constructor? DB not synced with memory
 
     // populate party
     for (auto poke : partyPokemon) {
-        ui->partyListArea->addWidget(new TeamMemberCard(poke));
+        auto card = new TeamMemberCard(poke);
+        connect(card, &TeamMemberCard::clicked, this, [=] {
+            selectedPokemon = poke;
+            QVariant pokeData = QVariant::fromValue<QSharedPointer<Pokemon>>(poke);
+            QVector<QVariant> data = {pokeData};
+            QPushButton *summaryButton = new QPushButton("Summary");
+            QPushButton *switchButton = new QPushButton("Switch");
+            QPushButton *itemButton = new QPushButton("Item");
+            QPushButton *cancelButton = new QPushButton("Cancel");
+
+            QMessageBox dialog;
+            QLayout *layout = dialog.layout();
+            QLayoutItem *item;
+            while ((item = layout->takeAt(0)) != nullptr) {
+                delete item;
+            }
+            layout->addWidget(summaryButton);
+            layout->addWidget(switchButton);
+            layout->addWidget(itemButton);
+            layout->addWidget(cancelButton);
+
+
+            dialog.setLayout(layout);
+
+            connect(summaryButton, &QPushButton::clicked, this, [&] { dialog.reject(); PageNavigator::getInstance()->navigate(PageName::POKEMON_SUMMARY, data); });
+            connect(switchButton, &QPushButton::clicked, this, [&] {  });
+            connect(itemButton, &QPushButton::clicked, this, [&] {
+                dialog.reject();
+                PageNavigator::getInstance()->navigate(PageName::BAG, data);
+            });
+            connect(cancelButton, &QPushButton::clicked, this, [&] { dialog.reject(); });
+
+            dialog.exec();
+        });
+        ui->partyListArea->addWidget(card);
     }
 
     for (int i = partyPokemon.size(); i < 6; i++) {
         ui->partyListArea->addWidget(new QWidget());
     }
 
+    connect(ui->backButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigateBack(); });
     connect(ui->prevBoxButton, &QPushButton::clicked, this, [=] {
         viewmodel->setCurrentBox(viewmodel->getCurrentBox() - 1);
         int box = viewmodel->getCurrentBox();
@@ -58,7 +96,26 @@ PageName BoxPage::getPageName() {
 }
 
 void BoxPage::receiveData(QVector<QVariant> data) {
+    if (data.isEmpty()) {
+        return;
+    }
 
+    if (data[0].canConvert<QSharedPointer<HealItem>>()) {
+        QSharedPointer<HealItem> healItemToUse = data[0].value<QSharedPointer<HealItem>>();
+        healItemToUse->use(selectedPokemon);
+        for (int i = 0; i < 6; i++) {
+            auto item = ui->partyListArea->itemAt(i);
+            if ((nullptr == item) || (nullptr == item->widget())) {
+                continue;
+            }
+
+            auto widget = qobject_cast<TeamMemberCard*>(item->widget());
+            if (nullptr == widget) {
+                continue;
+            }
+            widget->refresh();
+        }
+    }
 }
 
 void BoxPage::drawBox(int box) {
