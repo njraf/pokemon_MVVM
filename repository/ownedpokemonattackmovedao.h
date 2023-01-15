@@ -16,7 +16,7 @@ public:
     QSharedPointer<Pokemon> getPokemonByID(int id);
     void insertPokemon(QSharedPointer<Pokemon> pokemon);
     QVector<QSharedPointer<Pokemon>> getPartyPokemon();
-    QVector<QSharedPointer<Pokemon>> getPokemonFromBox(int box);
+    QVector<QSharedPointer<Pokemon>> getAllPokemonFromBox(int box);
 
 protected:
     bool populateDatabase() override;

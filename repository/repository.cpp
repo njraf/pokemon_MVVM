@@ -50,8 +50,8 @@ QVector<QSharedPointer<Pokemon>> Repository::getPartyPokemon() {
     return ownedPokemonAttackMoveDao->getPartyPokemon();
 }
 
-QVector<QSharedPointer<Pokemon>> Repository::getPokemonFromBox(int box) {
-    return ownedPokemonAttackMoveDao->getPokemonFromBox(box);
+QVector<QSharedPointer<Pokemon>> Repository::getAllPokemonFromBox(int box) {
+    return ownedPokemonAttackMoveDao->getAllPokemonFromBox(box);
 }
 
 QSharedPointer<AttackMove> Repository::getAttackByID(int id, int effectID) {

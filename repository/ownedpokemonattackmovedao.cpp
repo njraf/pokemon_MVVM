@@ -84,8 +84,25 @@ QVector<QSharedPointer<Pokemon>> OwnedPokemonAttackMoveDao::getPartyPokemon() {
     return party;
 }
 
-QVector<QSharedPointer<Pokemon>> OwnedPokemonAttackMoveDao::getPokemonFromBox(int box) {
+QVector<QSharedPointer<Pokemon>> OwnedPokemonAttackMoveDao::getAllPokemonFromBox(int box) {
+    if (!db.isOpen()) {
+        qDebug() << "OwnedPokemonAttackMoveDao database is not opened";
+    }
+    QSqlQueryModel pokemonModel;
+    pokemonModel.setQuery("SELECT * FROM OwnedPokemon INNER JOIN Pokemon ON OwnedPokemon.NatDexNumber=Pokemon.NatDexNumber WHERE BoxNumber=" + QString::number(box) + ";", db);
 
+    QVector<QSharedPointer<Pokemon>> party;
+    for (int i = 0; i < pokemonModel.rowCount(); i++) {
+        QSqlQueryModel attackModel;
+        attackModel.setQuery("SELECT * FROM OwnedPokemonAttackMove opam INNER JOIN AttackMove am ON opam.AttackMoveID = am.ID INNER JOIN OwnedPokemon op ON op.ID = opam.PokemonID WHERE BoxNumber=" + QString::number(box) + " AND PokemonID=" + QString::number(pokemonModel.record(i).value("ID").toInt()) + ";", db);
+
+        QVector<QSharedPointer<AttackMove>> attackList = populateAttackList(attackModel);
+
+        party.append(makePokemon(pokemonModel.record(i), attackList));
+
+    }
+
+    return party;
 }
 
 bool OwnedPokemonAttackMoveDao::populateDatabase() {
