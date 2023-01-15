@@ -25,7 +25,7 @@ QSharedPointer<Pokemon> PokemonDao::getPokemon(int nationalDexNumber) {
     model.setTable("Pokemon");
     model.setFilter(QString("NatDexNumber=%1").arg(nationalDexNumber));
     if (!model.select()) {
-        qDebug() << "ERROR: getPokemon()::select() failed" << db.lastError().text();
+        qDebug() << "ERROR: getPokemon()::select() failed" << model.lastError().text();
     }
 
     auto record = model.record(0);
@@ -75,10 +75,10 @@ bool PokemonDao::populateDatabase() {
     //qDebug() << "Populating Pokemon database";
     QSqlQuery query(db);
     if (!query.exec("DROP TABLE Pokemon;")) {
-        qDebug() << "Drop table failed" << db.lastError().text();
+        qDebug() << "Drop table failed" << query.lastError().text();
     }
     if (!query.exec("CREATE TABLE Pokemon (NatDexNumber int PRIMARY_KEY, Name varchar(32), BaseHealth int, BaseAttack int, BaseDefense int, BaseSpAttack int, BaseSpDefense int, BaseSpeed int, Type1 int, Type2 int);")) {
-        qDebug() << "Create table failed" << db.lastError().text();
+        qDebug() << "Create table failed" << query.lastError().text();
     }
 
     int col = 0;
@@ -86,7 +86,7 @@ bool PokemonDao::populateDatabase() {
     table.setTable("Pokemon");
     table.setEditStrategy(QSqlTableModel::OnManualSubmit);
     if (!table.select()) {
-        qDebug() << "ERROR: First select() error." << db.lastError().text();
+        qDebug() << "ERROR: First select() error." << table.lastError().text();
         return false;
     }
 
@@ -101,7 +101,7 @@ bool PokemonDao::populateDatabase() {
     table.setHeaderData(col++, Qt::Horizontal, "Type1");
     table.setHeaderData(col++, Qt::Horizontal, "Type2");
     if (!table.select()) {
-        qDebug() << "ERROR: Second select() error." << db.lastError().text();
+        qDebug() << "ERROR: Second select() error." << table.lastError().text();
         return false;
     }
 
@@ -123,18 +123,18 @@ bool PokemonDao::populateDatabase() {
                 QVariant data(parts[col].simplified());
                 if ((col == 0) || ((col > 1) && (col < 8))) { // int data
                     if (!table.setData(table.index(row, col), data.toInt())) {
-                        qDebug() << "ERROR: Could not set int data" << db.lastError().text();
+                        qDebug() << "ERROR: Could not set int data" << table.lastError().text();
                     }
                 } else { // string data
                     QString strData = data.toString();
                     if (TypeUtilities::strToUnderlying.contains(strData)) {
                         int intData = TypeUtilities::strToUnderlying[strData];
                         if (!table.setData(table.index(row, col), intData)) {
-                            qDebug() << "ERROR: Could not set type data" << db.lastError().text();
+                            qDebug() << "ERROR: Could not set type data" << table.lastError().text();
                         }
                     } else {
                         if (!table.setData(table.index(row, col), strData)) {
-                            qDebug() << "ERROR: Could not set string data" << db.lastError().text();
+                            qDebug() << "ERROR: Could not set string data" << table.lastError().text();
                         }
                     }
                 }
@@ -145,7 +145,7 @@ bool PokemonDao::populateDatabase() {
     pokemonFile.close();
 
     if (!table.submitAll()) {
-        qDebug() << "ERROR: Last submitAll() error." << db.lastError().text();
+        qDebug() << "ERROR: Last submitAll() error." << table.lastError().text();
         return false;
     }
 

@@ -76,7 +76,7 @@ void OwnedPokemonAttackMoveDao::insertPokemon(QSharedPointer<Pokemon> pokemon) {
     model.setTable("OwnedPokemonAttackMove");
     model.setEditStrategy(QSqlTableModel::OnManualSubmit);
     if (!model.select()) {
-        qDebug() << "ERROR: OwnedPokemonAttackMoveDao::insertPokemon()::select() failed" << db.lastError().text();
+        qDebug() << "ERROR: OwnedPokemonAttackMoveDao::insertPokemon()::select() failed" << model.lastError().text();
     }
 
     for (auto attack : pokemon->getAttackList()) {
@@ -101,11 +101,11 @@ bool OwnedPokemonAttackMoveDao::populateDatabase() {
     // A new game does not start with any owned pokemon. remove the table and create an empty one.
     QSqlQuery query(db);
     if (!query.exec("DROP TABLE OwnedPokemonAttackMove;")) {
-        qDebug() << "Drop table failed" << db.lastError().text();
+        qDebug() << "Drop table failed" << query.lastError().text();
     }
 
     if (!query.exec("CREATE TABLE OwnedPokemonAttackMove(PokemonID int, AttackMoveID int, CurrentPP int, PRIMARY KEY (PokemonID, AttackMoveID), FOREIGN KEY (PokemonID) REFERENCES OwnedPokemon(ID), FOREIGN KEY (AttackMoveID) REFERENCES AttackMove(ID));")) {
-        qDebug() << "Create OwnedPokemonAttackMove table failed" << db.lastError().text();
+        qDebug() << "Create OwnedPokemonAttackMove table failed" << query.lastError().text();
     }
 
     return true;

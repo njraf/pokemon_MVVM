@@ -24,7 +24,7 @@ QSharedPointer<HealItem> HealItemDao::getHealItemByID(int id) {
     model.setTable("HealItem");
     model.setFilter(QString("ID=%1").arg(id));
     if (!model.select()) {
-        qDebug() << "ERROR: getHealItemByID()::select() failed" << db.lastError().text();
+        qDebug() << "ERROR: getHealItemByID()::select() failed" << model.lastError().text();
     }
 
     auto record = model.record(0);
@@ -40,10 +40,10 @@ bool HealItemDao::populateDatabase() {
     //qDebug() << "Populating HealItem database";
     QSqlQuery query(db);
     if (!query.exec("DROP TABLE HealItem;")) {
-        qDebug() << "Drop table failed" << db.lastError().text();
+        qDebug() << "Drop table failed" << query.lastError().text();
     }
     if (!query.exec("CREATE TABLE HealItem(ID int PRIMARY_KEY, Name varchar(32), HP int, Description varchar(128));")) {
-        qDebug() << "Create table failed" << db.lastError().text();
+        qDebug() << "Create table failed" << query.lastError().text();
     }
 
     int col = 0;
@@ -51,7 +51,7 @@ bool HealItemDao::populateDatabase() {
     table.setTable("HealItem");
     table.setEditStrategy(QSqlTableModel::OnManualSubmit);
     if (!table.select()) {
-        qDebug() << "ERROR: First select() error." << db.lastError().text();
+        qDebug() << "ERROR: First select() error." << table.lastError().text();
         return false;
     }
 
@@ -60,7 +60,7 @@ bool HealItemDao::populateDatabase() {
     table.setHeaderData(col++, Qt::Horizontal, "HP");
     table.setHeaderData(col++, Qt::Horizontal, "Description");
     if (!table.select()) {
-        qDebug() << "ERROR: Second select() error." << db.lastError().text();
+        qDebug() << "ERROR: Second select() error." << table.lastError().text();
         return false;
     }
 
@@ -82,11 +82,11 @@ bool HealItemDao::populateDatabase() {
                 QVariant data(parts[col].simplified());
                 if (col == 2) { // int data
                     if (!table.setData(table.index(row, col), data.toInt())) {
-                        qDebug() << "ERROR: Could not set int data" << db.lastError().text();
+                        qDebug() << "ERROR: Could not set int data" << table.lastError().text();
                     }
                 } else { // string data
                     if (!table.setData(table.index(row, col), data.toString())) {
-                        qDebug() << "ERROR: Could not set string data" << db.lastError().text();
+                        qDebug() << "ERROR: Could not set string data" << table.lastError().text();
                     }
                 }
             }
@@ -96,7 +96,7 @@ bool HealItemDao::populateDatabase() {
     healItemFile.close();
 
     if (!table.submitAll()) {
-        qDebug() << "ERROR: Last submitAll() error." << db.lastError().text();
+        qDebug() << "ERROR: Last submitAll() error." << table.lastError().text();
         return false;
     }
 

@@ -55,7 +55,7 @@ bool OwnedPokemonDao::populateDatabase() {
     // A new game does not start with any owned pokemon. remove the table and create an empty one.
     QSqlQuery query(db);
     if (!query.exec("DROP TABLE OwnedPokemon;")) {
-        qDebug() << "Drop table failed" << db.lastError().text();
+        qDebug() << "Drop table failed" << query.lastError().text();
     }
 
     //TODO: add EVs and IVs
@@ -72,7 +72,7 @@ bool OwnedPokemonDao::populateDatabase() {
                     "MaxTurnsAsleep int,"
                     "FOREIGN KEY (NatDexNumber) REFERENCES Pokemon(NatDexNumber));"))
     {
-        qDebug() << "Create OwnedPokemon table failed" << db.lastError().text();
+        qDebug() << "Create OwnedPokemon table failed" << query.lastError().text();
     }
 
     return true;
