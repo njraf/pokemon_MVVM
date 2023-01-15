@@ -7,9 +7,17 @@ BattleViewmodel::BattleViewmodel(QSharedPointer<Repository> repository_, QShared
     : repository(repository_)
     , player(player_)
 {
-    for (auto member : player->getTeam()) {
+    auto playerTeam = player->getTeam();
+    for (auto member : playerTeam) {
         connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::resolveAttack);
         connect(member.data(), &Pokemon::tookDamage, this, &BattleViewmodel::stateUpdated);
+    }
+
+    auto firstIt = std::find_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
+    if (firstIt != playerTeam.end()) {
+        currentPlayerPokemon = *firstIt;
+    } else {
+        qDebug() << "No living pokemon";
     }
 }
 

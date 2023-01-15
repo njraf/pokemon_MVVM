@@ -34,9 +34,27 @@ QSharedPointer<Pokemon> PokemonDao::getPokemon(int nationalDexNumber) {
 
     };
 
+    // make a new ID for the pokemon
+    int newID = 1;
+    QSqlTableModel ownedPokemonModel(nullptr, db);
+    ownedPokemonModel.setTable("OwnedPokemon");
+    ownedPokemonModel.select();
+
+    if (ownedPokemonModel.rowCount() > 0) {
+        QSqlQuery query(db);
+        if (!query.exec("SELECT MAX(ID) FROM OwnedPokemon")) {
+            qDebug() << "PokemonDao query failed " << query.lastError().text();
+        }
+        query.next();
+        newID = query.value(0).toInt() + 1;
+    }
+
     return QSharedPointer<Pokemon>::create(
+                newID,
+                nationalDexNumber,
                 record.value("Name").toString(),
                 "",
+                -1,
                 NatureUtilities::randomNature(),
                 record.value("BaseHealth").toInt(),
                 record.value("BaseAttack").toInt(),

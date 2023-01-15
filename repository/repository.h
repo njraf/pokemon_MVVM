@@ -10,18 +10,20 @@
 #include "healitemdao.h"
 #include "overworlddao.h"
 #include "ownedpokemondao.h"
+#include "ownedpokemonattackmovedao.h"
 
 class Repository : public QObject
 {
     Q_OBJECT
 public:
     explicit Repository(QSharedPointer<PokemonDao> pokemonDao_, QSharedPointer<AttackMoveDao> attackMoveDao_, QSharedPointer<HealItemDao> healItemDao_,
-                        QSharedPointer<OverworldDao> overworldDao_, QSharedPointer<OwnedPokemonDao> ownedPokemonDao_, QObject *parent = nullptr);
+                        QSharedPointer<OverworldDao> overworldDao_, QSharedPointer<OwnedPokemonDao> ownedPokemonDao_, QSharedPointer<OwnedPokemonAttackMoveDao> ownedPokemonAttackMoveDao_, QObject *parent = nullptr);
     ~Repository();
 
     bool hasConnection();
-    QSharedPointer<Pokemon> getPokemon(int nationalDexNumber);
-    QSharedPointer<Pokemon> getPokemonByID(int id);
+    void addNewPokemon(QSharedPointer<Pokemon> pokemon); // catch or gift pokemon
+    QSharedPointer<Pokemon> getNewPokemon(int nationalDexNumber); // create a new pokemon (i.e. wild encounter)
+    QSharedPointer<Pokemon> getPokemonByID(int id); // get owned pokemon
     QSharedPointer<AttackMove> getAttackByID(int id, int effectID = 0);
     QSharedPointer<AttackMove> getAttackByName(QString name, int effectID = 0);
     QSharedPointer<HealItem> getHealItemByID(int id);
@@ -34,6 +36,7 @@ private:
     QSharedPointer<HealItemDao> healItemDao;
     QSharedPointer<OverworldDao> overworldDao;
     QSharedPointer<OwnedPokemonDao> ownedPokemonDao;
+    QSharedPointer<OwnedPokemonAttackMoveDao> ownedPokemonAttackMoveDao;
 
 };
 

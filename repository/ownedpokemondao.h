@@ -15,7 +15,7 @@ public:
     explicit OwnedPokemonDao(QObject *parent = nullptr);
     ~OwnedPokemonDao() = default;
 
-    QSharedPointer<Pokemon> getPokemonByID(int id);
+    void insertPokemon(QSharedPointer<Pokemon> pokemon);
 
 protected:
     bool populateDatabase() override;

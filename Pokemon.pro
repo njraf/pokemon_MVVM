@@ -16,6 +16,7 @@ SOURCES += \
     attackeffectfactory.cpp \
     attackmove.cpp \
     bag.cpp \
+    repository/ownedpokemonattackmovedao.cpp \
     repository/ownedpokemondao.cpp \
     pages/boxpage.cpp \
     boxviewmodel.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     attackeffectfactory.h \
     attackmove.h \
     bag.h \
+    repository/ownedpokemonattackmovedao.h \
     repository/ownedpokemondao.h \
     pages/boxpage.h \
     boxviewmodel.h \

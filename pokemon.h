@@ -15,15 +15,19 @@ class Pokemon : public QObject
 {
     Q_OBJECT
 public:
-    Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_,
+    Pokemon(int id_, int natDexNumber_, QString name_, QString owner_, int boxNumber_, Nature nature_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_,
             int baseSpAttackStat_, int baseSpDefenseStat_, int baseSpeedStat_, int currentHealthStat_, int level_,
             QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_ = Type::NONE);
     ~Pokemon() = default;
 
     void attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove);
 
+    int getID();
+    int getDexNumber();
     QString getName() const;
     void setName(const QString &newName);
+    QString getOwner();
+    void setOwner(QString newOwner);
     int getAttackStat() const;
     int getSpAttackStat() const;
     int getDefenseStat() const;
@@ -55,11 +59,16 @@ public:
     void setAttackList(QVector<QSharedPointer<AttackMove> > newAttackList);
     Type getType1() const;
     Type getType2() const;
+    Nature getNature() const;
+    int getBoxNumber() const;
+    void setBoxNumber(int newBoxNumber);
 
     QSharedPointer<StatusCondition> getStatusCondition();
     void setStatusCondition(Status status_);
 
 private:
+    const int id;
+
     const int baseAttackStat;
     const int baseSpAttackStat;
     const int baseDefenseStat;
@@ -89,6 +98,7 @@ private:
     int accuracyStatStage;
     int evasionStatStage;
 
+    int natDexNumber;
     QString name;
     QString owner;
     Nature nature;
@@ -97,6 +107,7 @@ private:
     QVector<QSharedPointer<AttackMove>> attackList;
     Type type1;
     Type type2;
+    int boxNumber; // 0 means party
 
     QSharedPointer<StatusCondition> status;
 

@@ -31,6 +31,7 @@ QSharedPointer<AttackMove> AttackMoveDao::getAttackByID(int id, int effectID) {
 
     auto record = model.record(0);
     return QSharedPointer<AttackMove>::create(
+                id,
                 record.value("Name").toString(),
                 record.value("Power").toInt(),
                 record.value("Accuracy").toInt(),
@@ -55,6 +56,7 @@ QSharedPointer<AttackMove> AttackMoveDao::getAttackByName(QString name, int effe
 
     auto record = model.record(0);
     return QSharedPointer<AttackMove>::create(
+                record.value("ID").toInt(),
                 record.value("Name").toString(),
                 record.value("Power").toInt(),
                 record.value("Accuracy").toInt(),

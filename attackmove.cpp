@@ -6,10 +6,11 @@ QMap<QString, int> AttackMove::strToUnderlying = {
     {"STATUS", to_underlying(Category::STATUS)}
 };
 
-AttackMove::AttackMove(QString name_, int power_, int accuracy_, int pp_, int maxPP_, Type type_, Category category_,
+AttackMove::AttackMove(int id_, QString name_, int power_, int accuracy_, int pp_, int maxPP_, Type type_, Category category_,
                        std::function<void(QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent)> effect_, QObject *parent)
     : QObject(parent)
     , useEffect(effect_)
+    , id(id_)
     , name(name_)
     , power(power_)
     , accuracy(accuracy_)
@@ -19,6 +20,10 @@ AttackMove::AttackMove(QString name_, int power_, int accuracy_, int pp_, int ma
     , category(category_)
 {
 
+}
+
+int AttackMove::getID() {
+    return id;
 }
 
 QString AttackMove::getName() const

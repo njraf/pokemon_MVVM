@@ -15,11 +15,11 @@ class AttackMove : public QObject
 {
     Q_OBJECT
 public:
-    explicit AttackMove(QString name_, int power_, int accuracy_, int pp_, int maxPP_, Type type_, Category category_,
+    explicit AttackMove(int id_, QString name_, int power_, int accuracy_, int pp_, int maxPP_, Type type_, Category category_,
                         std::function<void(QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent)> effect_, QObject *parent = nullptr);
     ~AttackMove() = default;
 
-
+    int getID();
     QString getName() const;
     int getPower() const;
     int getAccuracy() const;
@@ -38,6 +38,7 @@ public:
     static QMap<QString, int> strToUnderlying;
 
 private:
+    const int id;
     QString name;
     int power;
     int accuracy;

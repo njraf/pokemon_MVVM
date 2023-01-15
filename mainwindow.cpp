@@ -15,7 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     QSharedPointer<HealItemDao> healItemDao = QSharedPointer<HealItemDao>::create();
     QSharedPointer<OverworldDao> overworldDao = QSharedPointer<OverworldDao>::create();
     QSharedPointer<OwnedPokemonDao> ownedPokemonDao = QSharedPointer<OwnedPokemonDao>::create();
-    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao, healItemDao, overworldDao, ownedPokemonDao);
+    QSharedPointer<OwnedPokemonAttackMoveDao> ownedPokemonAttackMoveDao = QSharedPointer<OwnedPokemonAttackMoveDao>::create();
+    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao, healItemDao, overworldDao, ownedPokemonDao, ownedPokemonAttackMoveDao);
     if (!repository->hasConnection()) {
         //TODO: make an error dialog
         qDebug() << "ERROR: Could not connect to repository";
@@ -31,12 +32,22 @@ MainWindow::MainWindow(QWidget *parent)
     attackList.append(repository->getAttackByName("Confuse Ray", 3));
     attackList2.append(repository->getAttackByID(2));
 
-    QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
-    QSharedPointer<Pokemon> squirtle = repository->getPokemon(7);
-    squirtle->setLevel(99);
+    QSharedPointer<Pokemon> charmander = repository->getNewPokemon(6);
+    charmander->setBoxNumber(0);
     charmander->setAttackList(attackList);
+    repository->addNewPokemon(charmander);
+
+    QSharedPointer<Pokemon> squirtle = repository->getNewPokemon(7);
+    squirtle->setLevel(99);
+    squirtle->setBoxNumber(0);
     squirtle->setAttackList(attackList2);
-    QVector<QSharedPointer<Pokemon>> playerTeam = {charmander, squirtle};
+    repository->addNewPokemon(squirtle);
+
+    QVector<QSharedPointer<Pokemon>> playerTeam = {
+        repository->getPokemonByID(1),
+        repository->getPokemonByID(2)
+    };
+
 
     QSharedPointer<Bag> bag = QSharedPointer<Bag>::create();
     auto potion = repository->getHealItemByID(1);
@@ -67,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent)
     routes.insert(PageName::BOX, [=] { return constructBoxPage(); });
 
     PageNavigator::getInstance()->populateRoutes(routes);
-    PageNavigator::getInstance()->navigate(PageName::BOX);
+    PageNavigator::getInstance()->navigate(PageName::OVERWORLD);
     ui->pages->currentWidget()->setFocusPolicy(Qt::StrongFocus);
 }
 

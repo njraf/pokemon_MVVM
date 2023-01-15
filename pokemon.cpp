@@ -4,10 +4,11 @@
 #include <QDebug>
 #include <QRandomGenerator>
 
-Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_,
+Pokemon::Pokemon(int id_, int natDexNumber_, QString name_, QString owner_, int boxNumber_, Nature nature_, int baseMaxHealthStat_, int baseAttackStat_, int baseDefenseStat_,
                  int baseSpAttackStat_, int baseSpDefenseStat_, int baseSpeedStat_, int currentHealthStat_, int level_,
                  QVector<QSharedPointer<AttackMove>> attackList_, Type type1_, Type type2_)
-    : baseAttackStat(baseAttackStat_)
+    : id(id_)
+    , baseAttackStat(baseAttackStat_)
     , baseSpAttackStat(baseSpAttackStat_)
     , baseDefenseStat(baseDefenseStat_)
     , baseSpDefenseStat(baseSpDefenseStat_)
@@ -32,6 +33,7 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
     , speedStatStage(0)
     , accuracyStatStage(0)
     , evasionStatStage(0)
+    , natDexNumber(natDexNumber_)
     , name(name_)
     , owner(owner_)
     , nature(nature_)
@@ -40,6 +42,7 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
     , attackList(attackList_)
     , type1(type1_)
     , type2(type2_)
+    , boxNumber(boxNumber_)
     , status(QSharedPointer<StatusCondition>::create())
 {
     // calculate IVs
@@ -58,7 +61,7 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
 
     connect(status.data(), &StatusCondition::hurtByConfusion, this, [=] {
         auto self = QSharedPointer<Pokemon>(this, [](Pokemon *p){});
-        QSharedPointer<AttackMove> confusionStatus = QSharedPointer<AttackMove>::create("Confusion Status", 40, 100, 99, 99, Type::NONE, Category::PHYSICAL, AttackEffectFactory::getEffectByID(-1));
+        QSharedPointer<AttackMove> confusionStatus = QSharedPointer<AttackMove>::create(0, "Confusion Status", 40, 100, 99, 99, Type::NONE, Category::PHYSICAL, AttackEffectFactory::getEffectByID(-1));
         int dmg = calculateDamage(self, confusionStatus);
         setHealthStat(currentHealthStat - dmg);
         qDebug() << name << "hit itself in confusion";
@@ -136,12 +139,28 @@ int Pokemon::calculateDamage(QSharedPointer<Pokemon> opponent, QSharedPointer<At
     return dmg;
 }
 
+int Pokemon::getID() {
+    return id;
+}
+
+int Pokemon::getDexNumber() {
+    return natDexNumber;
+}
+
 QString Pokemon::getName() const {
     return name;
 }
 
 void Pokemon::setName(const QString &newName) {
     name = newName;
+}
+
+QString Pokemon::getOwner() {
+    return owner;
+}
+
+void Pokemon::setOwner(QString newOwner) {
+    owner = newOwner;
 }
 
 int Pokemon::getAttackStat() const {
@@ -409,6 +428,18 @@ Type Pokemon::getType1() const {
 
 Type Pokemon::getType2() const {
     return type2;
+}
+
+Nature Pokemon::getNature() const {
+    return nature;
+}
+
+int Pokemon::getBoxNumber() const {
+    return boxNumber;
+}
+
+void Pokemon::setBoxNumber(int newBoxNumber) {
+    boxNumber = newBoxNumber;
 }
 
 QVector<QSharedPointer<AttackMove> > Pokemon::getAttackList() const {
