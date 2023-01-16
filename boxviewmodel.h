@@ -11,13 +11,14 @@ class BoxViewmodel : public QObject
 {
     Q_OBJECT
 public:
-    explicit BoxViewmodel(QSharedPointer<Repository> repository_, QVector<QSharedPointer<Pokemon>> partyPokemon, QObject *parent = nullptr);
+    explicit BoxViewmodel(QSharedPointer<Repository> repository_, QSharedPointer<QVector<QSharedPointer<Pokemon>>> partyPokemon, QObject *parent = nullptr);
     ~BoxViewmodel() = default;
 
     QVector<QSharedPointer<Pokemon>> getAllPokemonFromBox(int box);
-    QVector<QSharedPointer<Pokemon>> getPartyPokemon();
+    QSharedPointer<QVector<QSharedPointer<Pokemon>>> getPartyPokemon();
     int getCurrentBox();
     void setCurrentBox(int box);
+    void swapPartyPosition(QSharedPointer<Pokemon> first, QSharedPointer<Pokemon> second);
 
     const int ROWS = 5;
     const int COLS = 5;
@@ -25,7 +26,7 @@ public:
 private:
     const int MAX_BOX = 8;
     QSharedPointer<Repository> repository;
-    QVector<QSharedPointer<Pokemon>> partyPokemon;
+    QSharedPointer<QVector<QSharedPointer<Pokemon>>> partyPokemon;
     int currentBox;
 
 signals:

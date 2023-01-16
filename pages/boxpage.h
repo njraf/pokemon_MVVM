@@ -21,11 +21,13 @@ public:
     PageName getPageName() override;
     void receiveData(QVector<QVariant> data) override;
     void drawBox(int box);
+    void drawParty();
 
 private:
     Ui::BoxPage *ui;
     QSharedPointer<BoxViewmodel> viewmodel;
     QSharedPointer<Pokemon> selectedPokemon;
+    bool switchMode;
 
 };
 

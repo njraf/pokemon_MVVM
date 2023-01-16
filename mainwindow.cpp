@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     // create player
     populateSampleTrainerPokemon();
 
-    QVector<QSharedPointer<Pokemon>> playerTeam = repository->getPartyPokemon();
+    QSharedPointer<QVector<QSharedPointer<Pokemon>>> playerTeam = QSharedPointer<QVector<QSharedPointer<Pokemon>>>::create(repository->getPartyPokemon());
 
 
     QSharedPointer<Bag> bag = QSharedPointer<Bag>::create();

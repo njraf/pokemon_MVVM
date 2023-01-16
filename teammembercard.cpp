@@ -6,14 +6,13 @@
 #include <QDebug>
 #include <QPainter>
 
-TeamMemberCard::TeamMemberCard(QSharedPointer<Pokemon> pokemon_, QWidget *parent)
+TeamMemberCard::TeamMemberCard(QSharedPointer<Pokemon> pokemon, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::TeamMemberCard)
-    , pokemon(pokemon_)
 {
     ui->setupUi(this);
 
-    refresh();
+    refresh(pokemon);
 }
 
 TeamMemberCard::~TeamMemberCard()
@@ -21,7 +20,7 @@ TeamMemberCard::~TeamMemberCard()
     delete ui;
 }
 
-void TeamMemberCard::refresh() {
+void TeamMemberCard::refresh(QSharedPointer<Pokemon> pokemon) {
     QSharedPointer<StatusCondition> status = pokemon->getStatusCondition();
     int health = pokemon->getHealthStat();
     int maxHealth = pokemon->getMaxHealthStat();
@@ -42,7 +41,7 @@ void TeamMemberCard::mousePressEvent(QMouseEvent *event)
 void TeamMemberCard::paintEvent(QPaintEvent *)
 {
     QStyleOption opt;
-    opt.init(this);
+    opt.initFrom(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }

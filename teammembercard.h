@@ -14,10 +14,10 @@ class TeamMemberCard : public QWidget
     Q_OBJECT
 
 public:
-    explicit TeamMemberCard(QSharedPointer<Pokemon> pokemon_, QWidget *parent = nullptr);
+    explicit TeamMemberCard(QSharedPointer<Pokemon> pokemon, QWidget *parent = nullptr);
     ~TeamMemberCard();
 
-    void refresh();
+    void refresh(QSharedPointer<Pokemon> pokemon);
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -25,7 +25,6 @@ protected:
 
 private:
     Ui::TeamMemberCard *ui;
-    QSharedPointer<Pokemon> pokemon;
 
 signals:
     void clicked();

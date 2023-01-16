@@ -4,7 +4,7 @@
 
 #include <QMessageBox>
 
-TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
+TeamPage::TeamPage(QSharedPointer<QVector<QSharedPointer<Pokemon>>> team_, QWidget *parent)
     : IPage(parent)
     , ui(new Ui::TeamPage)
     , team(team_)
@@ -34,11 +34,10 @@ TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
 
     int row = 0;
     int col = 0;
-    for (auto member : team) {
+    for (auto member : *team) {
         TeamMemberCard *teamMemberCard = new TeamMemberCard(member);
         ui->teamGrid->addWidget(teamMemberCard, row, col);
         connect(teamMemberCard, &TeamMemberCard::clicked, this, [=] {
-            selectedPokemon = member;
             if (context == Context::BAG) {
                 if ((member->getHealthStat() != 0) && (member->getHealthStat() < member->getMaxHealthStat())) {
                     //TODO: assumes HealItem. Allow actions from other items.
@@ -63,7 +62,7 @@ TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
     }
 
     // fill remaining slots with an empty widget
-    for (int i = team.size(); i < 6; i++) {
+    for (int i = team->size(); i < 6; i++) {
         ui->teamGrid->addWidget(new QWidget(), row, col);
 
         if ((col % 2) == 0) {
@@ -85,29 +84,16 @@ PageName TeamPage::getPageName() {
 }
 
 void TeamPage::receiveData(QVector<QVariant> data) {
+    drawPage();
+
     if (data.isEmpty()) {
         return;
     }
 
-    if (context == Context::BATTLE && data[0].canConvert<QSharedPointer<Pokemon>>()) {
+    if (context == Context::BATTLE && !data.isEmpty() && data[0].canConvert<QSharedPointer<Pokemon>>()) {
         battlePokemon = data[0].value<QSharedPointer<Pokemon>>();
-    } else if (!data.isEmpty() && data[0].canConvert<QSharedPointer<HealItem>>()) {
+    } else if (context == Context::BAG && !data.isEmpty() && data[0].canConvert<QSharedPointer<HealItem>>()) {
         healItemToUse = data[0].value<QSharedPointer<HealItem>>();
-        healItemToUse->use(selectedPokemon);
-        for (int r = 0; r < 3; r++) {
-            for (int c = 0; c < 2; c++) {
-                auto item = ui->teamGrid->itemAtPosition(r, c);
-                if ((nullptr == item) || (nullptr == item->widget())) {
-                    continue;
-                }
-
-                auto widget = qobject_cast<TeamMemberCard*>(item->widget());
-                if (nullptr == widget) {
-                    continue;
-                }
-                widget->refresh();
-            }
-        }
     }
 }
 
@@ -180,4 +166,22 @@ void TeamPage::showBattleDialog(QSharedPointer<Pokemon> pokemon) {
     connect(cancelButton, &QPushButton::clicked, this, [&] { dialog.reject(); });
 
     dialog.exec();
+}
+
+void TeamPage::drawPage() {
+    for (int r = 0; r < 3; r++) {
+        for (int c = 0; c < 2; c++) {
+            auto item = ui->teamGrid->itemAtPosition(r, c);
+            if ((nullptr == item) || (nullptr == item->widget())) {
+                continue;
+            }
+
+            auto widget = qobject_cast<TeamMemberCard*>(item->widget());
+            if (nullptr == widget) {
+                continue;
+            }
+            int index = r * 2 + c;
+            widget->refresh(team->at(index));
+        }
+    }
 }

@@ -58,9 +58,8 @@ BagPage::BagPage(QSharedPointer<BagViewmodel> viewmodel_, QWidget *parent) :
                 qDebug() << selectedPokemon->getName() << "is already at full health.";
                 return;
             }
-            QVector<QVariant> data;
-            data.append(QVariant::fromValue<QSharedPointer<HealItem>>(*itemIt));
-            PageNavigator::getInstance()->navigateBack(data);
+            (*itemIt)->use(selectedPokemon);
+            PageNavigator::getInstance()->navigateBack();
         }
     });
 
@@ -78,7 +77,7 @@ PageName BagPage::getPageName() {
 void BagPage::receiveData(QVector<QVariant> data) {
     displayItems();
 
-    if (!data.isEmpty() && data[0].canConvert<QSharedPointer<Pokemon>>()) {
+    if ((context == Context::TEAM) && !data.isEmpty() && data[0].canConvert<QSharedPointer<Pokemon>>()) {
         selectedPokemon = data[0].value<QSharedPointer<Pokemon>>();
     }
 }

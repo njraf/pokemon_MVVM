@@ -75,7 +75,7 @@ void OverworldViewmodel::move(QString direction) {
         wildPokemon->setAttackList(attackList);
 
         QVector<QSharedPointer<Pokemon>> opponentTeam = {wildPokemon};
-        QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam, QSharedPointer<Bag>::create());
+        QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(QSharedPointer<QVector<QSharedPointer<Pokemon>>>::create(opponentTeam), QSharedPointer<Bag>::create());
 
         QVector<QVariant> data = {QVariant::fromValue<QSharedPointer<Trainer>>(opponent)};
         PageNavigator::getInstance()->navigate(PageName::BATTLE, data);

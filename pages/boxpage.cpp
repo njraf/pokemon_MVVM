@@ -8,7 +8,8 @@
 BoxPage::BoxPage(QSharedPointer<BoxViewmodel> viewmodel_, QWidget *parent) :
     IPage(parent),
     ui(new Ui::BoxPage),
-    viewmodel(viewmodel_)
+    viewmodel(viewmodel_),
+    switchMode(false)
 {
     ui->setupUi(this);
 
@@ -25,13 +26,20 @@ BoxPage::BoxPage(QSharedPointer<BoxViewmodel> viewmodel_, QWidget *parent) :
 
     drawBox(1);
 
-    QVector<QSharedPointer<Pokemon>> partyPokemon = viewmodel->getPartyPokemon();
+    QSharedPointer<QVector<QSharedPointer<Pokemon>>> partyPokemon = viewmodel->getPartyPokemon();
 
     // populate party
-    for (auto poke : partyPokemon) {
+    for (auto poke : *partyPokemon) {
         auto card = new TeamMemberCard(poke);
         connect(card, &TeamMemberCard::clicked, this, [=] {
-            selectedPokemon = poke;
+            if (switchMode) {
+                switchMode = false;
+                viewmodel->swapPartyPosition(selectedPokemon, poke);
+                drawBox(viewmodel->getCurrentBox());
+                drawParty();
+                return;
+            }
+
             QVariant pokeData = QVariant::fromValue<QSharedPointer<Pokemon>>(poke);
             QVector<QVariant> data = {pokeData};
             QPushButton *summaryButton = new QPushButton("Summary");
@@ -54,7 +62,12 @@ BoxPage::BoxPage(QSharedPointer<BoxViewmodel> viewmodel_, QWidget *parent) :
             dialog.setLayout(layout);
 
             connect(summaryButton, &QPushButton::clicked, this, [&] { dialog.reject(); PageNavigator::getInstance()->navigate(PageName::POKEMON_SUMMARY, data); });
-            connect(switchButton, &QPushButton::clicked, this, [&] {  });
+            connect(switchButton, &QPushButton::clicked, this, [&] {
+                dialog.reject();
+                card->setStyleSheet("background-color: yellow;");
+                switchMode = true;
+                selectedPokemon = poke;
+            });
             connect(itemButton, &QPushButton::clicked, this, [&] {
                 dialog.reject();
                 PageNavigator::getInstance()->navigate(PageName::BAG, data);
@@ -66,7 +79,7 @@ BoxPage::BoxPage(QSharedPointer<BoxViewmodel> viewmodel_, QWidget *parent) :
         ui->partyListArea->addWidget(card);
     }
 
-    for (int i = partyPokemon.size(); i < 6; i++) {
+    for (int i = partyPokemon->size(); i < 6; i++) {
         ui->partyListArea->addWidget(new QWidget());
     }
 
@@ -96,25 +109,17 @@ PageName BoxPage::getPageName() {
 }
 
 void BoxPage::receiveData(QVector<QVariant> data) {
+    drawParty();
+    drawBox(viewmodel->getCurrentBox());
+
     if (data.isEmpty()) {
         return;
     }
 
-    if (data[0].canConvert<QSharedPointer<HealItem>>()) {
+    if (data[0].canConvert<QSharedPointer<HealItem>>()) { // from BagPage when using A HealItem
         QSharedPointer<HealItem> healItemToUse = data[0].value<QSharedPointer<HealItem>>();
         healItemToUse->use(selectedPokemon);
-        for (int i = 0; i < 6; i++) {
-            auto item = ui->partyListArea->itemAt(i);
-            if ((nullptr == item) || (nullptr == item->widget())) {
-                continue;
-            }
-
-            auto widget = qobject_cast<TeamMemberCard*>(item->widget());
-            if (nullptr == widget) {
-                continue;
-            }
-            widget->refresh();
-        }
+        drawParty();
     }
 }
 
@@ -140,6 +145,24 @@ void BoxPage::drawBox(int box) {
             } else {
                 boxWidget->setText("");
             }
+            boxWidget->setStyleSheet("border: 1px solid black;");
         }
+    }
+}
+
+void BoxPage::drawParty() {
+    QSharedPointer<QVector<QSharedPointer<Pokemon>>> partyPokemon = viewmodel->getPartyPokemon();
+    for (int i = 0; i < partyPokemon->size(); i++) {
+        auto item = ui->partyListArea->itemAt(i);
+        if ((nullptr == item) || (nullptr == item->widget())) {
+            continue;
+        }
+
+        auto widget = qobject_cast<TeamMemberCard*>(item->widget());
+        if (nullptr == widget) {
+            continue;
+        }
+        widget->refresh(partyPokemon->at(i));
+        widget->setStyleSheet("");
     }
 }
