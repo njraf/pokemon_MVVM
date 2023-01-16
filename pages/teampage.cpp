@@ -9,6 +9,7 @@ TeamPage::TeamPage(QSharedPointer<QVector<QSharedPointer<Pokemon>>> team_, QWidg
     , ui(new Ui::TeamPage)
     , team(team_)
     , context(Context::NONE)
+    , switchMode(false)
 {
     ui->setupUi(this);
     connect(ui->backButton, &QPushButton::clicked, this, [=] { PageNavigator::getInstance()->navigateBack(); });
@@ -38,6 +39,22 @@ TeamPage::TeamPage(QSharedPointer<QVector<QSharedPointer<Pokemon>>> team_, QWidg
         TeamMemberCard *teamMemberCard = new TeamMemberCard(member);
         ui->teamGrid->addWidget(teamMemberCard, row, col);
         connect(teamMemberCard, &TeamMemberCard::clicked, this, [=] {
+            if (switchMode) {
+                switchMode = false;
+                auto firstIt = std::find_if(team->begin(), team->end(), [=](QSharedPointer<Pokemon> p) { return (p->getID() == member->getID()); });
+                auto secondIt = std::find_if(team->begin(), team->end(), [=](QSharedPointer<Pokemon> p) { return (p->getID() == selectedPokemon->getID()); });
+
+                if ((firstIt == team->end()) && (secondIt == team->end())) {
+                    return;
+                }
+
+                auto tmp = *firstIt;
+                (*firstIt) = *secondIt;
+                (*secondIt) = tmp;
+                drawPage();
+                return;
+            }
+
             if (context == Context::BAG) {
                 if ((member->getHealthStat() != 0) && (member->getHealthStat() < member->getMaxHealthStat())) {
                     //TODO: assumes HealItem. Allow actions from other items.
@@ -49,7 +66,7 @@ TeamPage::TeamPage(QSharedPointer<QVector<QSharedPointer<Pokemon>>> team_, QWidg
             } else if (context == Context::BATTLE) {
                 showBattleDialog(member);
             } else if ((context == Context::MAIN_MENU) || (context == Context::OVERWORLD)) {
-                showMenuDialog(member);
+                showMenuDialog(member, teamMemberCard);
             }
         });
 
@@ -97,7 +114,7 @@ void TeamPage::receiveData(QVector<QVariant> data) {
     }
 }
 
-void TeamPage::showMenuDialog(QSharedPointer<Pokemon> pokemon) {
+void TeamPage::showMenuDialog(QSharedPointer<Pokemon> pokemon, TeamMemberCard *teamMemberCard) {
     QVariant pokeData = QVariant::fromValue<QSharedPointer<Pokemon>>(pokemon);
     QVector<QVariant> data = {pokeData};
     QPushButton *summaryButton = new QPushButton("Summary");
@@ -120,7 +137,12 @@ void TeamPage::showMenuDialog(QSharedPointer<Pokemon> pokemon) {
     dialog.setLayout(layout);
 
     connect(summaryButton, &QPushButton::clicked, this, [&] { dialog.reject(); PageNavigator::getInstance()->navigate(PageName::POKEMON_SUMMARY, data); });
-    connect(switchButton, &QPushButton::clicked, this, [&] {  });
+    connect(switchButton, &QPushButton::clicked, this, [&] {
+        dialog.reject();
+        switchMode = true;
+        selectedPokemon = pokemon;
+        teamMemberCard->setStyleSheet("background-color: yellow;");
+    });
     connect(itemButton, &QPushButton::clicked, this, [&] {
         dialog.reject();
         PageNavigator::getInstance()->navigate(PageName::BAG, data);
@@ -182,6 +204,7 @@ void TeamPage::drawPage() {
             }
             int index = r * 2 + c;
             widget->refresh(team->at(index));
+            widget->setStyleSheet("");
         }
     }
 }

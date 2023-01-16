@@ -39,7 +39,7 @@ public:
     ~TeamPage();
     PageName getPageName() override;
     void receiveData(QVector<QVariant> data) override;
-    void showMenuDialog(QSharedPointer<Pokemon> pokemon);
+    void showMenuDialog(QSharedPointer<Pokemon> pokemon, TeamMemberCard *teamMemberCard);
     void showBattleDialog(QSharedPointer<Pokemon> pokemon);
 
 private:
@@ -51,6 +51,8 @@ private:
     Context context;
     QSharedPointer<Pokemon> battlePokemon;
     QSharedPointer<HealItem> healItemToUse;
+    QSharedPointer<Pokemon> selectedPokemon; // selection for switchMode
+    bool switchMode; // indicates switching party order
 
     void drawPage();
 };
