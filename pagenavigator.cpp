@@ -24,8 +24,9 @@ void PageNavigator::navigate(PageName page, QVector<QVariant> data) {
     }
 
     if ((backstack.count() > 1) && (backstack.at(backstack.count() - 2)->getPageName() == page)) {
-        navigateBack();
+        navigateBack(data);
     } else { // make new page
+        forwardstack.clear();
         auto currentPage = routes[page]();
         currentPage->receiveData(data);
         backstack.append(currentPage);
@@ -35,10 +36,11 @@ void PageNavigator::navigate(PageName page, QVector<QVariant> data) {
 
 void PageNavigator::navigateBack(QVector<QVariant> data) {
     if ((backstack.count() > 1)) {
-        auto prevPage = backstack.pop();
+        forwardstack.append(backstack.pop());
         auto currentPage = backstack.top();
+        auto ftop = forwardstack.top();
+        emit pageChanged(ftop, true);
         currentPage->receiveData(data);
-        emit pageChanged(prevPage, true);
     }
 }
 

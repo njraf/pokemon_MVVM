@@ -26,7 +26,6 @@ void PokeballItem::setQuantity(int quantity_) {
 }
 
 bool PokeballItem::throwAtPokemon(QSharedPointer<Pokemon> pokemon) {
-    return false;
     int maxHealth = pokemon->getMaxHealthStat();
     int catchChance = (3 * maxHealth - 2 * pokemon->getHealthStat()) * pokemon->getCatchRate() * catchRate;
     catchChance /= (3 * pokemon->getMaxHealthStat());
@@ -36,11 +35,11 @@ bool PokeballItem::throwAtPokemon(QSharedPointer<Pokemon> pokemon) {
     for (int i = 0; i < 4; i++) {
         QDebug deb = qDebug();
         deb << "shake chance" << shakeChance;
-        if (true || (QRandomGenerator::global()->generate() % 65536) >= shakeChance) { //TODO: force fail for debug
-            deb << "failed";
+        if ((QRandomGenerator::global()->generate() % 65536) >= shakeChance) { //TODO: force fail for debug
+            deb << "Shake " + QString::number(i+1) + " failed";
             return false;
         }
-        deb << "success";
+        deb << "Shake " + QString::number(i+1) + " success";
         //if (i < 3) {
         //    emit shook();
         //}
