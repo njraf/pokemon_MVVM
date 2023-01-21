@@ -4,7 +4,7 @@
 
 #include <QMessageBox>
 
-TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
+TeamPage::TeamPage(QSharedPointer<QVector<QSharedPointer<Pokemon>>> team_, QWidget *parent)
     : IPage(parent)
     , ui(new Ui::TeamPage)
     , team(team_)
@@ -34,7 +34,7 @@ TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
 
     int row = 0;
     int col = 0;
-    for (auto member : team) {
+    for (auto member : *team) {
         TeamMemberCard *teamMemberCard = new TeamMemberCard(member);
         ui->teamGrid->addWidget(teamMemberCard, row, col);
         connect(teamMemberCard, &TeamMemberCard::clicked, this, [=] {
@@ -63,7 +63,7 @@ TeamPage::TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent)
     }
 
     // fill remaining slots with an empty widget
-    for (int i = team.size(); i < 6; i++) {
+    for (int i = team->size(); i < 6; i++) {
         ui->teamGrid->addWidget(new QWidget(), row, col);
 
         if ((col % 2) == 0) {

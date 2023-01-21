@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     auto pokeball = repository->getPokeballItemByID(1);
     pokeball->setQuantity(10);
     bag->addPokeballItem(pokeball);
-    player = QSharedPointer<Trainer>::create(playerTeam, bag);
+    player = QSharedPointer<Trainer>::create(QSharedPointer<QVector<QSharedPointer<Pokemon>>>::create(playerTeam), bag);
 
     // change pages
     connect(PageNavigator::getInstance(), &PageNavigator::pageChanged, this, [=](QSharedPointer<IPage> page, bool navigateBack) {

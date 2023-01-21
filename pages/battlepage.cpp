@@ -81,8 +81,8 @@ void BattlePage::receiveData(QVector<QVariant> data) {
             QSharedPointer<PokeballItem> pokeball = data[0].value<QSharedPointer<PokeballItem>>();
             if (pokeball->throwAtPokemon(viewmodel->getCurrentOpponentPokemon())) {
                 auto team = viewmodel->getPlayerTrainer()->getTeam();
-                if (team.size() < 6) {
-                    team.append(viewmodel->getCurrentOpponentPokemon());
+                if (team->size() < 6) {
+                    team->append(viewmodel->getCurrentOpponentPokemon());
                 }
                 PageNavigator::getInstance()->navigateBack();
             }

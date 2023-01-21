@@ -11,14 +11,14 @@ class Trainer : public QObject
 {
     Q_OBJECT
 public:
-    Trainer(QVector<QSharedPointer<Pokemon>> team_, QSharedPointer<Bag> bag_);
+    Trainer(QSharedPointer<QVector<QSharedPointer<Pokemon>>> team_, QSharedPointer<Bag> bag_);
     ~Trainer() = default;
-    QVector<QSharedPointer<Pokemon>> getTeam();
+    QSharedPointer<QVector<QSharedPointer<Pokemon>>> getTeam();
     QSharedPointer<Bag> getBag();
     QString getName();
 
 private:
-    QVector<QSharedPointer<Pokemon>> team;
+    QSharedPointer<QVector<QSharedPointer<Pokemon>>> team;
     QSharedPointer<Bag> bag;
     QString name;
 };

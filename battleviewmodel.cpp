@@ -7,7 +7,7 @@ BattleViewmodel::BattleViewmodel(QSharedPointer<Repository> repository_, QShared
     : repository(repository_)
     , player(player_)
 {
-    for (auto member : player->getTeam()) {
+    for (auto member : *player->getTeam()) {
         connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::resolveAttack);
         connect(member.data(), &Pokemon::tookDamage, this, &BattleViewmodel::stateUpdated);
     }
@@ -18,8 +18,8 @@ void BattleViewmodel::resolveAttack() {
     // determine win/lose and emit signal
     auto playerTeam = player->getTeam();
     auto opponentTeam = opponent->getTeam();
-    bool playerKOed = (0 == std::count_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
-    bool opponentKOed = (0 == std::count_if(opponentTeam.begin(), opponentTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+    bool playerKOed = (0 == std::count_if(playerTeam->begin(), playerTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+    bool opponentKOed = (0 == std::count_if(opponentTeam->begin(), opponentTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
 
     if (playerKOed) { // lose even if tied
         emit battleFinished("You lost");
@@ -38,8 +38,8 @@ void BattleViewmodel::resolveAttack() {
 
     // send another opponent pokemon out if fainted
     if (currentOpponentPokemon->getHealthStat() <= 0) {
-        QVector<QSharedPointer<Pokemon>> livingOpponentTeam(opponentTeam.size());
-        auto teamIt = std::copy_if(opponentTeam.begin(), opponentTeam.end(), livingOpponentTeam.begin(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
+        QVector<QSharedPointer<Pokemon>> livingOpponentTeam(opponentTeam->size());
+        auto teamIt = std::copy_if(opponentTeam->begin(), opponentTeam->end(), livingOpponentTeam.begin(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
         livingOpponentTeam.resize(std::distance(livingOpponentTeam.begin(), teamIt));
         opponentSummon(livingOpponentTeam.at(QRandomGenerator::global()->generate() % livingOpponentTeam.size())); //TODO: change summon strategy
     }
@@ -61,8 +61,8 @@ void BattleViewmodel::resolveTurn() {
     // determine win/lose and emit signal
     auto playerTeam = player->getTeam();
     auto opponentTeam = opponent->getTeam();
-    bool playerKOed = (0 == std::count_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
-    bool opponentKOed = (0 == std::count_if(opponentTeam.begin(), opponentTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+    bool playerKOed = (0 == std::count_if(playerTeam->begin(), playerTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+    bool opponentKOed = (0 == std::count_if(opponentTeam->begin(), opponentTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
 
     if (playerKOed) { // lose even if tied
         emit battleFinished("You lost");
@@ -83,7 +83,7 @@ QSharedPointer<Trainer> BattleViewmodel::getOpponentTrainer() {
 
 void BattleViewmodel::setOpponentTrainer(QSharedPointer<Trainer> opponent_) {
     opponent = opponent_;
-    for (auto member : opponent->getTeam()) {
+    for (auto member : *opponent->getTeam()) {
         connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::resolveAttack);
         connect(member.data(), &Pokemon::tookDamage, this, &BattleViewmodel::stateUpdated);
     }
@@ -99,14 +99,14 @@ QSharedPointer<Pokemon> BattleViewmodel::getCurrentOpponentPokemon() {
 
 void BattleViewmodel::summonFirstPokemon() {
     auto playerTeam = player->getTeam();
-    auto pokeIt = std::find_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
-    if (pokeIt != playerTeam.end()) {
+    auto pokeIt = std::find_if(playerTeam->begin(), playerTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
+    if (pokeIt != playerTeam->end()) {
         currentPlayerPokemon = *pokeIt;
     }
 
     auto opponentTeam = opponent->getTeam();
-    pokeIt = std::find_if(opponentTeam.begin(), opponentTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
-    if (pokeIt != opponentTeam.end()) {
+    pokeIt = std::find_if(opponentTeam->begin(), opponentTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
+    if (pokeIt != opponentTeam->end()) {
         currentOpponentPokemon = *pokeIt;
     }
 

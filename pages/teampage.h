@@ -35,7 +35,7 @@ class TeamPage : public IPage
     Q_OBJECT
 
 public:
-    explicit TeamPage(QVector<QSharedPointer<Pokemon>> team_, QWidget *parent = nullptr);
+    explicit TeamPage(QSharedPointer<QVector<QSharedPointer<Pokemon>>> team_, QWidget *parent = nullptr);
     ~TeamPage();
     PageName getPageName() override;
     void receiveData(QVector<QVariant> data) override;
@@ -47,7 +47,7 @@ private:
         NONE, BATTLE, MAIN_MENU, BAG, OVERWORLD
     };
     Ui::TeamPage *ui;
-    QVector<QSharedPointer<Pokemon>> team;
+    QSharedPointer<QVector<QSharedPointer<Pokemon>>> team;
     Context context;
     QSharedPointer<Pokemon> battlePokemon;
     QSharedPointer<HealItem> healItemToUse;
