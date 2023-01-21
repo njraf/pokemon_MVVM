@@ -9,7 +9,7 @@ class AbilityFactory : public QObject
 {
     Q_OBJECT
 public:
-    static std::function<void(QSharedPointer<Pokemon>, QSharedPointer<Pokemon>)> getAbility(int id);
+    static std::function<void(QSharedPointer<Pokemon>)> getAbility(int id);
 
 private:
     explicit AbilityFactory(QObject *parent = nullptr);

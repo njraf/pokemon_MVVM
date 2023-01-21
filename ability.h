@@ -7,25 +7,31 @@
 class Pokemon;
 
 enum class BattleStage : int {
-    SUMMON, BEFORE_ATTACK, AFTER_ATTACK, ATTACK_HITS, OPPONENT_HITS, START_TURN, END_TURN, FAINT
+    SUMMON, BEFORE_ATTACK, AFTER_ATTACK, BEFORE_OPPONENT_ATTACK, AFTER_OPPONENT_ATTACK, ATTACK_HITS, OPPONENT_HITS, START_TURN, END_TURN, FAINT
 };
 
 class Ability : public QObject
 {
     Q_OBJECT
+
 public:
-    explicit Ability(BattleStage stage_, std::function<void(QSharedPointer<Pokemon>, QSharedPointer<Pokemon>)> ability_, QObject *parent = nullptr);
+    enum class Target : int {
+        SELF, ALLY, OPPONENT
+    };
+
+    explicit Ability(BattleStage stage_, Target target_, std::function<void(QSharedPointer<Pokemon>)> ability_, QObject *parent = nullptr);
     ~Ability() = default;
     Ability(const Ability &o);
 
-    void useAbility(QSharedPointer<Pokemon> playerPokemon, QSharedPointer<Pokemon> opponentPokemon);
+    void useAbility(QSharedPointer<Pokemon> abilityUser, QSharedPointer<Pokemon> opponentPokemon, BattleStage stage_);
     BattleStage getBattleStage();
 
     Ability& operator=(Ability o);
 
 private:
     BattleStage battleStage;
-    std::function<void(QSharedPointer<Pokemon>, QSharedPointer<Pokemon>)> ability;
+    Target target;
+    std::function<void(QSharedPointer<Pokemon>)> ability;
 
 
 signals:

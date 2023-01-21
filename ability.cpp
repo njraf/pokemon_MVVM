@@ -1,8 +1,9 @@
 #include "ability.h"
 
-Ability::Ability(BattleStage stage_, std::function<void(QSharedPointer<Pokemon>, QSharedPointer<Pokemon>)> ability_, QObject *parent)
+Ability::Ability(BattleStage stage_, Target target_, std::function<void(QSharedPointer<Pokemon>)> ability_, QObject *parent)
     : QObject(parent)
     , battleStage(stage_)
+    , target(target_)
     , ability(ability_)
 {
 
@@ -19,8 +20,11 @@ Ability& Ability::operator=(Ability o) {
     return *this;
 }
 
-void Ability::useAbility(QSharedPointer<Pokemon> attackingPokemon, QSharedPointer<Pokemon> opponentPokemon) {
-    ability(attackingPokemon, opponentPokemon);
+void Ability::useAbility(QSharedPointer<Pokemon> abilityUser, QSharedPointer<Pokemon> opponentPokemon, BattleStage stage_) {
+    if (stage_ == battleStage) {
+        QSharedPointer<Pokemon> targetPokemon = (target == Target::SELF) ? abilityUser : opponentPokemon;
+        ability(targetPokemon);
+    }
 }
 
 BattleStage Ability::getBattleStage() {

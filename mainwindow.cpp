@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
     charmander->setAttackList(attackList);
-    charmander->setAbility(Ability(BattleStage::FAINT, AbilityFactory::getAbility(1)));
+    charmander->setAbility(Ability(BattleStage::FAINT, Ability::Target::OPPONENT, AbilityFactory::getAbility(1)));
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
     player = QSharedPointer<Trainer>::create(playerTeam);
 
@@ -74,7 +74,7 @@ QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
 
     QSharedPointer<Pokemon> bulbasaur = repository->getPokemon(3);
     bulbasaur->setAttackList(attackList);
-    bulbasaur->setAbility(Ability(BattleStage::FAINT, AbilityFactory::getAbility(1)));
+    bulbasaur->setAbility(Ability(BattleStage::FAINT, Ability::Target::OPPONENT, AbilityFactory::getAbility(1)));
     QVector<QSharedPointer<Pokemon>> opponentTeam = {bulbasaur};
     QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam);
     QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(repository, player, opponent);
