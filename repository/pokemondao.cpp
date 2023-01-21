@@ -88,7 +88,7 @@ bool PokemonDao::populateDatabase() {
     }
 
     // read from a csv file to populate the database
-    QFile pokemonFile("repository/pokemon.csv");
+    QFile pokemonFile(":/pokemon.csv");
     if (!pokemonFile.exists() || !pokemonFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "ERROR:" << pokemonFile.fileName() << "does not exist";
     } else {

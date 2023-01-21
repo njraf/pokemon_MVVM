@@ -65,7 +65,7 @@ bool HealItemDao::populateDatabase() {
     }
 
     // read from a csv file to populate the database
-    QFile healItemFile("repository/healitems.csv");
+    QFile healItemFile(":/healitems.csv");
     if (!healItemFile.exists() || !healItemFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "ERROR:" << healItemFile.fileName() << "does not exist";
     } else {

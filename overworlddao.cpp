@@ -40,7 +40,7 @@ QVector<QVector<QSharedPointer<Tile>>> OverworldDao::getMapByID(int id) {
     // find max number of columns
     int maxCol = 0;
     for (auto row : overworld) {
-        maxCol = std::max(row.size(), maxCol);
+        maxCol = std::max(static_cast<int>(row.size()), maxCol);
     }
 
     // append missing columns to rows
@@ -55,6 +55,6 @@ QVector<QVector<QSharedPointer<Tile>>> OverworldDao::getMapByID(int id) {
 }
 
 bool OverworldDao::populateDatabase() {
-    maps.append("repository/zigzagpath.csv");
+    maps.append(":/zigzagpath.csv");
     return true;
 }

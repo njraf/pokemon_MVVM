@@ -98,7 +98,7 @@ bool AttackMoveDao::populateDatabase() {
     }
 
     // read from a csv file to populate the database
-    QFile attackMoveFile("repository/attackmoves.csv");
+    QFile attackMoveFile(":/attackmoves.csv");
     if (!attackMoveFile.exists() || !attackMoveFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "ERROR:" << attackMoveFile.fileName() << "does not exist";
     } else {

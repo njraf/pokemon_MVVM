@@ -17,7 +17,7 @@ OverworldViewmodel::OverworldViewmodel(QSharedPointer<Repository> repository_, Q
     world = repository->getMapByID(0);
     int maxCol = 0;
     for (auto row : world) {
-        maxCol = std::max(row.size(), maxCol);
+        maxCol = std::max(static_cast<int>(row.size()), maxCol);
     }
     ROWS = world.size();
     COLS = maxCol;

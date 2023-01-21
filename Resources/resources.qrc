@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/">
         <file>styles.qss</file>
+        <file>attackmoves.csv</file>
+        <file>healitems.csv</file>
+        <file>pokeballitems.csv</file>
+        <file>pokemon.csv</file>
+        <file>zigzagpath.csv</file>
     </qresource>
 </RCC>

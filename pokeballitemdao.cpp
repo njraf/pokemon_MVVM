@@ -63,7 +63,7 @@ bool PokeballItemDao::populateDatabase() {
     }
 
     // read from a csv file to populate the database
-    QFile pokeballItemFile("repository/pokeballitems.csv");
+    QFile pokeballItemFile(":/pokeballitems.csv");
     if (!pokeballItemFile.exists() || !pokeballItemFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "ERROR:" << pokeballItemFile.fileName() << "does not exist";
     } else {
