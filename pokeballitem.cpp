@@ -23,9 +23,14 @@ int PokeballItem::getQuantity() {
 
 void PokeballItem::setQuantity(int quantity_) {
     quantity = quantity_;
+    if (quantity <= 0) {
+        quantity = 0;
+        emit usedLast();
+    }
 }
 
 bool PokeballItem::throwAtPokemon(QSharedPointer<Pokemon> pokemon) {
+    setQuantity(--quantity);
     int maxHealth = pokemon->getMaxHealthStat();
     int catchChance = (3 * maxHealth - 2 * pokemon->getHealthStat()) * pokemon->getCatchRate() * catchRate;
     catchChance /= (3 * pokemon->getMaxHealthStat());

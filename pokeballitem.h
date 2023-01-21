@@ -22,6 +22,9 @@ private:
     double catchRate;
     int quantity;
 
+signals:
+    void usedLast();
+
 };
 
 #endif // POKEBALLITEM_H

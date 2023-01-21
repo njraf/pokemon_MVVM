@@ -27,6 +27,7 @@ int HealItem::getQuantity() {
 void HealItem::setQuantity(int quantity_) {
     quantity = quantity_;
     if (quantity <= 0) {
+        quantity = 0;
         emit usedLast();
     }
 }
