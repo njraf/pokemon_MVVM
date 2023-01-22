@@ -31,7 +31,10 @@ Ability::Ability(int id_, QString name_, BattleStage stage_, Target target_, std
 }
 
 Ability::Ability(const Ability &o) {
+    id = o.id;
+    name = o.name;
     battleStage = o.battleStage;
+    target = o.target;
     ability = o.ability;
 }
 

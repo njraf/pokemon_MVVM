@@ -102,12 +102,21 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
 
     ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::BEFORE_ATTACK);
     opponent->ability.useAbility(opponent, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), BattleStage::BEFORE_OPPONENT_ATTACK);
-    opponent->setHealthStat(opponent->getHealthStat() - dmg);
+
+    opponent->takeDamage(dmg, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}));
+
     ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::AFTER_ATTACK);
     ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::ATTACK_HITS);
+
     opponent->ability.useAbility(opponent, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), BattleStage::AFTER_OPPONENT_ATTACK);
+
     qDebug() << name << "attacked" << opponent->getName() << "with" << attackMove->getName() << "and dealt" << dmg << "damage.";
     //emit attacked();
+}
+
+void Pokemon::takeDamage(int damage, QSharedPointer<Pokemon> attacker) {
+    setHealthStat(getHealthStat() - damage);
+    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), attacker, BattleStage::OPPONENT_HITS);
 }
 
 QString Pokemon::getName() const {

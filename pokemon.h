@@ -21,6 +21,7 @@ public:
     ~Pokemon() = default;
 
     void attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove);
+    void takeDamage(int damage, QSharedPointer<Pokemon> attacker);
 
     QString getName() const;
     void setName(const QString &newName);

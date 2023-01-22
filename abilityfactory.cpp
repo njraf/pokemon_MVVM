@@ -13,12 +13,14 @@ std::function<void(QSharedPointer<Pokemon>)> AbilityFactory::getAbility(int id) 
     case 1: // intimidate
         ability = [](QSharedPointer<Pokemon> target) {
             target->setAttackStatStage(target->getAttackStatStage() - 1);
+            qDebug() << target->getName() << "had it's attack drop one stage";
         };
         break;
     case 2: // aftermath
         ability = [](QSharedPointer<Pokemon> target) {
-            target->setHealthStat(target->getHealthStat() - (0.25 * target->getMaxHealthStat())); //TODO: only activate when defeated by a physical move
-            qDebug() << "Aftermath";
+            int damage = 0.25 * static_cast<double>(target->getMaxHealthStat());
+            target->setHealthStat(target->getHealthStat() - damage); //TODO: only activate when defeated by a physical move
+            qDebug() << "Aftermath dealt" << damage << "damage to" << target->getName();
         };
         break;
     default:
