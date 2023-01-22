@@ -39,7 +39,7 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
     , attackList(attackList_)
     , type1(type1_)
     , type2(type2_)
-    , ability(Ability(BattleStage::SUMMON, Ability::Target::SELF, [](QSharedPointer<Pokemon>){}))
+    , ability(Ability(0, "None", BattleStage::SUMMON, Ability::Target::SELF, [](QSharedPointer<Pokemon>){}))
 {
     // calculate IVs
     if (owner.isEmpty()) {

@@ -1,9 +1,10 @@
 #include "repository.h"
 
-Repository::Repository(QSharedPointer<PokemonDao> pokemonDao_, QSharedPointer<AttackMoveDao> attackMoveDao_, QObject *parent)
+Repository::Repository(QSharedPointer<PokemonDao> pokemonDao_, QSharedPointer<AttackMoveDao> attackMoveDao_, QSharedPointer<AbilityDao> abilityDao_, QObject *parent)
     : QObject(parent)
     , pokemonDao(pokemonDao_)
     , attackMoveDao(attackMoveDao_)
+    , abilityDao(abilityDao_)
 {
     db = QSqlDatabase::addDatabase("QSQLITE", "RepositoryConnection");
     db.setHostName("MyHost");

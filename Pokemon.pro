@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     ability.cpp \
+    abilitydao.cpp \
     abilityfactory.cpp \
     attackmove.cpp \
     attackmovedao.cpp \
@@ -30,6 +31,7 @@ SOURCES += \
 
 HEADERS += \
     ability.h \
+    abilitydao.h \
     abilityfactory.h \
     attackmove.h \
     attackmovedao.h \

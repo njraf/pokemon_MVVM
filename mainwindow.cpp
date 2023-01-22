@@ -12,7 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
     // create repository
     QSharedPointer<PokemonDao> pokemonDao = QSharedPointer<PokemonDao>::create();
     QSharedPointer<AttackMoveDao> attackMoveDao = QSharedPointer<AttackMoveDao>::create();
-    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao);
+    QSharedPointer<AbilityDao> abilityDao = QSharedPointer<AbilityDao>::create();
+    repository = QSharedPointer<Repository>::create(pokemonDao, attackMoveDao, abilityDao);
     if (!repository->hasConnection()) {
         //TODO: make an error dialog
         qDebug() << "ERROR: Could not connect to repository";
@@ -25,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QSharedPointer<Pokemon> charmander = repository->getPokemon(6);
     charmander->setAttackList(attackList);
-    charmander->setAbility(Ability(BattleStage::FAINT, Ability::Target::OPPONENT, AbilityFactory::getAbility(1)));
+    charmander->setAbility(Ability(1, "Intimidate", BattleStage::FAINT, Ability::Target::OPPONENT, AbilityFactory::getAbility(1)));
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander};
     player = QSharedPointer<Trainer>::create(playerTeam);
 
@@ -74,7 +75,7 @@ QSharedPointer<BattlePage> MainWindow::constructBattlePage() {
 
     QSharedPointer<Pokemon> bulbasaur = repository->getPokemon(3);
     bulbasaur->setAttackList(attackList);
-    bulbasaur->setAbility(Ability(BattleStage::FAINT, Ability::Target::OPPONENT, AbilityFactory::getAbility(1)));
+    bulbasaur->setAbility(Ability(1, "Intimidate", BattleStage::FAINT, Ability::Target::OPPONENT, AbilityFactory::getAbility(1)));
     QVector<QSharedPointer<Pokemon>> opponentTeam = {bulbasaur};
     QSharedPointer<Trainer> opponent = QSharedPointer<Trainer>::create(opponentTeam);
     QSharedPointer<BattleViewmodel> battleViewmodel = QSharedPointer<BattleViewmodel>::create(repository, player, opponent);
