@@ -17,6 +17,27 @@ AbilityDao::AbilityDao(QObject *parent) : IDao(parent)
     populateDatabase();
 }
 
+Ability AbilityDao::getAbilityByID(int id) {
+    if (!db.isOpen()) {
+        qDebug() << "AbilityDao database is not opened";
+    }
+    QSqlTableModel model(nullptr, db);
+    model.setTable("Abilities");
+    model.setFilter(QString("ID=%1").arg(id));
+    if (!model.select()) {
+        qDebug() << "ERROR: getPokemon()::select() failed" << model.lastError().text();
+    }
+
+    auto record = model.record(0);
+    return Ability(
+                record.value("ID").toInt(),
+                record.value("Name").toString(),
+                Ability::strToBattleStage[record.value("Stage").toString()],
+                Ability::strToTarget[record.value("Target").toString()],
+                //record.value("Description").toString(),
+                AbilityFactory::getAbility(record.value("ID").toInt())
+                );
+}
 
 bool AbilityDao::populateDatabase() {
     qDebug() << "Populating AbilityDao database";

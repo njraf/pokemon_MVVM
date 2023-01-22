@@ -36,5 +36,9 @@ QSharedPointer<AttackMove> Repository::getAttackByID(int id) {
     return attackMoveDao->getAttackByID(id);
 }
 
+Ability Repository::getAbilityByID(int id) {
+    return abilityDao->getAbilityByID(id);
+}
+
 
 

@@ -19,6 +19,7 @@ public:
     bool hasConnection();
     QSharedPointer<Pokemon> getPokemon(int nationalDexNumber);
     QSharedPointer<AttackMove> getAttackByID(int id);
+    Ability getAbilityByID(int id);
 
 private:
     QSqlDatabase db;
