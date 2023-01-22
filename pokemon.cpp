@@ -39,7 +39,7 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
     , attackList(attackList_)
     , type1(type1_)
     , type2(type2_)
-    , ability(Ability(0, "None", BattleStage::SUMMON, Ability::Target::SELF, [](QSharedPointer<Pokemon>){}))
+    , ability(Ability(0, "None", {BattleStage::SWITCH_IN}, Ability::Target::SELF, Category::NONE, Type::NONE, [](QSharedPointer<Pokemon>){}))
 {
     // calculate IVs
     if (owner.isEmpty()) {
@@ -100,23 +100,23 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
     double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * attack * attackPower / defense) / 50.0) + 2.0) * stab * weakResist * randomNumber / 100.0;
     int dmg = ((damage - qFloor(damage)) < 0.5) ? qFloor(damage) : qCeil(damage); // round damage to the nearest whole number
 
-    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::BEFORE_ATTACK);
-    opponent->ability.useAbility(opponent, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), BattleStage::BEFORE_OPPONENT_ATTACK);
+    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::BEFORE_ATTACK, attackMove->getCategory(), attackMove->getType());
+    opponent->ability.useAbility(opponent, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), BattleStage::BEFORE_OPPONENT_ATTACK, attackMove->getCategory(), attackMove->getType());
 
-    opponent->takeDamage(dmg, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}));
+    opponent->takeDamage(dmg, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), attackMove);
 
-    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::AFTER_ATTACK);
-    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::ATTACK_HITS);
+    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::AFTER_ATTACK, attackMove->getCategory(), attackMove->getType());
+    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::ATTACK_HITS, attackMove->getCategory(), attackMove->getType());
 
-    opponent->ability.useAbility(opponent, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), BattleStage::AFTER_OPPONENT_ATTACK);
+    opponent->ability.useAbility(opponent, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), BattleStage::AFTER_OPPONENT_ATTACK, attackMove->getCategory(), attackMove->getType());
 
     qDebug() << name << "attacked" << opponent->getName() << "with" << attackMove->getName() << "and dealt" << dmg << "damage.";
     //emit attacked();
 }
 
-void Pokemon::takeDamage(int damage, QSharedPointer<Pokemon> attacker) {
+void Pokemon::takeDamage(int damage, QSharedPointer<Pokemon> attacker, QSharedPointer<AttackMove> attackMove) {
     setHealthStat(getHealthStat() - damage);
-    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), attacker, BattleStage::OPPONENT_HITS);
+    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), attacker, BattleStage::OPPONENT_HITS, attackMove->getCategory(), attackMove->getType());
 }
 
 QString Pokemon::getName() const {

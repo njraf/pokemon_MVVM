@@ -6,7 +6,7 @@
 #include "typeutilities.h"
 
 enum class Category : int {
-    PHYSICAL, SPECIAL, OTHER
+    NONE, PHYSICAL, SPECIAL, OTHER
 };
 
 class AttackMove : public QObject
@@ -31,7 +31,9 @@ public:
         return static_cast<typename std::underlying_type<E>::type>(e);
     }
 
-    static QMap<QString, int> strToUnderlying;
+    static QMap<QString, int> strToCategoryUnderlying;
+    static QMap<QString, Category> strToCategory;
+    static QMap<QString, Type> strToType;
 
 private:
     QString name;

@@ -92,8 +92,8 @@ bool AttackMoveDao::populateDatabase() {
                     }
                 } else { // string data
                     QString strData = data.toString();
-                    if (AttackMove::strToUnderlying.contains(strData)) {
-                        int intData = AttackMove::strToUnderlying[strData];
+                    if (AttackMove::strToCategoryUnderlying.contains(strData)) {
+                        int intData = AttackMove::strToCategoryUnderlying[strData];
                         if (!table.setData(table.index(row, col), intData)) {
                             qDebug() << "ERROR: Could not set category data" << db.lastError().text();
                         }

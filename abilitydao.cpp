@@ -32,8 +32,10 @@ Ability AbilityDao::getAbilityByID(int id) {
     return Ability(
                 record.value("ID").toInt(),
                 record.value("Name").toString(),
-                Ability::strToBattleStage[record.value("Stage").toString()],
+                {Ability::strToBattleStage[record.value("Stage").toString()]},
                 Ability::strToTarget[record.value("Target").toString()],
+                AttackMove::strToCategory[record.value("AttackCategory").toString()],
+                AttackMove::strToType[record.value("AttackType").toString()],
                 //record.value("Description").toString(),
                 AbilityFactory::getAbility(record.value("ID").toInt())
                 );
@@ -45,7 +47,13 @@ bool AbilityDao::populateDatabase() {
     if (!query.exec("DROP TABLE Abilities;")) {
         qDebug() << "Drop table failed" << query.lastError().text();
     }
-    if (!query.exec("CREATE TABLE Abilities (ID int PRIMARY_KEY, Name varchar(32), Stage varchar(32) CHECK(Stage IN ('SUMMON', 'BEFORE_ATTACK', 'AFTER_ATTACK', 'BEFORE_OPPONENT_ATTACK', 'AFTER_OPPONENT_ATTACK', 'ATTACK_HITS', 'OPPONENT_HITS', 'START_TURN', 'END_TURN', 'FAINT''SUMMON', 'BEFORE_ATTACK', 'AFTER_ATTACK', 'BEFORE_OPPONENT_ATTACK', 'AFTER_OPPONENT_ATTACK', 'ATTACK_HITS', 'OPPONENT_HITS', 'START_TURN', 'END_TURN', 'FAINT')), Target varchar(8) CHECK(Target IN ('SELF', 'ALLY', 'OPPONENT')), Description varchar(128));")) {
+    if (!query.exec("CREATE TABLE Abilities (ID int PRIMARY_KEY, "
+                    "Name varchar(32), "
+                    "Stage varchar(32) CHECK(Stage IN ('SWITCH_IN', 'SWITCH_OUT', 'BEFORE_ATTACK', 'AFTER_ATTACK', 'BEFORE_OPPONENT_ATTACK', 'AFTER_OPPONENT_ATTACK', 'ATTACK_HITS', 'OPPONENT_HITS', 'START_TURN', 'END_TURN', 'FAINT', 'OPPONENT_FAINT', 'STATUS_APPLIED', 'STATUS_REMOVED', 'FLINCH')), "
+                    "Target varchar(8) CHECK(Target IN ('SELF', 'ALLY', 'OPPONENT')), "
+                    "AttackCategory varchar(16) CHECK(AttackCategory IN ('NONE', 'SPECIAL', 'PHYSICAL', 'STATUS')), "
+                    "AttackType varchar(16) CHECK(AttackType IN ('NONE', 'NORMAL', 'FIRE', 'WATER', 'ELECTRIC', 'GRASS', 'ICE', 'FIGHTING', 'POISON', 'GROUND', 'FLYING', 'PSYCHIC', 'BUG', 'ROCK', 'GHOST', 'DRAGON', 'DARK', 'STEEL', 'FAIRY')), "
+                    "Description varchar(128));")) {
         qDebug() << "Create table failed" << query.lastError().text();
     }
 
@@ -62,6 +70,8 @@ bool AbilityDao::populateDatabase() {
     table.setHeaderData(col++, Qt::Horizontal, "Name");
     table.setHeaderData(col++, Qt::Horizontal, "Stage");
     table.setHeaderData(col++, Qt::Horizontal, "Target");
+    table.setHeaderData(col++, Qt::Horizontal, "AttackCategory");
+    table.setHeaderData(col++, Qt::Horizontal, "AttackType");
     table.setHeaderData(col++, Qt::Horizontal, "Description");
     if (!table.select()) {
         qDebug() << "ERROR: Second select() error." << table.lastError().text();
@@ -93,7 +103,7 @@ bool AbilityDao::populateDatabase() {
                     if (!table.setData(table.index(row, col), data.toString())) {
                         qDebug() << "ERROR: Could not set Name data" << table.lastError().text();
                     }
-                } else if (col == 4) {
+                } else if (col == 6) {
                     if (!table.setData(table.index(row, col), data.toString())) {
                         qDebug() << "ERROR: Could not set Description data" << table.lastError().text();
                     }
@@ -106,6 +116,14 @@ bool AbilityDao::populateDatabase() {
                     } else if (Ability::strToTarget.keys().contains(strData)) {
                         if (!table.setData(table.index(row, col), strData)) {
                             qDebug() << "ERROR: Could not set Target data" << table.lastError().text();
+                        }
+                    } else if (AttackMove::strToCategory.keys().contains(strData)) {
+                        if (!table.setData(table.index(row, col), strData)) {
+                            qDebug() << "ERROR: Could not set AttackCategory data" << table.lastError().text();
+                        }
+                    } else if (AttackMove::strToType.keys().contains(strData)) {
+                        if (!table.setData(table.index(row, col), strData)) {
+                            qDebug() << "ERROR: Could not set AttackType data" << table.lastError().text();
                         }
                     }
                 }

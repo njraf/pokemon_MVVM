@@ -49,10 +49,10 @@ void BattleViewmodel::summonFirstPokemon() {
     currentOpponentPokemon->resetAllStages();
 
     Ability ability = currentPlayerPokemon->getAbility();
-    ability.useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::SUMMON);
+    ability.useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::SWITCH_IN, Category::NONE, Type::NONE);
 
     ability = currentOpponentPokemon->getAbility();
-    ability.useAbility(currentOpponentPokemon, currentPlayerPokemon, BattleStage::SUMMON);
+    ability.useAbility(currentOpponentPokemon, currentPlayerPokemon, BattleStage::SWITCH_IN, Category::NONE, Type::NONE);
 
     emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
 }
@@ -62,26 +62,26 @@ void BattleViewmodel::attack(int attackIndex) {
         return; // UI button is not mapped to an attack
     }
 
-    currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::START_TURN);
-    currentOpponentPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::START_TURN);
-
     int opponentAttackIndex = (QRandomGenerator::global()->generate() % currentOpponentPokemon->getAttackList().size()); // random opponent attack
     auto playerAttackMove = currentPlayerPokemon->getAttackList().at(attackIndex);
     auto opponentAttackMove = currentOpponentPokemon->getAttackList().at(opponentAttackIndex);
+
+    currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::START_TURN, playerAttackMove->getCategory(), playerAttackMove->getType());
+    currentOpponentPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::START_TURN, opponentAttackMove->getCategory(), opponentAttackMove->getType());
 
     if (currentPlayerPokemon->getSpeedStat() > currentOpponentPokemon->getSpeedStat()) {
         currentPlayerPokemon->attack(currentOpponentPokemon, playerAttackMove);
         if (currentOpponentPokemon->getHealthStat() > 0) {
             currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
         } else {
-            currentOpponentPokemon->getAbility().useAbility(currentOpponentPokemon, currentPlayerPokemon, BattleStage::FAINT);
+            currentOpponentPokemon->getAbility().useAbility(currentOpponentPokemon, currentPlayerPokemon, BattleStage::FAINT, playerAttackMove->getCategory(), playerAttackMove->getType());
         }
     } else if (currentPlayerPokemon->getSpeedStat() < currentOpponentPokemon->getSpeedStat()) {
         currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
         if (currentPlayerPokemon->getHealthStat() > 0) {
             currentPlayerPokemon->attack(currentOpponentPokemon, playerAttackMove);
         } else {
-            currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::FAINT);
+            currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::FAINT, playerAttackMove->getCategory(), playerAttackMove->getType());
         }
     } else { // speed tie
         if ((QRandomGenerator::global()->generate() % 2) == 0) {
@@ -89,20 +89,20 @@ void BattleViewmodel::attack(int attackIndex) {
             if (currentOpponentPokemon->getHealthStat() > 0) {
                 currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
             } else {
-                currentOpponentPokemon->getAbility().useAbility(currentOpponentPokemon, currentPlayerPokemon, BattleStage::FAINT);
+                currentOpponentPokemon->getAbility().useAbility(currentOpponentPokemon, currentPlayerPokemon, BattleStage::FAINT, playerAttackMove->getCategory(), playerAttackMove->getType());
             }
         } else {
             currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
             if (currentPlayerPokemon->getHealthStat() > 0) {
                 currentPlayerPokemon->attack(currentOpponentPokemon, playerAttackMove);
             } else {
-                currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::FAINT);
+                currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::FAINT, playerAttackMove->getCategory(), playerAttackMove->getType());
             }
         }
     }
 
-    currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::END_TURN);
-    currentOpponentPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::END_TURN);
+    currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::END_TURN, playerAttackMove->getCategory(), playerAttackMove->getType());
+    currentOpponentPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::END_TURN, opponentAttackMove->getCategory(), opponentAttackMove->getType());
 
     emit stateUpdated();
 }
