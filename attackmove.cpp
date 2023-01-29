@@ -4,14 +4,14 @@ QMap<QString, int> AttackMove::strToCategoryUnderlying = {
     {"NONE", to_underlying(Category::NONE)},
     {"PHYSICAL", to_underlying(Category::PHYSICAL)},
     {"SPECIAL", to_underlying(Category::SPECIAL)},
-    {"OTHER", to_underlying(Category::OTHER)}
+    {"STATUS", to_underlying(Category::STATUS)}
 };
 
 QMap<QString, Category> AttackMove::strToCategory = {
     {"NONE", Category::NONE},
     {"PHYSICAL", Category::PHYSICAL},
     {"SPECIAL", Category::SPECIAL},
-    {"OTHER", Category::OTHER}
+    {"STATUS", Category::STATUS}
 };
 
 QMap<QString, Type> AttackMove::strToType = {
@@ -36,8 +36,10 @@ QMap<QString, Type> AttackMove::strToType = {
     {"FAIRY", Type::FAIRY}
 };
 
-AttackMove::AttackMove(QString name_, int power_, int accuracy_, int pp_, int maxPP_, Type type_, Category category_, QObject *parent)
+AttackMove::AttackMove(QString name_, int power_, int accuracy_, int pp_, int maxPP_, Type type_, Category category_,
+                       std::function<void(QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent)> effect_, QObject *parent)
     : QObject(parent)
+    , useEffect(effect_)
     , name(name_)
     , power(power_)
     , accuracy(accuracy_)

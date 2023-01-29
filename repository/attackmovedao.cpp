@@ -1,5 +1,7 @@
 #include "attackmovedao.h"
 
+#include "attackeffectfactory.h"
+
 AttackMoveDao::AttackMoveDao(QObject *parent) : IDao(parent)
 {
     db = QSqlDatabase::addDatabase(SQLITE_CONN, "AttackMoveDaoConnection");
@@ -16,7 +18,7 @@ AttackMoveDao::AttackMoveDao(QObject *parent) : IDao(parent)
     populateDatabase();
 }
 
-QSharedPointer<AttackMove> AttackMoveDao::getAttackByID(int id) {
+QSharedPointer<AttackMove> AttackMoveDao::getAttackByID(int id, int effectID) {
     if (!db.isOpen()) {
         qDebug() << "AttackMoveDao database is not opened";
     }
@@ -24,7 +26,7 @@ QSharedPointer<AttackMove> AttackMoveDao::getAttackByID(int id) {
     model.setTable("AttackMove");
     model.setFilter(QString("ID=%1").arg(id));
     if (!model.select()) {
-        qDebug() << "ERROR: getPokemon()::select() failed" << db.lastError().text();
+        qDebug() << "ERROR: getAttackByID()::select() failed" << db.lastError().text();
     }
 
     auto record = model.record(0);
@@ -35,12 +37,37 @@ QSharedPointer<AttackMove> AttackMoveDao::getAttackByID(int id) {
                 record.value("MaxPP").toInt(), // current PP
                 record.value("MaxPP").toInt(), // max PP
                 static_cast<Type>(record.value("Type").toInt()),
-                static_cast<Category>(record.value("Category").toInt())
+                static_cast<Category>(record.value("Category").toInt()),
+                AttackEffectFactory::getEffectByID(effectID)
+                );
+}
+
+QSharedPointer<AttackMove> AttackMoveDao::getAttackByName(QString name, int effectID) {
+    if (!db.isOpen()) {
+        qDebug() << "AttackMoveDao database is not opened";
+    }
+    QSqlTableModel model(nullptr, db);
+    model.setTable("AttackMove");
+    model.setFilter(QString("Name=\"%1\"").arg(name));
+    if (!model.select()) {
+        qDebug() << "ERROR: getAttackByName()::select() failed" << db.lastError().text() << "No attack named" << name;
+    }
+
+    auto record = model.record(0);
+    return QSharedPointer<AttackMove>::create(
+                record.value("Name").toString(),
+                record.value("Power").toInt(),
+                record.value("Accuracy").toInt(),
+                record.value("MaxPP").toInt(), // current PP
+                record.value("MaxPP").toInt(), // max PP
+                static_cast<Type>(record.value("Type").toInt()),
+                static_cast<Category>(record.value("Category").toInt()),
+                AttackEffectFactory::getEffectByID(effectID)
                 );
 }
 
 bool AttackMoveDao::populateDatabase() {
-    qDebug() << "Populating AttackMoves database";
+    //qDebug() << "Populating AttackMoves database";
     QSqlQuery query(db);
     if (!query.exec("DROP TABLE AttackMove;")) {
         qDebug() << "Drop table failed" << db.lastError().text();
@@ -71,7 +98,7 @@ bool AttackMoveDao::populateDatabase() {
     }
 
     // read from a csv file to populate the database
-    QFile attackMoveFile("attackmoves.csv");
+    QFile attackMoveFile(":/attackmoves.csv");
     if (!attackMoveFile.exists() || !attackMoveFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "ERROR:" << attackMoveFile.fileName() << "does not exist";
     } else {

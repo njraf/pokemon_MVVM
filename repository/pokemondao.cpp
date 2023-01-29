@@ -1,4 +1,5 @@
 #include "pokemondao.h"
+#include "attackeffectfactory.h"
 
 PokemonDao::PokemonDao(QObject *parent) : IDao(parent)
 {
@@ -29,7 +30,8 @@ QSharedPointer<Pokemon> PokemonDao::getPokemon(int nationalDexNumber) {
 
     auto record = model.record(0);
     QVector<QSharedPointer<AttackMove>> attackList = {
-        QSharedPointer<AttackMove>::create("Ember", 40, 100, 25, 25, Type::FIRE, Category::SPECIAL)
+        //QSharedPointer<AttackMove>::create("Ember", 40, 100, 25, 25, Type::FIRE, Category::SPECIAL, AttackEffectFactory::getEffectByID(-1))
+
     };
 
     return QSharedPointer<Pokemon>::create(
@@ -52,7 +54,7 @@ QSharedPointer<Pokemon> PokemonDao::getPokemon(int nationalDexNumber) {
 
 
 bool PokemonDao::populateDatabase() {
-    qDebug() << "Populating Pokemon database";
+    //qDebug() << "Populating Pokemon database";
     QSqlQuery query(db);
     if (!query.exec("DROP TABLE Pokemon;")) {
         qDebug() << "Drop table failed" << db.lastError().text();
@@ -86,7 +88,7 @@ bool PokemonDao::populateDatabase() {
     }
 
     // read from a csv file to populate the database
-    QFile pokemonFile("pokemon.csv");
+    QFile pokemonFile(":/pokemon.csv");
     if (!pokemonFile.exists() || !pokemonFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "ERROR:" << pokemonFile.fileName() << "does not exist";
     } else {

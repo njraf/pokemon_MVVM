@@ -14,16 +14,39 @@ PageNavigator *PageNavigator::getInstance() {
     return instance;
 }
 
-void PageNavigator::addToBackstack(QSharedPointer<IPage> page) {
-    backstack.append(page);
+void PageNavigator::populateRoutes(QMap<PageName, std::function<QSharedPointer<IPage>(void)> > routes_) {
+    routes = routes_;
 }
 
-QSharedPointer<IPage> PageNavigator::popFromBackstack() {
-    return backstack.takeLast();
+void PageNavigator::navigate(PageName page, QVector<QVariant> data) {
+    if (!routes.contains(page)) {
+        return;
+    }
+
+    if ((backstack.count() > 1) && (backstack.at(backstack.count() - 2)->getPageName() == page)) {
+        navigateBack(data);
+    } else { // make new page
+        forwardstack.clear();
+        auto currentPage = routes[page]();
+        currentPage->receiveData(data);
+        backstack.append(currentPage);
+        emit pageChanged(currentPage);
+    }
 }
 
-QSharedPointer<IPage> PageNavigator::top() {
-    return backstack.top();
+void PageNavigator::navigateBack(QVector<QVariant> data) {
+    if ((backstack.count() > 1)) {
+        forwardstack.append(backstack.pop());
+        auto currentPage = backstack.top();
+        auto ftop = forwardstack.top();
+        emit pageChanged(ftop, true);
+        currentPage->receiveData(data);
+    }
 }
 
+QVector<PageName> PageNavigator::getRouteNames() {
+    QVector<PageName> routeNames(backstack.size());
+    std::transform(backstack.begin(), backstack.end(), routeNames.begin(), [=](QSharedPointer<IPage> page) { return page->getPageName(); });
+    return routeNames;
+}
 

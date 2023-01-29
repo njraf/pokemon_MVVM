@@ -1,0 +1,26 @@
+QProgressBar {
+     border: 2px solid grey;
+     border-radius: 5px;
+     background-color: #FF0000;
+ }
+
+ QProgressBar::chunk {
+     background-color: #05B8CC;
+     width: 20px;
+ }
+
+QLabel {
+    font: 18pt;
+}
+
+QPushButton {
+    font: 14pt;
+}
+
+TeamMemberCard:hover {
+    background-color: #3dd7e5;
+}
+
+QListWidget {
+    font: 12pt;
+}

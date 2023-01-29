@@ -6,14 +6,17 @@
 #include "typeutilities.h"
 
 enum class Category : int {
-    NONE, PHYSICAL, SPECIAL, OTHER
+    NONE, PHYSICAL, SPECIAL, STATUS
 };
+
+class Pokemon;
 
 class AttackMove : public QObject
 {
     Q_OBJECT
 public:
-    explicit AttackMove(QString name_, int power_, int accuracy_, int pp_, int maxPP_, Type type_, Category category_, QObject *parent = nullptr);
+    explicit AttackMove(QString name_, int power_, int accuracy_, int pp_, int maxPP_, Type type_, Category category_,
+                        std::function<void(QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent)> effect_, QObject *parent = nullptr);
     ~AttackMove() = default;
 
 
@@ -25,6 +28,7 @@ public:
     int getMaxPP() const;
     Type getType() const;
     Category getCategory() const;
+    const std::function<void(QSharedPointer<Pokemon> self, QSharedPointer<Pokemon> opponent)> useEffect;
 
     template <typename E>
     static constexpr typename std::underlying_type<E>::type to_underlying(E e) noexcept {

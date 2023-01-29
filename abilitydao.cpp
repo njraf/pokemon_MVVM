@@ -42,7 +42,7 @@ Ability AbilityDao::getAbilityByID(int id) {
 }
 
 bool AbilityDao::populateDatabase() {
-    qDebug() << "Populating AbilityDao database";
+    //qDebug() << "Populating AbilityDao database";
     QSqlQuery query(db);
     if (!query.exec("DROP TABLE Abilities;")) {
         qDebug() << "Drop table failed" << query.lastError().text();

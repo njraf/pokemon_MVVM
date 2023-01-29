@@ -3,10 +3,15 @@
 
 #include <QMainWindow>
 
+#include "repository.h"
 #include "battlepage.h"
 #include "mainmenupage.h"
 #include "repository.h"
 #include "ability.h"
+#include "teampage.h"
+#include "summarypage.h"
+#include "bagpage.h"
+#include "overworldpage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,11 +24,16 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void connectPages(QSharedPointer<IPage> page);
+    QSharedPointer<MainMenuPage> constructMainMenuPage() ;
     QSharedPointer<BattlePage> constructBattlePage();
+    QSharedPointer<TeamPage> constructTeamPage();
+    QSharedPointer<SummaryPage> constructSummaryPage();
+    QSharedPointer<BagPage> constructBagPage();
+    QSharedPointer<OverworldPage> constructOverworldPage();
 
 private:
     Ui::MainWindow *ui;
-    QSharedPointer<IPage> currentPage;
     QSharedPointer<Trainer> player;
     QSharedPointer<Repository> repository;
 

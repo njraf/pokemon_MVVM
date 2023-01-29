@@ -1,18 +1,75 @@
 #include "battleviewmodel.h"
+#include "pagenavigator.h"
 
 #include <QRandomGenerator>
 
-BattleViewmodel::BattleViewmodel(QSharedPointer<Repository> repository_, QSharedPointer<Trainer> player_, QSharedPointer<Trainer> opponent_)
+BattleViewmodel::BattleViewmodel(QSharedPointer<Repository> repository_, QSharedPointer<Trainer> player_)
     : repository(repository_)
     , player(player_)
-    , opponent(opponent_)
 {
-    for (auto member : player->getTeam()) {
-        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::stateUpdated);
+    for (auto member : *player->getTeam()) {
+        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::resolveAttack);
+        connect(member.data(), &Pokemon::tookDamage, this, &BattleViewmodel::stateUpdated);
+    }
+}
+
+void BattleViewmodel::resolveAttack() {
+    emit stateUpdated();
+    // determine win/lose and emit signal
+    auto playerTeam = player->getTeam();
+    auto opponentTeam = opponent->getTeam();
+    bool playerKOed = (0 == std::count_if(playerTeam->begin(), playerTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+    bool opponentKOed = (0 == std::count_if(opponentTeam->begin(), opponentTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+
+    if (playerKOed) { // lose even if tied
+        emit battleFinished("You lost");
+        return;
+    } else if (opponentKOed) {
+        emit battleFinished("You won");
+        return;
     }
 
-    for (auto member : opponent->getTeam()) {
-        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::stateUpdated);
+    // send another player pokemon out if fainted
+    if (currentPlayerPokemon->getHealthStat() <= 0) {
+        auto playerPokemon = QVariant::fromValue<QSharedPointer<Pokemon>>(currentPlayerPokemon);
+        QVector<QVariant> data = {playerPokemon};
+        PageNavigator::getInstance()->navigate(PageName::TEAM, data);
+    }
+
+    // send another opponent pokemon out if fainted
+    if (currentOpponentPokemon->getHealthStat() <= 0) {
+        QVector<QSharedPointer<Pokemon>> livingOpponentTeam(opponentTeam->size());
+        auto teamIt = std::copy_if(opponentTeam->begin(), opponentTeam->end(), livingOpponentTeam.begin(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
+        livingOpponentTeam.resize(std::distance(livingOpponentTeam.begin(), teamIt));
+        opponentSummon(livingOpponentTeam.at(QRandomGenerator::global()->generate() % livingOpponentTeam.size())); //TODO: change summon strategy
+    }
+
+    static int numAttacks = 0;
+    numAttacks++;
+    if (numAttacks == fighters.size()) {
+        numAttacks = 0;
+        resolveTurn();
+    }
+}
+
+void BattleViewmodel::resolveTurn() {
+    for (auto pokemon : fighters) {
+        auto statusCondition = pokemon->getStatusCondition();
+        pokemon->setHealthStat(pokemon->getHealthStat() - (pokemon->getMaxHealthStat() * statusCondition->getStatusDamageMultiplier()));
+    }
+    emit stateUpdated();
+    // determine win/lose and emit signal
+    auto playerTeam = player->getTeam();
+    auto opponentTeam = opponent->getTeam();
+    bool playerKOed = (0 == std::count_if(playerTeam->begin(), playerTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+    bool opponentKOed = (0 == std::count_if(opponentTeam->begin(), opponentTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); }));
+
+    if (playerKOed) { // lose even if tied
+        emit battleFinished("You lost");
+        return;
+    } else if (opponentKOed) {
+        emit battleFinished("You won");
+        return;
     }
 }
 
@@ -22,6 +79,14 @@ QSharedPointer<Trainer> BattleViewmodel::getPlayerTrainer() {
 
 QSharedPointer<Trainer> BattleViewmodel::getOpponentTrainer() {
     return opponent;
+}
+
+void BattleViewmodel::setOpponentTrainer(QSharedPointer<Trainer> opponent_) {
+    opponent = opponent_;
+    for (auto member : *opponent->getTeam()) {
+        connect(member.data(), &Pokemon::attacked, this, &BattleViewmodel::resolveAttack);
+        connect(member.data(), &Pokemon::tookDamage, this, &BattleViewmodel::stateUpdated);
+    }
 }
 
 QSharedPointer<Pokemon> BattleViewmodel::getCurrentPlayerPokemon() {
@@ -34,32 +99,63 @@ QSharedPointer<Pokemon> BattleViewmodel::getCurrentOpponentPokemon() {
 
 void BattleViewmodel::summonFirstPokemon() {
     auto playerTeam = player->getTeam();
-    auto pokeIt = std::find_if(playerTeam.begin(), playerTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
-    if (pokeIt != playerTeam.end()) {
+    auto pokeIt = std::find_if(playerTeam->begin(), playerTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
+    if (pokeIt != playerTeam->end()) {
         currentPlayerPokemon = *pokeIt;
     }
 
     auto opponentTeam = opponent->getTeam();
-    pokeIt = std::find_if(opponentTeam.begin(), opponentTeam.end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
-    if (pokeIt != opponentTeam.end()) {
+    pokeIt = std::find_if(opponentTeam->begin(), opponentTeam->end(), [](QSharedPointer<Pokemon> pokemon) { return (pokemon->getHealthStat() > 0); });
+    if (pokeIt != opponentTeam->end()) {
         currentOpponentPokemon = *pokeIt;
     }
 
-    currentPlayerPokemon->resetAllStages();
-    currentOpponentPokemon->resetAllStages();
-
-    Ability ability = currentPlayerPokemon->getAbility();
-    ability.useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::SWITCH_IN, Category::NONE, Type::NONE);
-
-    ability = currentOpponentPokemon->getAbility();
-    ability.useAbility(currentOpponentPokemon, currentPlayerPokemon, BattleStage::SWITCH_IN, Category::NONE, Type::NONE);
+    summonPokemon(currentPlayerPokemon);
+    summonPokemon(currentOpponentPokemon);
+    fighters.append(currentPlayerPokemon);
+    fighters.append(currentOpponentPokemon);
 
     emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
 }
 
+void BattleViewmodel::playerSummon(QSharedPointer<Pokemon> pokemon) {
+    currentPlayerPokemon = pokemon;
+    summonPokemon(currentPlayerPokemon);
+
+    Ability ability = currentPlayerPokemon->getAbility();
+    ability.useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::SWITCH_IN, Category::NONE, Type::NONE);
+
+    fighters[0] = currentPlayerPokemon;
+    emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
+    int opponentAttackIndex = (QRandomGenerator::global()->generate() % currentOpponentPokemon->getAttackList().size()); //TODO: change attack strategy
+    currentOpponentPokemon->attack(currentPlayerPokemon, currentOpponentPokemon->getAttackList().at(opponentAttackIndex));
+}
+
+void BattleViewmodel::opponentSummon(QSharedPointer<Pokemon> pokemon) {
+    currentOpponentPokemon = pokemon;
+    summonPokemon(currentOpponentPokemon);
+
+    Ability ability = currentOpponentPokemon->getAbility();
+    ability.useAbility(currentOpponentPokemon, currentPlayerPokemon, BattleStage::SWITCH_IN, Category::NONE, Type::NONE);
+
+    fighters[1] = currentOpponentPokemon;
+    emit summonedPokemon(currentPlayerPokemon, currentOpponentPokemon);
+}
+
+void BattleViewmodel::summonPokemon(QSharedPointer<Pokemon> pokemon) {
+    connect(pokemon.data(), &Pokemon::statusConditionSet, this, &BattleViewmodel::stateUpdated);
+    pokemon->resetAllStages();
+    auto statusCondition = pokemon->getStatusCondition();
+    if (statusCondition->getBadlyPoisoned()) {
+        pokemon->setStatusCondition(Status::POISONED);
+    }
+
+    statusCondition->resetStatuses();
+}
+
 void BattleViewmodel::attack(int attackIndex) {
     if (currentPlayerPokemon->getAttackList().size() <= attackIndex) {
-        return; // UI button is not mapped to an attack
+        return; // the attack button is not tied to any moves
     }
 
     int opponentAttackIndex = (QRandomGenerator::global()->generate() % currentOpponentPokemon->getAttackList().size()); // random opponent attack
@@ -69,40 +165,37 @@ void BattleViewmodel::attack(int attackIndex) {
     currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::START_TURN, playerAttackMove->getCategory(), playerAttackMove->getType());
     currentOpponentPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::START_TURN, opponentAttackMove->getCategory(), opponentAttackMove->getType());
 
+    for (auto f : fighters) { // counters for confusion, etc.
+        f->getStatusCondition()->incrementTurnCounters();
+    }
+
+    QVector<QPair<QSharedPointer<Pokemon>,int>> turnOrder;
     if (currentPlayerPokemon->getSpeedStat() > currentOpponentPokemon->getSpeedStat()) {
-        currentPlayerPokemon->attack(currentOpponentPokemon, playerAttackMove);
-        if (currentOpponentPokemon->getHealthStat() > 0) {
-            currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
-        } else {
-            currentOpponentPokemon->getAbility().useAbility(currentOpponentPokemon, currentPlayerPokemon, BattleStage::FAINT, playerAttackMove->getCategory(), playerAttackMove->getType());
-        }
+        turnOrder.append(QPair<QSharedPointer<Pokemon>,int>(currentPlayerPokemon, attackIndex));
+        turnOrder.append(QPair<QSharedPointer<Pokemon>,int>(currentOpponentPokemon, opponentAttackIndex));
     } else if (currentPlayerPokemon->getSpeedStat() < currentOpponentPokemon->getSpeedStat()) {
-        currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
-        if (currentPlayerPokemon->getHealthStat() > 0) {
-            currentPlayerPokemon->attack(currentOpponentPokemon, playerAttackMove);
-        } else {
-            currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::FAINT, playerAttackMove->getCategory(), playerAttackMove->getType());
-        }
+        turnOrder.append(QPair<QSharedPointer<Pokemon>,int>(currentOpponentPokemon, opponentAttackIndex));
+        turnOrder.append(QPair<QSharedPointer<Pokemon>,int>(currentPlayerPokemon, attackIndex));
     } else { // speed tie
         if ((QRandomGenerator::global()->generate() % 2) == 0) {
-            currentPlayerPokemon->attack(currentOpponentPokemon, playerAttackMove);
-            if (currentOpponentPokemon->getHealthStat() > 0) {
-                currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
-            } else {
-                currentOpponentPokemon->getAbility().useAbility(currentOpponentPokemon, currentPlayerPokemon, BattleStage::FAINT, playerAttackMove->getCategory(), playerAttackMove->getType());
-            }
+            turnOrder.append(QPair<QSharedPointer<Pokemon>,int>(currentPlayerPokemon, attackIndex));
+            turnOrder.append(QPair<QSharedPointer<Pokemon>,int>(currentOpponentPokemon, opponentAttackIndex));
         } else {
-            currentOpponentPokemon->attack(currentPlayerPokemon, opponentAttackMove);
-            if (currentPlayerPokemon->getHealthStat() > 0) {
-                currentPlayerPokemon->attack(currentOpponentPokemon, playerAttackMove);
-            } else {
-                currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::FAINT, playerAttackMove->getCategory(), playerAttackMove->getType());
-            }
+            turnOrder.append(QPair<QSharedPointer<Pokemon>,int>(currentOpponentPokemon, opponentAttackIndex));
+            turnOrder.append(QPair<QSharedPointer<Pokemon>,int>(currentPlayerPokemon, attackIndex));
         }
+    }
+
+    turnOrder[0].first->attack(turnOrder[1].first, turnOrder[0].first->getAttackList().at(turnOrder[0].second));
+    if (turnOrder[1].first->getHealthStat() > 0) {
+        turnOrder[1].first->attack(turnOrder[0].first, turnOrder[1].first->getAttackList().at(turnOrder[1].second));
+        if (turnOrder[0].first->getHealthStat() <= 0) {
+            turnOrder[1].first->getAbility().useAbility(turnOrder[0].first, turnOrder[1].first, BattleStage::FAINT, playerAttackMove->getCategory(), playerAttackMove->getType());
+        }
+    } else {
+        turnOrder[1].first->getAbility().useAbility(turnOrder[1].first, turnOrder[0].first, BattleStage::FAINT, playerAttackMove->getCategory(), playerAttackMove->getType());
     }
 
     currentPlayerPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::END_TURN, playerAttackMove->getCategory(), playerAttackMove->getType());
     currentOpponentPokemon->getAbility().useAbility(currentPlayerPokemon, currentOpponentPokemon, BattleStage::END_TURN, opponentAttackMove->getCategory(), opponentAttackMove->getType());
-
-    emit stateUpdated();
 }

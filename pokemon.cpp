@@ -1,4 +1,5 @@
 #include "pokemon.h"
+#include "attackeffectfactory.h"
 
 #include <QDebug>
 #include <QRandomGenerator>
@@ -40,6 +41,8 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
     , type1(type1_)
     , type2(type2_)
     , ability(Ability(0, "None", {BattleStage::SWITCH_IN}, Ability::Target::SELF, Category::NONE, Type::NONE, [](QSharedPointer<Pokemon>){}))
+    , status(QSharedPointer<StatusCondition>::create())
+    , catchRate(100)
 {
     // calculate IVs
     if (owner.isEmpty()) {
@@ -54,6 +57,14 @@ Pokemon::Pokemon(QString name_, QString owner_, Nature nature_, int baseMaxHealt
     if (currentHealthStat > getMaxHealthStat()) {
         currentHealthStat = getMaxHealthStat();
     }
+
+    connect(status.data(), &StatusCondition::hurtByConfusion, this, [=] {
+        auto self = QSharedPointer<Pokemon>(this, [](Pokemon *p){});
+        QSharedPointer<AttackMove> confusionStatus = QSharedPointer<AttackMove>::create("Confusion Status", 40, 100, 99, 99, Type::NONE, Category::PHYSICAL, AttackEffectFactory::getEffectByID(-1));
+        int dmg = calculateDamage(self, confusionStatus);
+        setHealthStat(currentHealthStat - dmg);
+        qDebug() << name << "hit itself in confusion";
+    });
 }
 
 void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove) {
@@ -62,6 +73,12 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
         qDebug() << "This move has no PP left";
         return;
     }
+
+    if (!status->canMove()) {
+        emit attacked();
+        return;
+    }
+
     attackMove->setPp(attackMove->getPp() - 1);
 
     // calculate accuracy
@@ -74,21 +91,49 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
 
     qreal dAccuracy = (double)attackMove->getAccuracy() * getAccuracyStageMultiplier(combinedStages);
     quint32 iAccuracy = ((dAccuracy - qFloor(dAccuracy)) < 0.5) ? qFloor(dAccuracy) : qCeil(dAccuracy);
-    if ((QRandomGenerator::global()->generate() % 101) > iAccuracy) {
+    if ((attackMove->getAccuracy() > 0) && ((QRandomGenerator::global()->generate() % 101) > iAccuracy)) {
         qDebug() << "The attack missed";
+        emit attacked();
         return;
     }
 
 
     // calculate damage
+    if (attackMove->getPower() > 0) {
+        int dmg = calculateDamage(opponent, attackMove);
+        ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::BEFORE_ATTACK, attackMove->getCategory(), attackMove->getType());
+        opponent->ability.useAbility(opponent, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), BattleStage::BEFORE_OPPONENT_ATTACK, attackMove->getCategory(), attackMove->getType());
+
+        opponent->takeDamage(dmg, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), attackMove);
+
+        ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::AFTER_ATTACK, attackMove->getCategory(), attackMove->getType());
+        ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::ATTACK_HITS, attackMove->getCategory(), attackMove->getType());
+
+        opponent->ability.useAbility(opponent, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), BattleStage::AFTER_OPPONENT_ATTACK, attackMove->getCategory(), attackMove->getType());
+
+        qDebug() << name << "attacked" << opponent->getName() << "with" << attackMove->getName() << "and dealt" << dmg << "damage.";
+
+        if ((opponent->getStatusCondition()->getFrozen()) && (attackMove->getType() == Type::FIRE) && (attackMove->getPower() > 0)) {
+            opponent->getStatusCondition()->setStatusCondition(Status::NONE);
+        }
+    }
+
+    auto self = QSharedPointer<Pokemon>(this, [](Pokemon *p){});
+    attackMove->useEffect(self, opponent);
+
+    emit attacked();
+}
+
+
+int Pokemon::calculateDamage(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove) {
     double attackPower = (double)attackMove->getPower();
     double stab = ((attackMove->getType() == type1) || (attackMove->getType() == type2)) ? 1.5 : 1.0;
     double weakResist = TypeUtilities::calcEffectiveness(attackMove->getType(), opponent->getType1());
     weakResist *= TypeUtilities::calcEffectiveness(attackMove->getType(), opponent->getType2());
     double randomNumber = (double)((QRandomGenerator::global()->generate() % 16) + 85); // get a random number (85 - 100)
 
-    double attack = 0.0;
-    double defense = 0.0;
+    double attack = 1.0;
+    double defense = 1.0;
     if (attackMove->getCategory() == Category::PHYSICAL) {
         attack = getAttackStat();
         defense = opponent->getDefenseStat();
@@ -97,21 +142,10 @@ void Pokemon::attack(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove
         defense = opponent->getSpDefenseStat();
     }
 
-    double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * attack * attackPower / defense) / 50.0) + 2.0) * stab * weakResist * randomNumber / 100.0;
+    double damage = ((((2.0 * ((double)level) / 5.0 + 2.0) * attack * attackPower / defense) / 50.0) + 2.0) * stab * weakResist * randomNumber * status->damageMultiplier(attackMove) / 100;
     int dmg = ((damage - qFloor(damage)) < 0.5) ? qFloor(damage) : qCeil(damage); // round damage to the nearest whole number
 
-    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::BEFORE_ATTACK, attackMove->getCategory(), attackMove->getType());
-    opponent->ability.useAbility(opponent, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), BattleStage::BEFORE_OPPONENT_ATTACK, attackMove->getCategory(), attackMove->getType());
-
-    opponent->takeDamage(dmg, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), attackMove);
-
-    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::AFTER_ATTACK, attackMove->getCategory(), attackMove->getType());
-    ability.useAbility(QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), opponent, BattleStage::ATTACK_HITS, attackMove->getCategory(), attackMove->getType());
-
-    opponent->ability.useAbility(opponent, QSharedPointer<Pokemon>(this, [](Pokemon *p){Q_UNUSED(p);}), BattleStage::AFTER_OPPONENT_ATTACK, attackMove->getCategory(), attackMove->getType());
-
-    qDebug() << name << "attacked" << opponent->getName() << "with" << attackMove->getName() << "and dealt" << dmg << "damage.";
-    //emit attacked();
+    return dmg;
 }
 
 void Pokemon::takeDamage(int damage, QSharedPointer<Pokemon> attacker, QSharedPointer<AttackMove> attackMove) {
@@ -152,12 +186,18 @@ int Pokemon::getHealthStat() const {
 }
 
 void Pokemon::setHealthStat(int newHealthStat) {
+    bool damaged = (newHealthStat < currentHealthStat);
     currentHealthStat = (newHealthStat < 0 ? 0 : newHealthStat);
+    currentHealthStat = (currentHealthStat > getMaxHealthStat() ? getMaxHealthStat() : currentHealthStat);
+    if (damaged) {
+        emit tookDamage();
+    }
 }
 
 int Pokemon::getSpeedStat() const {
-    return ((((double)speedStatIV + 2.0 * (double)baseSpeedStat + ((double)speedStatEV / 4.0)) * (double)level / 100.0) + 5.0) *
-            NatureUtilities::calcMultiplier(nature, NatureUtilities::Stat::SPEED) * getStatStageMultiplier(speedStatStage);
+    return static_cast<int>(((((double)speedStatIV + 2.0 * (double)baseSpeedStat + ((double)speedStatEV / 4.0)) * (double)level / 100.0) + 5.0) *
+            NatureUtilities::calcMultiplier(nature, NatureUtilities::Stat::SPEED) * getStatStageMultiplier(speedStatStage) *
+            status->speedMultiplier());
 }
 
 int Pokemon::getMaxHealthStat() const {
@@ -405,5 +445,28 @@ void Pokemon::setAttackList(QVector<QSharedPointer<AttackMove> > newAttackList) 
     attackList = newAttackList;
 }
 
+QSharedPointer<StatusCondition> Pokemon::getStatusCondition() {
+    return status;
+}
 
+void Pokemon::setStatusCondition(Status status_) {
+    if (status->getStatusCondition() == Status::NONE) {
+        if (((status_ == Status::FROZEN) && (type1 != Type::ICE) && (type2 != Type::ICE)) || // do not freeze ice types
+                ((status_ == Status::BURNED) && (type1 != Type::FIRE) && (type2 != Type::FIRE)) || // do not burn fire types
+                ((status_ == Status::PARALYZED) && (type1 != Type::ELECTRIC) && (type2 != Type::ELECTRIC)) || // do not paralyze electric types
+                (((status_ == Status::POISONED) || (status_ == Status::BADLY_POISONED)) && (type1 != Type::POISON) && (type2 != Type::POISON) && (type1 != Type::STEEL) && (type2 != Type::STEEL)) // do not poison steel or poison types
+                )
+        {
+            status->setStatusCondition(status_);
+        } else if ((status->getStatusCondition() == Status::BADLY_POISONED) && (status_ == Status::POISONED)) {
+            status->setStatusCondition(Status::POISONED); // force downgrade bad poison to poison
+        } else if (status_ == Status::ASLEEP) {
+            status->setStatusCondition(status_);
+        }
+        emit statusConditionSet(status_);
+    }
+}
 
+int Pokemon::getCatchRate() {
+    return catchRate;
+}

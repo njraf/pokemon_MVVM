@@ -10,6 +10,7 @@
 #include "attackmove.h"
 #include "natureutilities.h"
 #include "ability.h"
+#include "statuscondition.h"
 
 class Pokemon : public QObject
 {
@@ -59,13 +60,17 @@ public:
     Ability getAbility();
     void setAbility(Ability ability_);
 
+    QSharedPointer<StatusCondition> getStatusCondition();
+    void setStatusCondition(Status status_);
+    int getCatchRate();
+
 private:
-    int baseAttackStat;
-    int baseSpAttackStat;
-    int baseDefenseStat;
-    int baseSpDefenseStat;
-    int baseSpeedStat;
-    int baseMaxHealthStat;
+    const int baseAttackStat;
+    const int baseSpAttackStat;
+    const int baseDefenseStat;
+    const int baseSpDefenseStat;
+    const int baseSpeedStat;
+    const int baseMaxHealthStat;
 
     int attackStatIV;
     int spAttackStatIV;
@@ -99,13 +104,21 @@ private:
     Type type2;
     Ability ability;
 
+    QSharedPointer<StatusCondition> status;
+    int catchRate;
+
+
     double getStatStageMultiplier(int stage) const;
     double getAccuracyStageMultiplier(int stage) const;
     double getEvasionStageMultiplier(int stage) const;
 
+    int calculateDamage(QSharedPointer<Pokemon> opponent, QSharedPointer<AttackMove> attackMove);
+
 
 signals:
+    void tookDamage();
     void attacked();
+    void statusConditionSet(Status statusCondition);
 };
 
 #endif // POKEMON_H

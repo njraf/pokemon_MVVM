@@ -14,6 +14,8 @@ public:
     ~PokemonDao() = default;
 
     QSharedPointer<Pokemon> getPokemon(int nationalDexNumber);
+
+protected:
     bool populateDatabase() override;
 
 signals:
