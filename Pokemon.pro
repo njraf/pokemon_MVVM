@@ -14,7 +14,7 @@ INCLUDEPATH += \
 
 SOURCES += \
     ability.cpp \
-    abilitydao.cpp \
+    repository/abilitydao.cpp \
     abilityfactory.cpp \
     attackeffectfactory.cpp \
     attackmove.cpp \
@@ -51,7 +51,7 @@ SOURCES += \
 
 HEADERS += \
     ability.h \
-    abilitydao.h \
+    repository/abilitydao.h \
     abilityfactory.h \
     attackeffectfactory.h \
     attackmove.h \
