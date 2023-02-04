@@ -89,6 +89,20 @@ bool AbilityDao::populateDatabase() {
             table.insertRow(row);
             QString line = abilityFile.readLine();
             QStringList parts = line.split(',');
+
+            const int NUM_EXPECTED_FIELDS = 7;
+            if (parts.size() > NUM_EXPECTED_FIELDS) { // expected number of fields
+                // description likely has commas
+                QString description = "";
+                for (int i = NUM_EXPECTED_FIELDS - 1; i < parts.size();) {
+                    description += parts.takeAt(i);
+                    if (i < NUM_EXPECTED_FIELDS) {
+                        description += ", ";
+                    }
+                }
+                parts.append(description);
+            }
+
             if (line.isEmpty() || (parts.count() != table.columnCount())) {
                 continue;
             }

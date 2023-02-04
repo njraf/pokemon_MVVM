@@ -1,3 +1,5 @@
 1, Intimidate, SWITCH_IN, OPPONENT, NONE, NONE, Lower the opponent's attack by one stage when this pokemon is sent out
 2, Aftermath, FAINT, OPPONENT, PHYSICAL, NONE, Deal damage to the opponent when knocked out by a Physical move
 3, Static, OPPONENT_HITS, OPPONENT, PHYSICAL, NONE, Paralyze the opponent when they make contact with this pokemon
+4, Poison Point, OPPONENT_HITS, OPPONENT, PHYSICAL, NONE, Poison the opponent when they make contact with this pokemon
+5, Effect Spore, OPPONENT_HITS, OPPONENT, PHYSICAL, NONE, Contact may paralyze, poison, or cause sleep

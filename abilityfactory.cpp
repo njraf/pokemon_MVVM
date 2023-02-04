@@ -37,6 +37,44 @@ std::function<void(QSharedPointer<Pokemon>)> AbilityFactory::getAbility(int id) 
             qDebug() << target->getName() << "was paralyzed by Static ability";
         };
         break;
+    case 4: // poison point
+        ability = [](QSharedPointer<Pokemon> target) {
+            if ((target->getStatusCondition()->getStatusCondition() != Status::NONE) ||
+                    (target->getType1() == Type::POISON) || (target->getType2() == Type::POISON) ||
+                    (target->getType1() == Type::STEEL) || (target->getType2() == Type::STEEL))
+            {
+                return;
+            }
+
+            const int CHANCE = 30; // 30%
+            if ((QRandomGenerator::global()->generate() % 100) >= CHANCE) {
+                return;
+            }
+            target->getStatusCondition()->setStatusCondition(Status::POISONED);
+            qDebug() << target->getName() << "was poisoned by Poison Point ability";
+        };
+        break;
+    case 5: // effect spore
+        ability = [](QSharedPointer<Pokemon> target) {
+            if ((target->getStatusCondition()->getStatusCondition() != Status::NONE) ||
+                    (target->getType1() == Type::GRASS) || (target->getType2() == Type::GRASS))
+            {
+                return;
+            }
+
+            const int chance = (QRandomGenerator::global()->generate() % 100);
+            if ((0 <= chance) && (chance <= 8)) {
+                target->getStatusCondition()->setStatusCondition(Status::POISONED);
+                qDebug() << target->getName() << "was poisoned by Effect Spore ability";
+            } else if ((9 <= chance) && (chance <= 18)) {
+                target->getStatusCondition()->setStatusCondition(Status::PARALYZED);
+                qDebug() << target->getName() << "was paralyzed by Effect Spore ability";
+            } else if ((19 <= chance) && (chance <= 29)) {
+                target->getStatusCondition()->setStatusCondition(Status::ASLEEP);
+                qDebug() << target->getName() << "was put to sleep by Effect Spore ability";
+            }
+        };
+        break;
     default:
         ability = [](QSharedPointer<Pokemon> target) {};
         break;

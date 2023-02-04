@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     QSharedPointer<Pokemon> squirtle = repository->getPokemon(7);
     squirtle->setLevel(99);
     charmander->setAttackList(attackList);
-    charmander->setAbility(repository->getAbilityByID(3));
+    charmander->setAbility(repository->getAbilityByID(5));
     squirtle->setAttackList(attackList2);
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander, squirtle};
 

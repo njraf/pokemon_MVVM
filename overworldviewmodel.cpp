@@ -71,7 +71,7 @@ void OverworldViewmodel::move(QString direction) {
         QVector<QSharedPointer<AttackMove>> attackList;
         attackList.append(repository->getAttackByID(2));
 
-        auto wildPokemon = repository->getPokemon(3);
+        auto wildPokemon = repository->getPokemon(6);
         wildPokemon->setAttackList(attackList);
         wildPokemon->setAbility(repository->getAbilityByID(0));
 
