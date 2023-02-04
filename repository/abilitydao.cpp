@@ -79,7 +79,7 @@ bool AbilityDao::populateDatabase() {
     }
 
     // read from a csv file to populate the database
-    QFile abilityFile("abilities.csv");
+    QFile abilityFile(":/abilities.csv");
     if (!abilityFile.exists() || !abilityFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "ERROR:" << abilityFile.fileName() << "does not exist";
         return false;

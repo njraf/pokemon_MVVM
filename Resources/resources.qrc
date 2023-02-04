@@ -6,5 +6,6 @@
         <file>pokeballitems.csv</file>
         <file>pokemon.csv</file>
         <file>zigzagpath.csv</file>
+        <file>abilities.csv</file>
     </qresource>
 </RCC>

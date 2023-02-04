@@ -23,11 +23,12 @@ MainWindow::MainWindow(QWidget *parent)
         return;
     }
 
-    // create player
+    // create player //
+    // create attack list
     QVector<QSharedPointer<AttackMove>> attackList;
     QVector<QSharedPointer<AttackMove>> attackList2;
     attackList.append(repository->getAttackByID(2));
-    attackList.append(repository->getAttackByName("Will-O-Wisp", 5));
+    attackList.append(repository->getAttackByName("Ember", 5));
     attackList.append(repository->getAttackByName("Spore", 4));
     attackList.append(repository->getAttackByName("Confuse Ray", 3));
     attackList2.append(repository->getAttackByID(2));
@@ -37,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     QSharedPointer<Pokemon> squirtle = repository->getPokemon(7);
     squirtle->setLevel(99);
     charmander->setAttackList(attackList);
-    charmander->setAbility(repository->getAbilityByID(1));
+    charmander->setAbility(repository->getAbilityByID(3));
     squirtle->setAttackList(attackList2);
     QVector<QSharedPointer<Pokemon>> playerTeam = {charmander, squirtle};
 
